@@ -1,0 +1,33 @@
+---
+// src/pages/index.astro
+import NeuroLabViewer from '../components/NeuroLabViewer.jsx';
+import '../styles/global.css';
+---
+
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width" />
+    <title>NeuroLab 3D | Flywire</title>
+  </head>
+  <body class="h-screen w-full bg-slate-950 text-white overflow-hidden flex flex-col font-sans">
+    
+    <header class="p-4 border-b border-slate-800 bg-slate-900 flex justify-between items-center z-20">
+      <div class="flex items-center gap-3">
+        <div class="w-8 h-8 rounded bg-gradient-to-tr from-cyan-500 to-blue-600 flex items-center justify-center font-bold">N</div>
+        <h1 class="text-xl font-bold tracking-tight">NeuroLab <span class="text-cyan-400">3D</span></h1>
+      </div>
+      <div class="flex items-center gap-4">
+        <span class="text-xs bg-slate-800 text-slate-300 px-3 py-1 rounded-full border border-slate-700">Módulo: Exploración Libre</span>
+        <!-- Espacio para la autenticación -->
+        <button class="text-sm font-semibold bg-white/10 hover:bg-white/20 px-4 py-2 rounded-lg transition-colors">Guardar Progreso</button>
+      </div>
+    </header>
+
+    <main class="flex-1 relative">
+      <!-- Directiva client:load crucial para que React, ThreeJS y la interactividad funcionen -->
+      <NeuroLabViewer client:load />
+    </main>
+
+  </body>
+</html>
