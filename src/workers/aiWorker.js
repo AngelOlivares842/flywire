@@ -1,55 +1,67 @@
-// src/workers/aiWorker.js
-import { MLCEngine } from "@mlc-ai/web-llm";
+import { CreateMLCEngine } from "@mlc-ai/web-llm";
 
 let engine = null;
-// Modelo de 0.5B cuantizado: ultra ligero, ideal para no saturar memoria
-const MODEL_NAME = "Qwen2.5-0.5B-Instruct-q4f16_1-MLC";
 
 self.onmessage = async (e) => {
   const { type, data } = e.data;
 
-  if (type === "INIT") {
-    if (engine) return;
-
+  if (type === 'CHECK_WEBGPU') {
+    const available = 'gpu' in navigator;
+    self.postMessage({ type: 'WEBGPU_AVAILABLE', available });
+  } 
+  else if (type === 'INIT') {
     try {
-      engine = new MLCEngine();
-      engine.setInitProgressCallback((report) => {
-        self.postMessage({ type: "PROGRESS", progress: report.text });
+      const initProgressCallback = (info) => {
+        self.postMessage({ type: 'PROGRESS', progress: info.text });
+      };
+      
+      // Load Qwen model with provided settings
+      engine = await CreateMLCEngine("Qwen2.5-0.5B-Instruct-q4f16_1-MLC", {
+        initProgressCallback,
       });
-
-      await engine.reload(MODEL_NAME);
-      self.postMessage({ type: "READY" });
+      self.postMessage({ type: 'READY' });
     } catch (err) {
-      self.postMessage({ type: "ERROR", error: err.message });
+      self.postMessage({ type: 'ERROR', error: err.message });
     }
-  }
-
-  if (type === "ANALYZE") {
+  } 
+  else if (type === 'ANALYZE') {
     if (!engine) {
-      self.postMessage({ type: "ERROR", error: "El modelo no está inicializado." });
+      self.postMessage({ type: 'ERROR', error: 'Engine not initialized' });
       return;
     }
-
+    
     try {
-      const prompt = `Analiza brevemente esta neurona de Drosophila (Flywire):
-ID: ${data.id}, Tipo: ${data.type}, Neurotransmisor: ${data.neurotransmitter}.
-Explica en un solo párrafo corto y claro su función sensorial o motora probable.`;
+      const { id, type: nType, neurotransmitter, region, description } = data;
+      
+      const prompt = `Analiza la siguiente neurona:
+ID: ${id}
+Tipo: ${nType}
+Neurotransmisor: ${neurotransmitter}
+Región: ${region}
+Descripción: ${description}`;
 
-      const reply = await engine.chat.completions.create({
-        messages: [
-          { role: "system", content: "Eres un asistente neurocientífico conciso." },
-          { role: "user", content: prompt }
-        ],
-        temperature: 0.5,
-        max_tokens: 120 // Limita tokens para liberar la GPU en segundos
+      const messages = [
+        { role: "system", content: "Eres un neurocientífico experto en el conectoma de Drosophila melanogaster (Flywire). Responde siempre en español, de forma concisa y educativa." },
+        { role: "user", content: prompt }
+      ];
+
+      const chunks = await engine.chat.completions.create({
+        messages,
+        temperature: 0.6,
+        max_tokens: 150,
+        stream: true,
       });
 
-      self.postMessage({ 
-        type: "RESULT", 
-        text: reply.choices[0].message.content 
-      });
+      for await (const chunk of chunks) {
+        const text = chunk.choices[0]?.delta?.content || "";
+        if (text) {
+          self.postMessage({ type: 'STREAM_CHUNK', text });
+        }
+      }
+      self.postMessage({ type: 'STREAM_DONE' });
+
     } catch (err) {
-      self.postMessage({ type: "ERROR", error: err.message });
+      self.postMessage({ type: 'ERROR', error: err.message });
     }
   }
 };

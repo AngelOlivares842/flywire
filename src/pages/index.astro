@@ -1,5 +1,4 @@
 ---
-// src/pages/index.astro
 import NeuroLabViewer from '../components/NeuroLabViewer.jsx';
 import '../styles/global.css';
 ---
@@ -7,25 +6,44 @@ import '../styles/global.css';
 <html lang="es">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width" />
-    <title>NeuroLab 3D | Flywire</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="NeuroLab 3D — Plataforma educativa interactiva para explorar el conectoma de la Drosophila melanogaster basada en datos de Flywire.ai" />
+    <meta name="theme-color" content="#020617" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <title>NeuroLab 3D | Conectoma de Drosophila</title>
   </head>
   <body class="h-screen w-full bg-slate-950 text-white overflow-hidden flex flex-col font-sans">
     
-    <header class="p-4 border-b border-slate-800 bg-slate-900 flex justify-between items-center z-20">
-      <div class="flex items-center gap-3">
-        <div class="w-8 h-8 rounded bg-gradient-to-tr from-cyan-500 to-blue-600 flex items-center justify-center font-bold">N</div>
-        <h1 class="text-xl font-bold tracking-tight">NeuroLab <span class="text-cyan-400">3D</span></h1>
+    <!-- Header -->
+    <header class="bg-slate-900/80 backdrop-blur-md border-b border-slate-800/50 py-3 px-4 sticky top-0 z-50 flex items-center justify-between">
+      <!-- Logo + title -->
+      <div class="flex items-center space-x-3">
+        <div class="w-8 h-8 rounded bg-gradient-to-br from-cyan-400 to-blue-600 flex items-center justify-center font-bold text-lg shadow-lg">
+          N
+        </div>
+        <div class="flex items-baseline space-x-1">
+          <h1 class="text-xl font-bold tracking-tight">NeuroLab</h1>
+          <span class="text-cyan-400 font-bold text-xl">3D</span>
+        </div>
       </div>
-      <div class="flex items-center gap-4">
-        <span class="text-xs bg-slate-800 text-slate-300 px-3 py-1 rounded-full border border-slate-700">Módulo: Exploración Libre</span>
-        <!-- Espacio para la autenticación -->
-        <button class="text-sm font-semibold bg-white/10 hover:bg-white/20 px-4 py-2 rounded-lg transition-colors">Guardar Progreso</button>
+      
+      <!-- Module badge -->
+      <div class="hidden md:flex items-center">
+        <span class="bg-slate-800 text-slate-300 text-xs font-semibold px-3 py-1 rounded-full border border-slate-700">
+          Exploración Libre
+        </span>
+      </div>
+
+      <!-- Actions -->
+      <div>
+        <button disabled class="bg-slate-800/50 text-slate-500 text-sm font-medium px-4 py-1.5 rounded border border-slate-700 cursor-not-allowed">
+          Guardar Progreso
+        </button>
       </div>
     </header>
 
-    <main class="flex-1 relative">
-      <!-- Directiva client:load crucial para que React, ThreeJS y la interactividad funcionen -->
+    <!-- Main viewer -->
+    <main class="flex-1 relative overflow-hidden">
       <NeuroLabViewer client:load />
     </main>
 

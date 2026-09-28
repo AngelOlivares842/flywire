@@ -1,151 +1,98 @@
-// src/components/NeuroLabViewer.jsx
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import { Canvas } from '@react-three/fiber';
-import { OrbitControls, Sphere, Line } from '@react-three/drei';
-
-const mockNeurons = [
-  { id: '720575940617346657', position: [0, 0, 0], type: 'Sensorial', neurotransmitter: 'Acetilcolina' },
-  { id: '720575940617346658', position: [2, 1, -1], type: 'Interneurona', neurotransmitter: 'GABA' },
-  { id: '720575940617346659', position: [-1, 2, 1], type: 'Motora', neurotransmitter: 'Glutamato' }
-];
+import BrainScene from './BrainScene.jsx';
+import HudPanel from './HudPanel.jsx';
+import { useAIAnalysis } from '../hooks/useAIAnalysis.js';
+import { neurons, synapses } from '../data/neurons.js';
 
 export default function NeuroLabViewer() {
   const [selectedNeuron, setSelectedNeuron] = useState(null);
-  const [aiStatus, setAiStatus] = useState('unloaded'); // 'unloaded' | 'loading' | 'ready' | 'thinking'
-  const [progressText, setProgressText] = useState('');
-  const [analysisText, setAnalysisText] = useState('');
+  const [hudOpen, setHudOpen] = useState(true);
   
-  const workerRef = useRef(null);
+  const { aiStatus, progressText, analysisText, requestAnalysis, resetAnalysis } = useAIAnalysis();
 
-  useEffect(() => {
-    // Instanciar worker con soporte nativo de módulos en Vite/Astro
-    workerRef.current = new Worker(
-      new URL('../workers/aiWorker.js', import.meta.url),
-      { type: 'module' }
-    );
+  const handleSelectNeuron = useCallback((neuron) => {
+    setSelectedNeuron(neuron);
+    setHudOpen(true);
+    requestAnalysis(neuron);
+  }, [requestAnalysis]);
 
-    workerRef.current.onmessage = (event) => {
-      const { type, progress, text, error } = event.data;
+  const handleDeselect = useCallback(() => {
+    setSelectedNeuron(null);
+    resetAnalysis();
+  }, [resetAnalysis]);
 
-      if (type === 'PROGRESS') {
-        setProgressText(progress);
-      } else if (type === 'READY') {
-        setAiStatus('ready');
-      } else if (type === 'RESULT') {
-        setAnalysisText(text);
-        setAiStatus('ready');
-      } else if (type === 'ERROR') {
-        setAnalysisText(`Error: ${error}`);
-        setAiStatus('ready');
-      }
-    };
-
-    return () => {
-      workerRef.current?.terminate();
-    };
+  const toggleHud = useCallback(() => {
+    setHudOpen(prev => !prev);
   }, []);
 
-  const handleSelectNeuron = (neuron) => {
-    setSelectedNeuron(neuron);
-
-    // Si aún no se cargó el modelo, se inicia la descarga bajo demanda
-    if (aiStatus === 'unloaded') {
-      setAiStatus('loading');
-      workerRef.current.postMessage({ type: 'INIT' });
-    }
-
-    if (aiStatus === 'ready') {
-      setAiStatus('thinking');
-      setAnalysisText('');
-      workerRef.current.postMessage({ type: 'ANALYZE', data: neuron });
-    }
-  };
+  // Keyboard shortcut to deselect
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (e.key === 'Escape') {
+        handleDeselect();
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [handleDeselect]);
 
   return (
-    <div className="w-full h-full flex relative overflow-hidden bg-slate-950 font-sans">
-      {/* Visor 3D: renderizado fluido sin interrupciones */}
+    <div className="w-full h-full flex relative">
+      {/* 3D Canvas */}
       <div className="flex-1 h-full relative">
-        <Canvas camera={{ position: [0, 0, 5] }}>
-          <ambientLight intensity={0.6} />
-          <pointLight position={[10, 10, 10]} />
-          <OrbitControls makeDefault />
-
-          {mockNeurons.map((n) => (
-            <Sphere
-              key={n.id}
-              position={n.position}
-              args={[0.25, 32, 32]}
-              onClick={() => handleSelectNeuron(n)}
-              onPointerOver={() => (document.body.style.cursor = 'pointer')}
-              onPointerOut={() => (document.body.style.cursor = 'auto')}
-            >
-              <meshStandardMaterial
-                color={selectedNeuron?.id === n.id ? "#06b6d4" : "#ec4899"}
-                emissive={selectedNeuron?.id === n.id ? "#06b6d4" : "#000000"}
-                emissiveIntensity={0.5}
-              />
-            </Sphere>
-          ))}
-          <Line points={[mockNeurons[0].position, mockNeurons[1].position]} color="rgba(255,255,255,0.2)" lineWidth={2} />
-          <Line points={[mockNeurons[0].position, mockNeurons[2].position]} color="rgba(255,255,255,0.2)" lineWidth={2} />
+        <Canvas
+          camera={{ position: [0, 2, 10], fov: 50 }}
+          gl={{ antialias: true, alpha: false, powerPreference: 'high-performance' }}
+          dpr={[1, 2]}
+          style={{ background: '#020617' }}
+        >
+          <BrainScene
+            neurons={neurons}
+            synapses={synapses}
+            selectedNeuron={selectedNeuron}
+            onSelectNeuron={handleSelectNeuron}
+          />
         </Canvas>
-      </div>
-
-      {/* Panel lateral con Tailwind CSS */}
-      <aside className="w-96 bg-slate-900/80 backdrop-blur-md border-l border-slate-800 p-6 flex flex-col justify-between text-slate-100">
-        <div>
-          <h2 className="text-xl font-bold tracking-wide text-cyan-400 mb-4">Inspección de Nodo</h2>
-
-          {selectedNeuron ? (
-            <div className="space-y-4">
-              <div className="bg-slate-800/60 p-4 rounded-xl border border-slate-700">
-                <span className="text-xs text-slate-400 uppercase font-semibold">ID Flywire</span>
-                <p className="font-mono text-sm text-cyan-300">{selectedNeuron.id}</p>
-                <div className="mt-3 flex justify-between text-sm">
-                  <div>
-                    <span className="text-xs text-slate-400 block">Tipo</span>
-                    <span>{selectedNeuron.type}</span>
-                  </div>
-                  <div>
-                    <span className="text-xs text-slate-400 block">Neurotransmisor</span>
-                    <span>{selectedNeuron.neurotransmitter}</span>
-                  </div>
-                </div>
-              </div>
-
-              {/* Estado y resultado de la inferencia local */}
-              <div className="bg-slate-800/40 p-4 rounded-xl border border-slate-700/60 min-h-[160px]">
-                <h3 className="text-xs font-semibold text-slate-400 uppercase mb-2">Tutor Local (0.5B)</h3>
-
-                {aiStatus === 'loading' && (
-                  <div className="text-xs text-yellow-400 space-y-2">
-                    <p className="font-medium animate-pulse">Cargando modelo a la GPU...</p>
-                    <p className="text-slate-400 truncate">{progressText}</p>
-                  </div>
-                )}
-
-                {aiStatus === 'thinking' && (
-                  <p className="text-sm text-cyan-400 animate-pulse">Analizando conectoma...</p>
-                )}
-
-                {aiStatus === 'ready' && analysisText && (
-                  <p className="text-sm text-slate-200 leading-relaxed">{analysisText}</p>
-                )}
-
-                {aiStatus === 'unloaded' && (
-                  <p className="text-xs text-slate-500">Selecciona este nodo para inicializar el análisis local.</p>
-                )}
-              </div>
-            </div>
+        
+        {/* Bottom-left overlay: keyboard shortcut hints */}
+        <div className="absolute bottom-4 left-4 text-xs text-slate-500 space-y-1 pointer-events-none">
+          <p>ESC - Deseleccionar</p>
+          <p>Arrastra - Rotar vista</p>
+          <p>Scroll - Zoom</p>
+        </div>
+        
+        {/* Mobile toggle button for HUD */}
+        <button 
+          onClick={toggleHud} 
+          className="md:hidden absolute top-4 right-4 z-50 p-2 bg-slate-800/80 backdrop-blur rounded-md border border-slate-700 text-white shadow-lg"
+          aria-label="Toggle Menu"
+        >
+          {hudOpen ? (
+            <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+            </svg>
           ) : (
-            <p className="text-slate-500 text-sm">Haz clic en un nodo neuronal del visor 3D para comenzar.</p>
+            <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+            </svg>
           )}
-        </div>
-
-        <div className="text-[11px] text-slate-500 border-t border-slate-800 pt-3">
-          Motor: WebGPU • Memoria aproximada: &lt; 400 MB
-        </div>
-      </aside>
+        </button>
+      </div>
+      
+      {/* HUD Panel */}
+      <HudPanel
+        selectedNeuron={selectedNeuron}
+        aiStatus={aiStatus}
+        progressText={progressText}
+        analysisText={analysisText}
+        neurons={neurons}
+        synapses={synapses}
+        onSelectNeuron={handleSelectNeuron}
+        onDeselect={handleDeselect}
+        isOpen={hudOpen}
+        onToggle={toggleHud}
+      />
     </div>
   );
 }
