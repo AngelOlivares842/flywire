@@ -1,0 +1,63 @@
+import React, { useRef, useMemo, useEffect } from 'react';
+import { useFrame } from '@react-three/fiber';
+import * as THREE from 'three';
+
+const NeuralPulse = ({ id, start, end, duration = 0.8, color = '#06b6d4', onComplete }) => {
+  const timeRef = useRef(0);
+  
+  const startVec = useMemo(() => new THREE.Vector3(...start), [start]);
+  const endVec = useMemo(() => new THREE.Vector3(...end), [end]);
+  
+  const trailCount = 4;
+  
+  // Use separate refs for each mesh to avoid createRef within render
+  const mainRef = useRef();
+  const trailRefs = [
+    useRef(), useRef(), useRef(), useRef()
+  ];
+
+  useFrame((state, delta) => {
+    timeRef.current += delta;
+    let progress = timeRef.current / duration;
+    
+    if (progress >= 1) {
+      if (onComplete) onComplete(id);
+      progress = 1; // clamp
+    }
+
+    const currentPos = new THREE.Vector3().lerpVectors(startVec, endVec, progress);
+    
+    if (mainRef.current) {
+      mainRef.current.position.copy(currentPos);
+      const pulseScale = 1 + Math.sin(progress * Math.PI * 4) * 0.2;
+      mainRef.current.scale.setScalar(pulseScale);
+    }
+    
+    for (let i = 0; i < trailCount; i++) {
+      const trailProgress = Math.max(0, progress - ((i + 1) * 0.05));
+      if (trailRefs[i].current) {
+        trailRefs[i].current.position.copy(new THREE.Vector3().lerpVectors(startVec, endVec, trailProgress));
+      }
+    }
+  });
+
+  return (
+    <group>
+      {/* Main pulse */}
+      <mesh ref={mainRef}>
+        <sphereGeometry args={[0.08, 16, 16]} />
+        <meshBasicMaterial color={color} transparent opacity={0.9} depthWrite={false} />
+      </mesh>
+      
+      {/* Trail */}
+      {trailRefs.map((ref, i) => (
+        <mesh key={i} ref={ref}>
+          <sphereGeometry args={[0.08 * (1 - (i + 1) * 0.2), 8, 8]} />
+          <meshBasicMaterial color={color} transparent opacity={0.5 * (1 - (i + 1) * 0.2)} depthWrite={false} />
+        </mesh>
+      ))}
+    </group>
+  );
+};
+
+export default NeuralPulse;

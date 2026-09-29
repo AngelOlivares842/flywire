@@ -1,9 +1,6 @@
 import React, { useState, useMemo } from 'react';
-import { NEURON_TYPE_COLORS } from '../data/neurons.js';
+import { NEURON_TYPE_COLORS, BRAIN_REGIONS } from '../data/neurons.js';
 
-/**
- * HUD Panel Component
- */
 export default function HudPanel({
   selectedNeuron,
   aiStatus,
@@ -14,17 +11,28 @@ export default function HudPanel({
   onSelectNeuron,
   onDeselect,
   isOpen,
-  onToggle
+  onToggle,
+  visibleTypes,
+  onToggleType,
+  onSimulateSignal,
+  isSimulating,
+  simulationReach,
+  onStartTour,
+  onStopTour,
+  isTouring,
+  tourRegion,
+  onResetView,
+  onToggleXRay,
+  isXRay,
+  onJumpToRegion
 }) {
   const [searchQuery, setSearchQuery] = useState('');
   
-  // Basic fallback for connections if the function isn't available
   const connectionsCount = useMemo(() => {
     if (!selectedNeuron) return 0;
-    return synapses.filter(s => s.pre === selectedNeuron.id || s.post === selectedNeuron.id).length;
+    return synapses.filter(s => s.pre === selectedNeuron.id || s.post === selectedNeuron.id || s.from === selectedNeuron.id || s.to === selectedNeuron.id).length;
   }, [selectedNeuron, synapses]);
 
-  // Search results
   const searchResults = useMemo(() => {
     if (searchQuery.trim().length < 2) return [];
     const lowerQuery = searchQuery.toLowerCase();
@@ -32,10 +40,9 @@ export default function HudPanel({
       n.id.toLowerCase().includes(lowerQuery) ||
       n.type.toLowerCase().includes(lowerQuery) ||
       n.region.toLowerCase().includes(lowerQuery)
-    ).slice(0, 5); // Limit to 5 results
+    ).slice(0, 5);
   }, [searchQuery, neurons]);
 
-  // If not open on mobile, don't render content (or render minimal)
   if (!isOpen) {
     return null;
   }
@@ -43,7 +50,6 @@ export default function HudPanel({
   return (
     <div className="absolute top-0 right-0 h-full w-full md:w-80 md:relative bg-slate-900/70 backdrop-blur-xl border-l border-slate-700/50 flex flex-col z-40 animate-slide-in">
       
-      {/* Mobile close button inside panel if needed, but orchestrator handles toggle */}
       <div className="p-4 border-b border-slate-800/50 flex justify-between items-center md:hidden">
         <h2 className="text-lg font-bold text-white">Panel de Control</h2>
         <button onClick={onToggle} className="text-slate-400 hover:text-white">
@@ -53,7 +59,6 @@ export default function HudPanel({
         </button>
       </div>
 
-      {/* Search Bar */}
       <div className="p-4 relative">
         <div className="relative">
           <input
@@ -68,7 +73,6 @@ export default function HudPanel({
           </svg>
         </div>
 
-        {/* Search Results Dropdown */}
         {searchResults.length > 0 && (
           <div className="absolute top-full left-4 right-4 mt-1 bg-slate-800 border border-slate-700 rounded-md shadow-lg overflow-hidden z-50">
             {searchResults.map(result => (
@@ -89,8 +93,22 @@ export default function HudPanel({
         )}
       </div>
 
-      {/* Content Area */}
       <div className="flex-1 overflow-y-auto p-4 custom-scrollbar">
+        <div className="mb-4 space-y-2">
+          <h4 className="text-xs font-semibold text-slate-400 uppercase tracking-wider">Saltar a Región</h4>
+          <div className="flex flex-wrap gap-2">
+            {BRAIN_REGIONS.map(region => (
+              <button
+                key={region}
+                onClick={() => onJumpToRegion(region)}
+                className="region-pill px-2 py-1 bg-slate-800/80 border border-slate-700 rounded-full text-xs text-slate-300 hover:text-white"
+              >
+                {region}
+              </button>
+            ))}
+          </div>
+        </div>
+
         {!selectedNeuron ? (
           <div className="animate-fade-in space-y-6">
             <div className="text-center space-y-3">
@@ -101,20 +119,51 @@ export default function HudPanel({
             </div>
 
             <div className="bg-slate-800/50 rounded-lg p-4 border border-slate-700/50">
-              <h4 className="text-sm font-semibold text-slate-200 mb-3 uppercase tracking-wider">Leyenda de Tipos</h4>
-              <div className="space-y-2">
-                {Object.entries(NEURON_TYPE_COLORS).map(([type, color]) => (
-                  <div key={type} className="flex items-center space-x-3 text-sm text-slate-300">
-                    <span className="w-3 h-3 rounded-full shadow-sm" style={{ backgroundColor: color }}></span>
-                    <span className="capitalize">{type}</span>
-                  </div>
-                ))}
+              <h4 className="text-sm font-semibold text-slate-200 mb-3 uppercase tracking-wider">Filtros de Tipo</h4>
+              <div className="space-y-3">
+                {Object.entries(NEURON_TYPE_COLORS).map(([type, color]) => {
+                  const isVisible = visibleTypes?.has(type);
+                  return (
+                    <div key={type} className={`flex items-center justify-between text-sm transition-opacity ${isVisible ? 'opacity-100' : 'opacity-50'}`}>
+                      <div className="flex items-center space-x-3 text-slate-300">
+                        <span className="w-3 h-3 rounded-full shadow-sm" style={{ backgroundColor: color }}></span>
+                        <span className="capitalize">{type}</span>
+                      </div>
+                      <div 
+                        onClick={() => onToggleType(type)}
+                        className={`toggle-switch ${isVisible ? 'active' : ''}`}
+                      ></div>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+
+            <div className="space-y-3">
+              <button 
+                onClick={isTouring ? onStopTour : onStartTour}
+                className={`w-full py-2 px-4 rounded-md border transition-colors text-sm font-medium ${isTouring ? 'bg-red-500/20 text-red-400 border-red-500/50 hover:bg-red-500/30' : 'bg-transparent text-cyan-400 border-cyan-500 hover:bg-cyan-500/10'}`}
+              >
+                {isTouring ? 'Detener Tour' : '🎯 Tour Guiado'}
+              </button>
+              <div className="flex space-x-2">
+                <button 
+                  onClick={onResetView}
+                  className="flex-1 py-2 px-3 bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white rounded-md border border-slate-700 transition-colors text-sm font-medium"
+                >
+                  ↺ Reset Vista
+                </button>
+                <button 
+                  onClick={onToggleXRay}
+                  className={`flex-1 py-2 px-3 rounded-md border transition-colors text-sm font-medium ${isXRay ? 'bg-cyan-500/20 text-cyan-400 border-cyan-500/50' : 'bg-slate-800 text-slate-300 border-slate-700 hover:bg-slate-700'}`}
+                >
+                  🔬 Rayos X
+                </button>
               </div>
             </div>
           </div>
         ) : (
           <div className="animate-fade-in space-y-5">
-            {/* Neuron Metadata Card */}
             <div 
               className="bg-slate-800/80 rounded-lg p-4 shadow-lg border border-slate-700/50 relative overflow-hidden"
               style={{ borderLeftColor: NEURON_TYPE_COLORS[selectedNeuron.type] || '#ffffff', borderLeftWidth: '4px' }}
@@ -142,7 +191,54 @@ export default function HudPanel({
               </div>
             </div>
 
-            {/* AI Analysis Section */}
+            <div className="bg-slate-800/50 rounded-lg p-4 border border-slate-700/50 space-y-3">
+              <h4 className="text-sm font-semibold text-slate-200 mb-2 uppercase tracking-wider">Acciones</h4>
+              
+              <button 
+                onClick={onSimulateSignal}
+                disabled={!selectedNeuron || isSimulating}
+                className={`w-full py-2.5 px-4 rounded-md font-bold text-sm transition-all duration-300 flex items-center justify-center space-x-2
+                  ${isSimulating 
+                    ? 'bg-slate-700 text-cyan-300 cursor-wait scan-line animate-pulse-glow overflow-hidden relative' 
+                    : !selectedNeuron
+                      ? 'bg-slate-800 text-slate-500 cursor-not-allowed'
+                      : 'bg-gradient-to-r from-cyan-600 to-cyan-500 text-white hover:from-cyan-500 hover:to-cyan-400 hover:shadow-[0_0_15px_rgba(6,182,212,0.5)]'
+                  }`}
+              >
+                <span>⚡</span>
+                <span>{isSimulating ? 'Simulando...' : 'Simular Señal'}</span>
+              </button>
+
+              {isSimulating && (
+                <div className="text-xs text-cyan-400 bg-cyan-950/40 p-2 rounded border border-cyan-800/50 flex items-center justify-between animate-fade-in">
+                  <span>Señal propagándose...</span>
+                  <span className="font-bold">Alcance: {simulationReach} neuronas</span>
+                </div>
+              )}
+
+              <button 
+                onClick={isTouring ? onStopTour : onStartTour}
+                className={`w-full py-2 px-4 rounded-md border transition-colors text-sm font-medium ${isTouring ? 'bg-red-500/20 text-red-400 border-red-500/50 hover:bg-red-500/30' : 'bg-transparent text-cyan-400 border-cyan-500 hover:bg-cyan-500/10'}`}
+              >
+                {isTouring ? 'Detener Tour' : '🎯 Tour Guiado'}
+              </button>
+
+              <div className="flex space-x-2">
+                <button 
+                  onClick={onResetView}
+                  className="flex-1 py-2 px-3 bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white rounded-md border border-slate-700 transition-colors text-sm font-medium"
+                >
+                  ↺ Reset Vista
+                </button>
+                <button 
+                  onClick={onToggleXRay}
+                  className={`flex-1 py-2 px-3 rounded-md border transition-colors text-sm font-medium ${isXRay ? 'bg-cyan-500/20 text-cyan-400 border-cyan-500/50' : 'bg-slate-800 text-slate-300 border-slate-700 hover:bg-slate-700'}`}
+                >
+                  🔬 Rayos X
+                </button>
+              </div>
+            </div>
+
             <div className="bg-slate-800/60 rounded-lg p-4 border border-slate-700/50 flex flex-col space-y-3 min-h-[200px]">
               <h4 className="text-sm font-semibold text-cyan-400 flex items-center space-x-2">
                 <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
@@ -189,7 +285,6 @@ export default function HudPanel({
         )}
       </div>
 
-      {/* Footer Statistics */}
       <div className="p-4 bg-slate-950/50 border-t border-slate-800/50 text-xs text-slate-500 flex justify-between">
         <div>
           <span className="block font-medium text-slate-400">Neuronas</span>

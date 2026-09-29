@@ -57,3 +57,80 @@
 canvas {
   outline: none;
 }
+
+/* Electric pulse animation for simulate button */
+@keyframes electricPulse {
+  0%, 100% { box-shadow: 0 0 5px rgba(6, 182, 212, 0.3), 0 0 10px rgba(6, 182, 212, 0.1); }
+  50% { box-shadow: 0 0 15px rgba(6, 182, 212, 0.6), 0 0 30px rgba(6, 182, 212, 0.3); }
+}
+.animate-electric {
+  animation: electricPulse 1.5s ease-in-out infinite;
+}
+
+/* Scan line effect for HUD */
+@keyframes scanLine {
+  0% { transform: translateY(-100%); }
+  100% { transform: translateY(100%); }
+}
+.scan-line::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, rgba(6, 182, 212, 0.3), transparent);
+  animation: scanLine 3s linear infinite;
+  pointer-events: none;
+}
+
+/* Toggle switch */
+.toggle-switch {
+  position: relative;
+  width: 36px;
+  height: 20px;
+  background: rgba(51, 65, 85, 0.8);
+  border-radius: 10px;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+.toggle-switch.active {
+  background: rgba(6, 182, 212, 0.6);
+}
+.toggle-switch::after {
+  content: '';
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 16px;
+  height: 16px;
+  background: white;
+  border-radius: 50%;
+  transition: transform 0.3s;
+}
+.toggle-switch.active::after {
+  transform: translateX(16px);
+}
+
+/* Region pill button */
+.region-pill {
+  transition: all 0.2s;
+}
+.region-pill:hover {
+  background: rgba(6, 182, 212, 0.2);
+  border-color: rgba(6, 182, 212, 0.5);
+}
+
+/* Tour overlay animation */
+@keyframes tourPulse {
+  0%, 100% { opacity: 0.8; transform: scale(1); }
+  50% { opacity: 1; transform: scale(1.02); }
+}
+.tour-overlay {
+  animation: tourPulse 2s ease-in-out infinite;
+}
+
+/* Glow text */
+.text-glow {
+  text-shadow: 0 0 10px rgba(6, 182, 212, 0.5), 0 0 20px rgba(6, 182, 212, 0.2);
+}

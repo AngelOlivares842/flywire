@@ -1,93 +1,158 @@
-import React, { useMemo } from 'react';
+import React, { useRef, useMemo, useEffect } from 'react';
+import { useFrame, useThree } from '@react-three/fiber';
 import { OrbitControls, Stars, Sphere } from '@react-three/drei';
 import { EffectComposer, Bloom, Vignette } from '@react-three/postprocessing';
+import * as THREE from 'three';
+
 import NeuronNode from './NeuronNode.jsx';
 import SynapticLink from './SynapticLink.jsx';
-import { getNeuronById } from '../data/neurons.js';
+import DrosophilaModel from './DrosophilaModel.jsx';
+import ParticleField from './ParticleField.jsx';
+import NeuralPulse from './NeuralPulse.jsx';
 
-/**
- * Complete 3D brain scene composition.
- * @param {Object} props
- * @param {Array} props.neurons - list of neurons
- * @param {Array} props.synapses - list of synapses
- * @param {Object|null} props.selectedNeuron - currently selected neuron
- * @param {Function} props.onSelectNeuron - callback when a neuron is selected
- */
-export default function BrainScene({ neurons, synapses, selectedNeuron, onSelectNeuron }) {
-  // Compute positions lookup for fast synapse rendering
-  const neuronPositions = useMemo(() => {
-    const lookup = {};
+export default function BrainScene({
+  neurons = [],
+  synapses = [],
+  selectedNeuron = null,
+  onSelectNeuron,
+  onFocusNeuron,
+  activatedNeurons = new Set(),
+  signalPulses = [],
+  onPulseComplete,
+  visibleTypes = new Set(),
+  cameraTarget = null,
+  highlightedSynapses = new Set(),
+  isXRay = false
+}) {
+  const controlsRef = useRef();
+  const { camera } = useThree();
+  
+  const introPlayed = useRef(false);
+  const introTime = useRef(0);
+
+  useEffect(() => {
+    if (!introPlayed.current) {
+      camera.position.set(0, 8, 25);
+    }
+  }, [camera]);
+
+  const neuronLookup = useMemo(() => {
+    const map = new Map();
     neurons.forEach(n => {
-      lookup[n.id] = n.position;
+      map.set(n.id, { position: n.position, type: n.type });
     });
-    return lookup;
+    return map;
   }, [neurons]);
+
+  useFrame((state, delta) => {
+    if (!introPlayed.current) {
+      introTime.current += delta;
+      const progress = Math.min(introTime.current / 2.0, 1.0);
+      
+      const ease = 1 - Math.pow(1 - progress, 3);
+      
+      camera.position.lerpVectors(
+        new THREE.Vector3(0, 8, 25),
+        new THREE.Vector3(0, 2, 10),
+        ease
+      );
+      
+      if (progress >= 1.0) {
+        introPlayed.current = true;
+      }
+    }
+
+    if (controlsRef.current) {
+      if (cameraTarget) {
+        controlsRef.current.target.lerp(new THREE.Vector3(...cameraTarget), 0.05);
+      } else {
+        controlsRef.current.target.lerp(new THREE.Vector3(0, 0, 0), 0.02);
+      }
+      controlsRef.current.update();
+    }
+  });
 
   return (
     <>
-      <ambientLight intensity={0.3} />
-      <directionalLight position={[10, 10, 5]} intensity={0.8} />
+      <color attach="background" args={['#020617']} />
+      <ambientLight intensity={0.5} />
+      <pointLight position={[10, 10, 10]} intensity={1} />
       
-      {selectedNeuron && (
-        <pointLight position={selectedNeuron.position} intensity={2} distance={5} color="#ffffff" />
-      )}
+      <Stars radius={50} depth={50} count={5000} factor={4} saturation={0} fade speed={1} />
+      
+      <DrosophilaModel opacity={isXRay ? 0.05 : 1} />
+      <ParticleField count={250} />
 
-      <OrbitControls 
-        enableDamping
-        dampingFactor={0.05}
-        minDistance={3}
-        maxDistance={20}
-        autoRotate={!selectedNeuron}
-        autoRotateSpeed={0.3}
-      />
-
-      <Stars radius={50} depth={50} count={3000} factor={3} fade speed={2} />
-
-      <Sphere args={[1, 32, 32]} scale={[8, 4, 5]} position={[0, 0, 0]}>
-        <meshBasicMaterial color="#3b82f6" wireframe transparent opacity={0.03} />
+      <Sphere args={[5, 32, 32]} visible={false}>
+        <meshBasicMaterial wireframe color="#1e293b" transparent opacity={0.1} />
       </Sphere>
 
-      <group>
-        {neurons.map(neuron => (
-          <NeuronNode 
-            key={neuron.id}
-            neuron={neuron}
-            isSelected={selectedNeuron?.id === neuron.id}
-            onSelect={onSelectNeuron}
+      {synapses.map((synapse, idx) => {
+        const sourceNode = neuronLookup.get(synapse.from);
+        const targetNode = neuronLookup.get(synapse.to);
+        
+        if (!sourceNode || !targetNode) return null;
+        
+        const isVisible = visibleTypes ? (visibleTypes.has(sourceNode.type) && visibleTypes.has(targetNode.type)) : true;
+        const isHighlighted = highlightedSynapses.has(idx);
+        const isActive = false; 
+
+        return (
+          <SynapticLink
+            key={`synapse-${idx}`}
+            start={sourceNode.position}
+            end={targetNode.position}
+            isActive={isActive}
+            isHighlighted={isHighlighted}
+            weight={synapse.weight}
+            visible={isVisible}
           />
-        ))}
+        );
+      })}
 
-        {synapses.map((synapse, index) => {
-          const start = neuronPositions[synapse.from];
-          const end = neuronPositions[synapse.to];
-          
-          if (!start || !end) return null;
+      {neurons.map((neuron) => (
+        <NeuronNode
+          key={`neuron-${neuron.id}`}
+          neuron={neuron}
+          isSelected={selectedNeuron && selectedNeuron.id === neuron.id}
+          isActivated={activatedNeurons.has(neuron.id)}
+          isVisible={visibleTypes ? visibleTypes.has(neuron.type) : true}
+          onSelect={onSelectNeuron}
+          onFocus={onFocusNeuron}
+        />
+      ))}
 
-          const isActive = selectedNeuron && (synapse.from === selectedNeuron.id || synapse.to === selectedNeuron.id);
-
-          return (
-            <SynapticLink 
-              key={`synapse-${index}`}
-              start={start}
-              end={end}
-              isActive={isActive}
-              weight={synapse.weight || 0.5}
-            />
-          );
-        })}
-      </group>
+      {signalPulses.map(pulse => {
+        const fromNode = neuronLookup.get(pulse.fromId);
+        const toNode = neuronLookup.get(pulse.toId);
+        
+        if (!fromNode || !toNode) return null;
+        
+        return (
+          <NeuralPulse
+            key={pulse.id}
+            id={pulse.id}
+            start={fromNode.position}
+            end={toNode.position}
+            duration={pulse.duration || 1}
+            color={pulse.color || '#22d3ee'}
+            onComplete={() => onPulseComplete && onPulseComplete(pulse.id)}
+          />
+        );
+      })}
 
       <EffectComposer disableNormalPass>
-        <Bloom 
-          luminanceThreshold={0.3} 
-          luminanceSmoothing={0.9} 
-          intensity={0.5} 
-        />
-        <Vignette 
-          offset={0.5} 
-          darkness={0.5} 
-        />
+        <Bloom mipmapBlur luminanceThreshold={0.15} luminanceSmoothing={0.8} intensity={2.0} />
+        <Vignette eskil={false} offset={0.1} darkness={1.1} />
       </EffectComposer>
+
+      <OrbitControls
+        ref={controlsRef}
+        enableDamping
+        dampingFactor={0.05}
+        autoRotate={!selectedNeuron && introPlayed.current}
+        autoRotateSpeed={0.5}
+      />
     </>
   );
 }

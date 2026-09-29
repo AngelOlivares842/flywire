@@ -2,7 +2,7 @@
 import { GoogleGenAI } from '@google/genai';
 
 // Para poder procesar POST requests en Astro
-export const prerender = false; 
+// export const prerender = false; 
 
 export const POST = async ({ request }) => {
   try {
