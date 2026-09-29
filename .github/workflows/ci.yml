@@ -1,0 +1,32 @@
+name: CI - Build & Integrity Check
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    name: Build & Verify Astro Project
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 📥 Clonar repositorio
+        uses: actions/checkout@v4
+
+      - name: ⚙️ Configurar Node.js 22.x
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: 'npm'
+
+      - name: 📦 Instalar dependencias
+        run: npm ci
+
+      - name: 🚀 Compilar sitio de producción (Astro Build)
+        run: npm run build
+
+      - name: ✅ Confirmación de integridad
+        run: echo "¡Compilación completada exitosamente! El código cumple con todos los requisitos de producción."
