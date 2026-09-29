@@ -3,6 +3,8 @@ import { Canvas } from '@react-three/fiber';
 import { NEURON_TYPE_COLORS, BRAIN_REGIONS } from '../data/neurons.js';
 import { useAIAnalysis } from '../hooks/useAIAnalysis.js';
 import { useStimulusSimulation } from '../hooks/useStimulusSimulation.js';
+import { ConnectomeEngine } from '../simulation/ConnectomeEngine.js';
+import { FlyPhysics } from '../simulation/FlyPhysics.js';
 import BrainScene from './BrainScene.jsx';
 import HudPanel from './HudPanel.jsx';
 
@@ -25,11 +27,27 @@ export default function NeuroLabViewer() {
   const [cameraTarget, setCameraTarget] = useState(null);
   const tourTimerRef = useRef(null);
 
+  // View Mode: 'microscope' (stationary 3D connectome inspection) | 'arena' (real-time neural flight simulation)
+  const [viewMode, setViewMode] = useState('microscope');
+
   // Body mode: 'silhouette' (clean high-tech outline) | 'translucent' (smoked glass) | 'none' (brain only)
   const [bodyMode, setBodyMode] = useState('silhouette');
-  // Neuron size scale: 0.75 (Fino/Delicado) | 1.0 (Normal) | 1.35 (Prominente)
+  // Neuron size scale: 0.75 (Fino) | 1.0 (Normal) | 1.35 (Prominente)
   const [neuronScale, setNeuronScale] = useState(1.0);
   const [isExploded, setIsExploded] = useState(false);
+
+  // Real-time Flight Telemetry decoded from descending motor neurons
+  const [telemetry, setTelemetry] = useState({
+    speed: '0.0',
+    heading: 0,
+    activeNeurons: 0,
+    wingHz: 120,
+    leftMotor: '0',
+    rightMotor: '0',
+  });
+
+  // Arena stimulus configuration (digitized sensory beacon)
+  const [arenaStimulusType, setArenaStimulusType] = useState('light');
 
   // Local electrical cascade state (from selected neuron)
   const [manualActivated, setManualActivated] = useState(new Set());
@@ -37,7 +55,7 @@ export default function NeuroLabViewer() {
   const [isManualSimulating, setIsManualSimulating] = useState(false);
   const [simulationReach, setSimulationReach] = useState(0);
 
-  // Sensory circuit simulation (odor, light, danger, food)
+  // Sensory circuit simulation (microscope mode)
   const {
     activeStimulus,
     stimulusActivated,
@@ -46,6 +64,39 @@ export default function NeuroLabViewer() {
     activateStimulus,
     clearStimulus,
   } = useStimulusSimulation(neuronsData, synapsesData);
+
+  // Instantiate biophysical ConnectomeEngine and FlyPhysics
+  const connectomeEngine = useMemo(() => {
+    if (!neuronsData.length || !synapsesData.length) return null;
+    return new ConnectomeEngine(neuronsData, synapsesData);
+  }, [neuronsData, synapsesData]);
+
+  const flyPhysics = useMemo(() => {
+    return new FlyPhysics({ x: 45, y: 30, z: 45 });
+  }, []);
+
+  // Update stimulus type in physics engine
+  const handleSetArenaStimulus = useCallback((type) => {
+    setArenaStimulusType(type);
+    if (flyPhysics) {
+      flyPhysics.setStimulus(type, flyPhysics.stimulus.position);
+    }
+  }, [flyPhysics]);
+
+  // Relocate stimulus to random corner of the arena to test chemotaxis / phototaxis
+  const handleRelocateStimulus = useCallback(() => {
+    if (!flyPhysics) return;
+    const corners = [
+      [28, 8, 28],
+      [-28, 8, 28],
+      [28, 8, -28],
+      [-28, 8, -28],
+      [0, 15, 30],
+      [0, -10, -30],
+    ];
+    const pick = corners[Math.floor(Math.random() * corners.length)];
+    flyPhysics.setStimulus(arenaStimulusType, pick);
+  }, [flyPhysics, arenaStimulusType]);
 
   // Combined activated neurons & pulses
   const allActivatedNeurons = useMemo(() => {
@@ -118,7 +169,6 @@ export default function NeuroLabViewer() {
     setSimulationReach(1);
 
     const startId = selectedNeuron.id;
-    // Step 1: Find direct synaptic targets from Princeton connectome
     const directOutgoing = synapsesData.filter(s => s.from === startId);
     const targetIds = directOutgoing.slice(0, 10).map(s => s.to);
 
@@ -131,7 +181,6 @@ export default function NeuroLabViewer() {
     }));
     setManualPulses(pulses1);
 
-    // Step 2: Propagate to second-order targets after 700ms
     setTimeout(() => {
       setManualActivated(prev => new Set([...prev, ...targetIds]));
       setSimulationReach(1 + targetIds.length);
@@ -155,13 +204,11 @@ export default function NeuroLabViewer() {
 
       setManualPulses(secondOrderPulses);
 
-      // Step 3: Activate second order
       setTimeout(() => {
         setManualActivated(prev => new Set([...prev, ...secondOrderTargets]));
         setSimulationReach(1 + targetIds.length + secondOrderTargets.size);
         setManualPulses([]);
 
-        // Reset after 3 seconds
         setTimeout(() => {
           setIsManualSimulating(false);
           setManualActivated(new Set());
@@ -228,7 +275,8 @@ export default function NeuroLabViewer() {
     setManualPulses([]);
     setIsManualSimulating(false);
     setIsExploded(false);
-  }, [handleDeselect, clearStimulus]);
+    if (flyPhysics) flyPhysics.resetPosition();
+  }, [handleDeselect, clearStimulus, flyPhysics]);
 
   const handleCycleBodyMode = useCallback(() => {
     setBodyMode(prev => {
@@ -273,7 +321,7 @@ export default function NeuroLabViewer() {
       <div className="flex-1 h-full flex flex-col items-center justify-center bg-[#020617] text-cyan-400">
         <div className="w-16 h-16 border-4 border-cyan-500/30 border-t-cyan-400 rounded-full animate-spin mb-4"></div>
         <h2 className="text-xl font-bold tracking-widest animate-pulse">Iniciando NeuroLab 3D...</h2>
-        <p className="text-slate-500 text-sm mt-2">Cargando 2,002 neuronas, 5,045 sinapsis reales y 30 morfologías SWC...</p>
+        <p className="text-slate-500 text-sm mt-2">Cargando 2,002 neuronas y conectoma biofísico de FlyWire...</p>
       </div>
     );
   }
@@ -302,6 +350,10 @@ export default function NeuroLabViewer() {
             bodyMode={bodyMode}
             neuronScale={neuronScale}
             isExploded={isExploded}
+            viewMode={viewMode}
+            connectomeEngine={connectomeEngine}
+            flyPhysics={flyPhysics}
+            onTelemetry={setTelemetry}
           />
         </Canvas>
 
@@ -318,7 +370,6 @@ export default function NeuroLabViewer() {
         <div className="absolute bottom-4 left-4 text-xs text-slate-500 space-y-1 pointer-events-none hidden md:block bg-slate-900/70 p-3 rounded-xl backdrop-blur-md border border-slate-800">
           <p><span className="font-bold text-slate-300">Clic</span> - Seleccionar neurona</p>
           <p><span className="font-bold text-slate-300">Doble clic</span> - Enfocar cámara</p>
-          <p><span className="font-bold text-slate-300">ESC</span> - Deseleccionar</p>
           <p><span className="font-bold text-slate-300">Arrastra</span> - Orbitar 360°</p>
           <p><span className="font-bold text-slate-300">Click der.</span> - Desplazar / Pan</p>
         </div>
@@ -366,6 +417,12 @@ export default function NeuroLabViewer() {
         onSimulateSignal={handleSimulateSignal}
         isSimulatingSignal={isManualSimulating}
         simulationReach={isManualSimulating ? simulationReach : stimulusActivated.size}
+        viewMode={viewMode}
+        onToggleViewMode={() => setViewMode(prev => prev === 'microscope' ? 'arena' : 'microscope')}
+        telemetry={telemetry}
+        arenaStimulusType={arenaStimulusType}
+        onSetArenaStimulus={handleSetArenaStimulus}
+        onRelocateStimulus={handleRelocateStimulus}
       />
     </div>
   );

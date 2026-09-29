@@ -36,6 +36,12 @@ export default function HudPanel({
   onSimulateSignal,
   isSimulatingSignal,
   simulationReach = 0,
+  viewMode = 'microscope',
+  onToggleViewMode,
+  telemetry = { speed: '0.0', heading: 0, activeNeurons: 0, wingHz: 120, leftMotor: '0', rightMotor: '0' },
+  arenaStimulusType = 'light',
+  onSetArenaStimulus,
+  onRelocateStimulus,
 }) {
   const [searchQuery, setSearchQuery] = useState('');
   const [activeTab, setActiveTab] = useState('explore'); // 'explore' | 'morphology' | 'stats'
@@ -87,8 +93,33 @@ export default function HudPanel({
         </button>
       </div>
 
+      {/* Primary Mode Banner (Microscopio vs Vuelo Libre en Arena) */}
+      <div className="p-3 bg-slate-950/80 border-b border-slate-800 flex items-center justify-between">
+        <div className="flex items-center space-x-2">
+          <span className="text-sm">{viewMode === 'arena' ? '🚀' : '🔬'}</span>
+          <div>
+            <p className="text-xs font-bold text-white tracking-wide">
+              {viewMode === 'arena' ? 'Cámara de Vuelo (Arena 3D)' : 'Modo Microscopio Fijo'}
+            </p>
+            <p className="text-[10px] text-slate-400">
+              {viewMode === 'arena' ? 'Vuelo guiado por su conectoma real' : 'Inspección celular y SWC'}
+            </p>
+          </div>
+        </div>
+        <button
+          onClick={onToggleViewMode}
+          className={`px-3 py-1.5 rounded-xl border text-xs font-bold transition-all shadow-md ${
+            viewMode === 'arena'
+              ? 'bg-cyan-500/20 text-cyan-300 border-cyan-400/50 hover:bg-cyan-500/30'
+              : 'bg-gradient-to-r from-blue-600 to-cyan-600 text-white border-cyan-400/40 hover:from-blue-500 hover:to-cyan-500 shadow-[0_0_15px_rgba(6,182,212,0.3)]'
+          }`}
+        >
+          {viewMode === 'arena' ? 'Volver a Microscopio' : '🚀 Activar Vuelo'}
+        </button>
+      </div>
+
       {/* Global Search Bar */}
-      <div className="p-3.5 border-b border-slate-800/50 relative">
+      <div className="p-3 border-b border-slate-800/50 relative">
         <div className="relative">
           <input
             type="text"
@@ -107,7 +138,7 @@ export default function HudPanel({
 
         {/* Search Results Dropdown */}
         {searchResults.length > 0 && (
-          <div className="absolute top-full left-3.5 right-3.5 mt-1 bg-slate-900 border border-slate-700/80 rounded-xl shadow-2xl overflow-hidden z-50 divide-y divide-slate-800">
+          <div className="absolute top-full left-3 right-3 mt-1 bg-slate-900 border border-slate-700/80 rounded-xl shadow-2xl overflow-hidden z-50 divide-y divide-slate-800">
             {searchResults.map(result => (
               <button
                 key={result.id}
@@ -130,10 +161,95 @@ export default function HudPanel({
 
       {/* Main Content Area */}
       <div className="flex-1 overflow-y-auto p-4 custom-scrollbar space-y-4">
+        {/* Real-Time Flight Telemetry Dashboard (Active during Arena Mode) */}
+        {viewMode === 'arena' && (
+          <div className="bg-gradient-to-br from-cyan-950/40 to-slate-900/90 rounded-xl p-3.5 border border-cyan-500/40 shadow-lg space-y-3 animate-fade-in">
+            <div className="flex items-center justify-between">
+              <h4 className="text-xs font-bold text-cyan-300 uppercase tracking-wider flex items-center space-x-1.5">
+                <span className="inline-block w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
+                <span>Telemetría Motora en Vivo</span>
+              </h4>
+              <span className="text-[10px] px-2 py-0.5 rounded bg-cyan-950 text-cyan-300 border border-cyan-800 font-mono">
+                Connectome Step 60Hz
+              </span>
+            </div>
+
+            {/* Metrics Grid */}
+            <div className="grid grid-cols-3 gap-2 text-center">
+              <div className="bg-slate-800/80 p-2 rounded-lg border border-slate-700/50">
+                <p className="text-base font-extrabold text-white font-mono">{telemetry.speed}</p>
+                <p className="text-[10px] text-slate-400">Velocidad (mm/s)</p>
+              </div>
+              <div className="bg-slate-800/80 p-2 rounded-lg border border-slate-700/50">
+                <p className="text-base font-extrabold text-cyan-400 font-mono">{Math.round(telemetry.heading)}°</p>
+                <p className="text-[10px] text-slate-400">Rumbo (Yaw)</p>
+              </div>
+              <div className="bg-slate-800/80 p-2 rounded-lg border border-slate-700/50">
+                <p className="text-base font-extrabold text-emerald-400 font-mono">{telemetry.wingHz}</p>
+                <p className="text-[10px] text-slate-400">Aleteo (Hz)</p>
+              </div>
+            </div>
+
+            {/* Bilateral Motor balance (Drives steering torque) */}
+            <div className="space-y-1 text-[11px]">
+              <div className="flex justify-between text-slate-400">
+                <span>Motor Izq: {telemetry.leftMotor}%</span>
+                <span>Diferencial de Giro (Torque)</span>
+                <span>Motor Der: {telemetry.rightMotor}%</span>
+              </div>
+              <div className="flex h-2 rounded-full overflow-hidden bg-slate-800 border border-slate-700">
+                <div className="bg-cyan-500 transition-all duration-100" style={{ width: `${Math.max(5, telemetry.leftMotor)}%` }}></div>
+                <div className="flex-1 bg-slate-700/30"></div>
+                <div className="bg-blue-500 transition-all duration-100" style={{ width: `${Math.max(5, telemetry.rightMotor)}%` }}></div>
+              </div>
+            </div>
+
+            {/* Stimulus Controller inside Arena */}
+            <div className="pt-2 border-t border-slate-800 space-y-2">
+              <p className="text-[11px] font-semibold text-slate-300">Estímulo Físico en la Arena:</p>
+              <div className="grid grid-cols-3 gap-1.5 text-xs">
+                <button
+                  onClick={() => onSetArenaStimulus('light')}
+                  className={`py-1.5 px-2 rounded-lg border font-medium transition-all ${
+                    arenaStimulusType === 'light' ? 'bg-amber-500/20 text-amber-300 border-amber-500/60 font-bold' : 'bg-slate-800 text-slate-400 border-slate-700 hover:text-white'
+                  }`}
+                >
+                  💡 Luz
+                </button>
+                <button
+                  onClick={() => onSetArenaStimulus('odor')}
+                  className={`py-1.5 px-2 rounded-lg border font-medium transition-all ${
+                    arenaStimulusType === 'odor' ? 'bg-purple-500/20 text-purple-300 border-purple-500/60 font-bold' : 'bg-slate-800 text-slate-400 border-slate-700 hover:text-white'
+                  }`}
+                >
+                  🌸 Olor
+                </button>
+                <button
+                  onClick={() => onSetArenaStimulus('none')}
+                  className={`py-1.5 px-2 rounded-lg border font-medium transition-all ${
+                    arenaStimulusType === 'none' ? 'bg-slate-700 text-slate-200 border-slate-500 font-bold' : 'bg-slate-800 text-slate-400 border-slate-700 hover:text-white'
+                  }`}
+                >
+                  🚫 Inercia
+                </button>
+              </div>
+
+              {arenaStimulusType !== 'none' && (
+                <button
+                  onClick={onRelocateStimulus}
+                  className="w-full py-1.5 px-3 rounded-lg border border-cyan-500/40 bg-cyan-950/30 hover:bg-cyan-900/40 text-cyan-300 text-xs font-semibold transition-all flex items-center justify-center space-x-1.5"
+                >
+                  <span>🎯</span>
+                  <span>Mover Estímulo de Posición</span>
+                </button>
+              )}
+            </div>
+          </div>
+        )}
+
         {/* If a neuron is selected, show its deep inspection card */}
         {selectedNeuron ? (
           <div className="animate-fade-in space-y-4">
-            {/* Top selected card */}
             <div
               className="bg-slate-800/80 rounded-xl p-4 shadow-lg border border-slate-700/60 relative overflow-hidden"
               style={{ borderLeftColor: NEURON_TYPE_COLORS[selectedNeuron.type] || '#38bdf8', borderLeftWidth: '5px' }}

@@ -1,4 +1,4 @@
-import React, { useRef, useMemo, useEffect } from 'react';
+import React, { useRef, useMemo, useEffect, useState } from 'react';
 import { useFrame, useThree } from '@react-three/fiber';
 import { OrbitControls, Stars } from '@react-three/drei';
 import { EffectComposer, Bloom, Vignette } from '@react-three/postprocessing';
@@ -10,6 +10,7 @@ import NeuronMorphology from './NeuronMorphology.jsx';
 import SynapseNetwork from './SynapseNetwork.jsx';
 import ParticleField from './ParticleField.jsx';
 import NeuralPulse from './NeuralPulse.jsx';
+import ArenaBox from './ArenaBox.jsx';
 
 export default function BrainScene({
   neurons = [],
@@ -24,16 +25,25 @@ export default function BrainScene({
   activeStimulus = null,
   visibleTypes = new Set(),
   cameraTarget = null,
-  bodyMode = 'silhouette', // 'silhouette' | 'translucent' | 'none'
+  bodyMode = 'silhouette',
   neuronScale = 1.0,
   isExploded = false,
+  viewMode = 'microscope', // 'microscope' | 'arena'
+  connectomeEngine = null,
+  flyPhysics = null,
+  onTelemetry = null,
 }) {
   const controlsRef = useRef();
+  const flyGroupRef = useRef();
   const { camera } = useThree();
 
   const introPlayed = useRef(false);
   const introTime = useRef(0);
   const activeCameraTarget = useRef(null);
+
+  // Flight trajectory trail for Arena Mode
+  const [flyTrail, setFlyTrail] = useState([]);
+  const trailInterval = useRef(0);
 
   // Set of neuron IDs that have full SWC morphology data
   const morphologyIds = useMemo(() => {
@@ -55,14 +65,78 @@ export default function BrainScene({
     }
   }, [cameraTarget]);
 
+  // Adjust camera distance when switching between Microscope and Arena mode
+  useEffect(() => {
+    if (controlsRef.current) {
+      if (viewMode === 'arena') {
+        camera.position.set(0, 55, 115);
+        controlsRef.current.target.set(0, 0, 0);
+      } else {
+        camera.position.set(0, 10, 46);
+        controlsRef.current.target.set(0, 0, 0);
+      }
+      controlsRef.current.update();
+    }
+  }, [viewMode, camera]);
+
   useFrame((state, delta) => {
-    // Cinematic intro fly-in tailored for 54-unit real connectome
+    const dt = Math.min(0.04, delta);
+
+    // ── ARENA FLIGHT SIMULATION LOOP (Driven by Real Connectome) ──
+    if (viewMode === 'arena' && connectomeEngine && flyPhysics) {
+      // 1. Compute bilateral photon flux / odor reaching the eyes & antennae
+      const sensory = flyPhysics.computeSensoryFlux();
+
+      // 2. Inject sensory currents into real FlyWire sensory neurons
+      connectomeEngine.injectSensoryInputs(sensory);
+
+      // 3. Integrate 2,002 neurons over 5,045 real synapses (biophysical step)
+      const motor = connectomeEngine.step(dt);
+
+      // 4. Kinematics: FlyPhysics updates position and heading based on motor outputs
+      flyPhysics.update(motor, dt);
+
+      // 5. Update 3D Fly Entity Transform
+      if (flyGroupRef.current) {
+        flyGroupRef.current.position.set(...flyPhysics.position);
+        flyGroupRef.current.rotation.set(flyPhysics.pitch, flyPhysics.yaw, flyPhysics.roll);
+      }
+
+      // Record trajectory trail every 6 frames
+      trailInterval.current++;
+      if (trailInterval.current % 5 === 0) {
+        setFlyTrail(prev => {
+          const next = [...prev, [...flyPhysics.position]];
+          return next.slice(-60); // Keep last 60 trajectory points
+        });
+      }
+
+      // Stream real-time telemetry to HUD
+      if (onTelemetry) {
+        onTelemetry({
+          speed: flyPhysics.speed.toFixed(1),
+          heading: ((flyPhysics.yaw * 180 / Math.PI) % 360 + 360) % 360,
+          activeNeurons: motor.activeNeuronCount,
+          wingHz: Math.round(motor.wingFrequency),
+          leftMotor: (motor.avgLeftMotor * 100).toFixed(0),
+          rightMotor: (motor.avgRightMotor * 100).toFixed(0),
+        });
+      }
+    } else {
+      // Reset position in microscope mode
+      if (flyGroupRef.current) {
+        flyGroupRef.current.position.set(0, 0, 0);
+        flyGroupRef.current.rotation.set(0, 0, 0);
+      }
+    }
+
+    // Cinematic intro fly-in for initial load
     if (!introPlayed.current) {
       introTime.current += delta;
       const progress = Math.min(introTime.current / 2.0, 1.0);
       const ease = 1 - Math.pow(1 - progress, 3);
       camera.position.lerpVectors(
-        new THREE.Vector3(0, 20, 75),
+        new THREE.Vector3(0, 25, 80),
         new THREE.Vector3(0, 10, 46),
         ease
       );
@@ -71,7 +145,7 @@ export default function BrainScene({
       }
     }
 
-    // Smoothly focus on camera target without fighting manual OrbitControls
+    // Camera target smooth panning
     if (controlsRef.current && activeCameraTarget.current) {
       controlsRef.current.target.lerp(activeCameraTarget.current, 0.08);
       controlsRef.current.update();
@@ -82,75 +156,89 @@ export default function BrainScene({
     }
   });
 
+  // Scale fly entity to fit naturally inside the arena box during flight mode
+  const flyEntityScale = viewMode === 'arena' ? [0.28, 0.28, 0.28] : [1, 1, 1];
+
   return (
     <>
       <color attach="background" args={['#020617']} />
-      <ambientLight intensity={0.6} />
-      <pointLight position={[20, 30, 30]} intensity={1.2} />
-      <pointLight position={[-20, -20, -20]} intensity={0.6} color="#0284c7" />
+      <ambientLight intensity={0.65} />
+      <pointLight position={[30, 40, 40]} intensity={1.2} />
+      <pointLight position={[-30, -20, -30]} intensity={0.5} color="#0284c7" />
 
-      <Stars radius={90} depth={90} count={3500} factor={3} saturation={0} fade speed={0.6} />
+      <Stars radius={140} depth={100} count={3500} factor={3} saturation={0} fade speed={0.5} />
 
-      {/* Elegant Drosophila Anatomical Silhouette / Frame */}
-      <RealisticFly
-        activityLevel={activatedNeurons.size}
-        stimulus={activeStimulus}
-        bodyMode={bodyMode}
+      {/* ── 3D Bounded Arena Box (Active in Arena Flight Mode) ── */}
+      <ArenaBox
+        bounds={flyPhysics ? flyPhysics.bounds : { x: 80, y: 45, z: 80 }}
+        stimulus={flyPhysics ? flyPhysics.stimulus : null}
+        isVisible={viewMode === 'arena'}
+        flyTrail={flyTrail}
       />
 
-      {/* Real Synaptic Connectome Network (5,045 Princeton connections, ZERO fake threads) */}
-      <SynapseNetwork
-        synapses={synapses}
-        neurons={neurons}
-        selectedNeuron={selectedNeuron}
-        visibleTypes={visibleTypes}
-        isExploded={isExploded}
-      />
-
-      {/* Real Neurons GPU Instanced (2,002 FlyWire somas with spatial breathing room) */}
-      <NeuronCloud
-        neurons={neurons}
-        morphologyIds={morphologyIds}
-        selectedNeuronId={selectedNeuron?.id}
-        activatedNeurons={activatedNeurons}
-        visibleTypes={visibleTypes}
-        isExploded={isExploded}
-        neuronScale={neuronScale}
-        onSelectNeuron={onSelectNeuron}
-        onFocusNeuron={onFocusNeuron}
-      />
-
-      {/* Real SWC 3D Morphology (Electron-microscopy reconstructed dendritic arbor) */}
-      {selectedNeuron && morphologies[selectedNeuron.id] && (
-        <NeuronMorphology
-          morphologyData={morphologies[selectedNeuron.id]}
-          color="#38bdf8"
+      {/* ── Fly Entity (Houses both the anatomical body and the real brain) ── */}
+      <group ref={flyGroupRef} scale={flyEntityScale}>
+        {/* Anatomical Fly Silhouette / Framework */}
+        <RealisticFly
+          activityLevel={activatedNeurons.size}
+          stimulus={activeStimulus}
+          bodyMode={bodyMode}
         />
-      )}
 
-      {/* Subtle ambient bio-luminescent dust */}
-      <ParticleField count={180} />
+        {/* Real Synaptic Connectome Network (5,045 Princeton synapses) */}
+        <SynapseNetwork
+          synapses={synapses}
+          neurons={neurons}
+          selectedNeuron={selectedNeuron}
+          visibleTypes={visibleTypes}
+          isExploded={isExploded}
+        />
 
-      {/* Synaptic Pulses (Stimulus & electric cascades travelling along real connections) */}
-      {signalPulses.map(pulse => {
-        const fromNode = neuronLookup.get(pulse.fromId);
-        const toNode = neuronLookup.get(pulse.toId);
-        if (!fromNode || !toNode) return null;
+        {/* Real Neurons GPU Instanced (2,002 FlyWire somas with spatial breathing room) */}
+        <NeuronCloud
+          neurons={neurons}
+          morphologyIds={morphologyIds}
+          selectedNeuronId={selectedNeuron?.id}
+          activatedNeurons={activatedNeurons}
+          visibleTypes={visibleTypes}
+          isExploded={isExploded}
+          neuronScale={neuronScale}
+          onSelectNeuron={onSelectNeuron}
+          onFocusNeuron={onFocusNeuron}
+        />
 
-        return (
-          <NeuralPulse
-            key={pulse.id}
-            id={pulse.id}
-            start={fromNode.position}
-            end={toNode.position}
-            duration={pulse.duration || 0.8}
-            color={pulse.color || '#22d3ee'}
-            onComplete={() => onPulseComplete?.(pulse.id)}
+        {/* Real SWC 3D Morphology (Tree arborization rendered for selected neuron) */}
+        {selectedNeuron && morphologies[selectedNeuron.id] && (
+          <NeuronMorphology
+            morphologyData={morphologies[selectedNeuron.id]}
+            color="#38bdf8"
           />
-        );
-      })}
+        )}
 
-      {/* Crisp Sci-Fi Post-Processing (Bloom + Vignette) */}
+        {/* Synaptic Pulses (Stimulus / electric cascades along real synapses) */}
+        {signalPulses.map(pulse => {
+          const fromNode = neuronLookup.get(pulse.fromId);
+          const toNode = neuronLookup.get(pulse.toId);
+          if (!fromNode || !toNode) return null;
+
+          return (
+            <NeuralPulse
+              key={pulse.id}
+              id={pulse.id}
+              start={fromNode.position}
+              end={toNode.position}
+              duration={pulse.duration || 0.8}
+              color={pulse.color || '#22d3ee'}
+              onComplete={() => onPulseComplete?.(pulse.id)}
+            />
+          );
+        })}
+      </group>
+
+      {/* Ambient neural dust */}
+      <ParticleField count={150} />
+
+      {/* Post-Processing */}
       <EffectComposer disableNormalPass>
         <Bloom
           mipmapBlur
@@ -166,7 +254,7 @@ export default function BrainScene({
         enableDamping
         dampingFactor={0.06}
         minDistance={5}
-        maxDistance={120}
+        maxDistance={viewMode === 'arena' ? 260 : 120}
         autoRotate={false}
       />
     </>
