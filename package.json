@@ -1,7 +1,17 @@
 {
-  "name": "flywire",
+  "name": "@angelolivares842/flywire",
   "type": "module",
   "version": "0.0.1",
+  "description": "Simulador biofísico y explorador interactivo 3D del conectoma de Drosophila melanogaster",
+  "author": "Angel Olivares <angel.olivares.rosas2@gmail.com>",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/AngelOlivares842/flywire.git"
+  },
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com"
+  },
   "engines": {
     "node": ">=22.12.0"
   },
@@ -11,6 +21,13 @@
     "preview": "astro preview",
     "astro": "astro"
   },
+  "files": [
+    "dist",
+    "public/data",
+    "src",
+    "README.md",
+    "LICENSE"
+  ],
   "dependencies": {
     "@astrojs/node": "^11.1.6",
     "@astrojs/react": "^7.0.0",
