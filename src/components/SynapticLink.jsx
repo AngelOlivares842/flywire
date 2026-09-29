@@ -1,46 +1,85 @@
 import React, { useRef, useMemo } from 'react';
 import { useFrame } from '@react-three/fiber';
-import { QuadraticBezierLine } from '@react-three/drei';
 import * as THREE from 'three';
 
+const getRegionOffset = (region) => {
+  switch (region) {
+    case 'Lóbulo Óptico Izquierdo': return new THREE.Vector3(-15, 0, 0);
+    case 'Lóbulo Óptico Derecho': return new THREE.Vector3(15, 0, 0);
+    case 'Lóbulo Antenal': return new THREE.Vector3(0, -5, 10);
+    case 'Cuerpo Central': return new THREE.Vector3(0, 10, 0);
+    case 'Cuerpo Pedunculado': return new THREE.Vector3(0, 12, -8);
+    case 'Protocerebro': return new THREE.Vector3(0, 8, -12);
+    case 'Ganglio Subesofágico': return new THREE.Vector3(0, -10, 0);
+    default: return new THREE.Vector3(0, 0, 0);
+  }
+};
+
 export default function SynapticLink({ 
-  start, 
-  end, 
+  sourceNode, 
+  targetNode, 
   isActive, 
   isHighlighted, 
   weight = 1, 
-  visible = true 
+  visible = true,
+  isExploded = false
 }) {
   const lineRef = useRef();
+  const materialRef = useRef();
   
-  const { vStart, vEnd, vMid, distance } = useMemo(() => {
-    const s = new THREE.Vector3(start[0], start[1], start[2]);
-    const e = new THREE.Vector3(end[0], end[1], end[2]);
-    
-    // Calculate a control point to create a biological, curved web look
-    const m = s.clone().lerp(e, 0.5);
-    const dist = s.distanceTo(e);
-    
-    // Arch the curve outward relative to the distance
-    m.y += dist * 0.25;
-    m.x += (Math.random() - 0.5) * dist * 0.2;
-    m.z += (Math.random() - 0.5) * dist * 0.2;
-    
-    return { vStart: s, vEnd: e, vMid: m, distance: dist };
-  }, [start, end]);
+  const baseStart = useMemo(() => new THREE.Vector3(...sourceNode.position), [sourceNode]);
+  const baseEnd = useMemo(() => new THREE.Vector3(...targetNode.position), [targetNode]);
+  
+  const offsetStart = useMemo(() => getRegionOffset(sourceNode.region), [sourceNode.region]);
+  const offsetEnd = useMemo(() => getRegionOffset(targetNode.region), [targetNode.region]);
+
+  const currentStart = useRef(baseStart.clone());
+  const currentEnd = useRef(baseEnd.clone());
+
+  // Create a stable buffer geometry with 20 points for a curve
+  const geometry = useMemo(() => {
+    const geo = new THREE.BufferGeometry();
+    const positions = new Float32Array(20 * 3);
+    geo.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+    return geo;
+  }, []);
 
   useFrame((state, delta) => {
     if (!lineRef.current) return;
     
-    if (isActive || isHighlighted) {
-      if (lineRef.current.material.dashOffset !== undefined) {
-        // Fast electric flow when active
-        lineRef.current.material.dashOffset -= delta * (isActive ? 3.0 : 1.0);
-      }
-    } else {
-      // Subtle idle flow
-      if (lineRef.current.material.dashOffset !== undefined) {
-        lineRef.current.material.dashOffset -= delta * 0.1;
+    // Animate positions for explode view
+    const targetS = isExploded ? baseStart.clone().add(offsetStart) : baseStart;
+    const targetE = isExploded ? baseEnd.clone().add(offsetEnd) : baseEnd;
+    
+    currentStart.current.lerp(targetS, 0.05);
+    currentEnd.current.lerp(targetE, 0.05);
+
+    // Build curve
+    const mid = currentStart.current.clone().lerp(currentEnd.current, 0.5);
+    const dist = currentStart.current.distanceTo(currentEnd.current);
+    mid.y += dist * 0.25;
+    
+    const curve = new THREE.QuadraticBezierCurve3(
+      currentStart.current,
+      mid,
+      currentEnd.current
+    );
+    
+    const points = curve.getPoints(19);
+    const positions = lineRef.current.geometry.attributes.position.array;
+    for (let i = 0; i < 20; i++) {
+      positions[i * 3] = points[i].x;
+      positions[i * 3 + 1] = points[i].y;
+      positions[i * 3 + 2] = points[i].z;
+    }
+    lineRef.current.geometry.attributes.position.needsUpdate = true;
+    
+    // Animate dash
+    if (materialRef.current) {
+      if (isActive || isHighlighted) {
+        materialRef.current.dashOffset -= delta * (isActive ? 4.0 : 1.5);
+      } else {
+        materialRef.current.dashOffset -= delta * 0.2;
       }
     }
   });
@@ -48,26 +87,21 @@ export default function SynapticLink({
   if (!visible) return null;
 
   const color = isHighlighted ? '#22d3ee' : (isActive ? '#f472b6' : '#3b82f6');
-  const lineWidth = isHighlighted ? 4 : (isActive ? 3 : Math.max(1.2, weight * 2.0));
-  const opacity = isHighlighted ? 1 : (isActive ? 0.9 : 0.25);
+  const opacity = isHighlighted ? 1 : (isActive ? 0.9 : 0.15);
 
   return (
-    <QuadraticBezierLine
-      ref={lineRef}
-      start={vStart}
-      end={vEnd}
-      mid={vMid}
-      color={color}
-      lineWidth={lineWidth}
-      transparent
-      opacity={opacity}
-      dashed={true}
-      dashScale={distance * 1.5}
-      dashSize={0.5}
-      dashOffset={0}
-      toneMapped={false}
-      blending={THREE.AdditiveBlending}
-      depthWrite={false}
-    />
+    <line ref={lineRef} geometry={geometry}>
+      <lineDashedMaterial
+        ref={materialRef}
+        color={color}
+        linewidth={1}
+        transparent
+        opacity={opacity}
+        dashSize={0.5}
+        gapSize={0.5}
+        blending={THREE.AdditiveBlending}
+        depthWrite={false}
+      />
+    </line>
   );
 }

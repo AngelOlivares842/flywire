@@ -1,14 +1,28 @@
-import React, { useRef, useState } from 'react';
+import React, { useRef, useState, useMemo } from 'react';
 import { useFrame } from '@react-three/fiber';
 import { Html } from '@react-three/drei';
 import * as THREE from 'three';
 import { NEURON_TYPE_COLORS } from '../data/neurons.js';
+
+const getRegionOffset = (region) => {
+  switch (region) {
+    case 'Lóbulo Óptico Izquierdo': return new THREE.Vector3(-15, 0, 0);
+    case 'Lóbulo Óptico Derecho': return new THREE.Vector3(15, 0, 0);
+    case 'Lóbulo Antenal': return new THREE.Vector3(0, -5, 10);
+    case 'Cuerpo Central': return new THREE.Vector3(0, 10, 0);
+    case 'Cuerpo Pedunculado': return new THREE.Vector3(0, 12, -8);
+    case 'Protocerebro': return new THREE.Vector3(0, 8, -12);
+    case 'Ganglio Subesofágico': return new THREE.Vector3(0, -10, 0);
+    default: return new THREE.Vector3(0, 0, 0);
+  }
+};
 
 export default function NeuronNode({ 
   neuron, 
   isSelected, 
   isActivated,
   isVisible = true,
+  isExploded = false,
   onSelect,
   onFocus
 }) {
@@ -22,9 +36,12 @@ export default function NeuronNode({
   const activationTime = useRef(0);
   const wasActivated = useRef(false);
 
-  // Initialization
-  const baseColor = new THREE.Color(NEURON_TYPE_COLORS[neuron.type] || '#ffffff');
-  const highlightColor = new THREE.Color('#ffffff');
+  const baseColor = useMemo(() => new THREE.Color(NEURON_TYPE_COLORS[neuron.type] || '#ffffff'), [neuron.type]);
+  const highlightColor = useMemo(() => new THREE.Color('#ffffff'), []);
+  
+  const basePos = useMemo(() => new THREE.Vector3(...neuron.position), [neuron]);
+  const regionOffset = useMemo(() => getRegionOffset(neuron.region), [neuron.region]);
+  const currentPos = useRef(basePos.clone());
 
   if (isActivated && !wasActivated.current) {
     activationTime.current = performance.now() / 1000;
@@ -34,26 +51,28 @@ export default function NeuronNode({
   }
 
   useFrame((state) => {
-    if (!meshRef.current || !materialRef.current) return;
+    if (!groupRef.current || !meshRef.current || !materialRef.current) return;
 
     const t = state.clock.getElapsedTime();
     const timeSinceActivation = t - activationTime.current;
 
+    // Exploded View Position Interpolation
+    const targetPos = isExploded ? basePos.clone().add(regionOffset) : basePos;
+    currentPos.current.lerp(targetPos, 0.05);
+    
+    // Apply position + organic float
+    const floatY = Math.sin(t * 1.5 + parseInt(neuron.id.slice(-4))) * 0.05;
+    groupRef.current.position.copy(currentPos.current);
+    groupRef.current.position.y += floatY;
+
+    // Scale & Glow Effects
     let currentScale = 1;
     let emissiveIntensity = 0.8;
-
-    // Organic floating
-    if (groupRef.current) {
-      groupRef.current.position.y = neuron.position[1] + Math.sin(t * 1.5 + parseInt(neuron.id.slice(-4))) * 0.05;
-    }
-
-    // Base pulsing
     const pulse = Math.sin(t * 3 + parseInt(neuron.id.slice(-4))) * 0.1;
 
     if (isActivated && timeSinceActivation < 1.0) {
       const progress = timeSinceActivation / 1.0; 
       emissiveIntensity = THREE.MathUtils.lerp(2.5, 0.8, progress);
-      
       if (progress < 0.2) {
         currentScale = THREE.MathUtils.lerp(1, 1.8, progress / 0.2);
       } else {
@@ -90,7 +109,7 @@ export default function NeuronNode({
   if (!isVisible) return null;
 
   return (
-    <group position={[neuron.position[0], neuron.position[1], neuron.position[2]]} ref={groupRef}>
+    <group ref={groupRef}>
       {/* Halo Effect */}
       <mesh ref={haloRef}>
         <sphereGeometry args={[0.35, 32, 32]} />

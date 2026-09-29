@@ -1,0 +1,3846 @@
+{
+  "neurons": [
+    {
+      "id": "720575940617000000",
+      "type": "Moduladora",
+      "region": "Lóbulo Antenal",
+      "neurotransmitter": "Serotonina",
+      "position": [
+        -1.4185703902833957,
+        0.7444486184232116,
+        6.7303344482855225
+      ]
+    },
+    {
+      "id": "720575940617000001",
+      "type": "Proyección",
+      "region": "Cuerpo Central",
+      "neurotransmitter": "Octopamina",
+      "position": [
+        0.7223725313602176,
+        3.5767227714238117,
+        -1.2121108988211855
+      ]
+    },
+    {
+      "id": "720575940617000002",
+      "type": "Proyección",
+      "region": "Lóbulo Antenal",
+      "neurotransmitter": "Glutamato",
+      "position": [
+        1.3879685126944807,
+        1.062667373664769,
+        8.660797036596012
+      ]
+    },
+    {
+      "id": "720575940617000003",
+      "type": "Moduladora",
+      "region": "Lóbulo Óptico Izquierdo",
+      "neurotransmitter": "Glutamato",
+      "position": [
+        -7.690952158413634,
+        1.8908228719366815,
+        -1.25235484067787
+      ]
+    },
+    {
+      "id": "720575940617000004",
+      "type": "Sensorial",
+      "region": "Lóbulo Antenal",
+      "neurotransmitter": "Acetilcolina (ACh)",
+      "position": [
+        1.073965002413757,
+        -0.0007644696098204395,
+        6.25743036456618
+      ]
+    },
+    {
+      "id": "720575940617000005",
+      "type": "Motora",
+      "region": "Lóbulo Antenal",
+      "neurotransmitter": "Octopamina",
+      "position": [
+        -0.7070486595325763,
+        -1.6027375941198905,
+        8.757510571448986
+      ]
+    },
+    {
+      "id": "720575940617000006",
+      "type": "Proyección",
+      "region": "Cuerpo Pedunculado",
+      "neurotransmitter": "Octopamina",
+      "position": [
+        -1.5542044436800273,
+        5.730081380936809,
+        -5.012784835765312
+      ]
+    },
+    {
+      "id": "720575940617000007",
+      "type": "Motora",
+      "region": "Lóbulo Óptico Derecho",
+      "neurotransmitter": "Glutamato",
+      "position": [
+        10.70762036620372,
+        -1.7100051909579814,
+        -2.420366276034974
+      ]
+    },
+    {
+      "id": "720575940617000008",
+      "type": "Proyección",
+      "region": "Protocerebro",
+      "neurotransmitter": "Serotonina",
+      "position": [
+        -0.1687333387034464,
+        6.399115784865626,
+        -2.48813056038022
+      ]
+    },
+    {
+      "id": "720575940617000009",
+      "type": "Interneurona",
+      "region": "Lóbulo Óptico Derecho",
+      "neurotransmitter": "Octopamina",
+      "position": [
+        11.448916997253118,
+        5.002758337608138,
+        -2.4939702679974647
+      ]
+    },
+    {
+      "id": "720575940617000010",
+      "type": "Moduladora",
+      "region": "Ganglio Subesofágico",
+      "neurotransmitter": "Serotonina",
+      "position": [
+        -0.6138038248027249,
+        -4.006508738829052,
+        2.8909790627521676
+      ]
+    },
+    {
+      "id": "720575940617000011",
+      "type": "Interneurona",
+      "region": "Lóbulo Óptico Izquierdo",
+      "neurotransmitter": "GABA",
+      "position": [
+        -9.941552399427676,
+        3.741916624220972,
+        -2.284863230471264
+      ]
+    },
+    {
+      "id": "720575940617000012",
+      "type": "Motora",
+      "region": "Lóbulo Antenal",
+      "neurotransmitter": "GABA",
+      "position": [
+        -0.39923830670430877,
+        -0.215469646268286,
+        5.742947263623251
+      ]
+    },
+    {
+      "id": "720575940617000013",
+      "type": "Sensorial",
+      "region": "Protocerebro",
+      "neurotransmitter": "Serotonina",
+      "position": [
+        0.8201459790530083,
+        7.472508898528129,
+        -2.3777533467349015
+      ]
+    },
+    {
+      "id": "720575940617000014",
+      "type": "Moduladora",
+      "region": "Cuerpo Pedunculado",
+      "neurotransmitter": "GABA",
+      "position": [
+        1.0866404138449652,
+        6.736768417729583,
+        -3.604947677916233
+      ]
+    },
+    {
+      "id": "720575940617000015",
+      "type": "Interneurona",
+      "region": "Lóbulo Óptico Derecho",
+      "neurotransmitter": "GABA",
+      "position": [
+        8.518822301953074,
+        4.832773992550672,
+        -1.0319568700091533
+      ]
+    },
+    {
+      "id": "720575940617000016",
+      "type": "Moduladora",
+      "region": "Cuerpo Pedunculado",
+      "neurotransmitter": "Serotonina",
+      "position": [
+        2.0785498955110655,
+        6.168402898654621,
+        -4.109912369383645
+      ]
+    },
+    {
+      "id": "720575940617000017",
+      "type": "Motora",
+      "region": "Protocerebro",
+      "neurotransmitter": "Acetilcolina (ACh)",
+      "position": [
+        -2.8246858365933463,
+        6.774683382432889,
+        -1.9621002623735728
+      ]
+    },
+    {
+      "id": "720575940617000018",
+      "type": "Motora",
+      "region": "Lóbulo Antenal",
+      "neurotransmitter": "Glutamato",
+      "position": [
+        -0.33990652687843664,
+        0.7479580929381792,
+        7.368577200522116
+      ]
+    },
+    {
+      "id": "720575940617000019",
+      "type": "Interneurona",
+      "region": "Ganglio Subesofágico",
+      "neurotransmitter": "Glutamato",
+      "position": [
+        -0.47023741670239366,
+        -4.830151956716041,
+        2.3812131811550024
+      ]
+    },
+    {
+      "id": "720575940617000020",
+      "type": "Motora",
+      "region": "Protocerebro",
+      "neurotransmitter": "Acetilcolina (ACh)",
+      "position": [
+        -2.095594629435811,
+        5.942019133512894,
+        0.49560034057342284
+      ]
+    },
+    {
+      "id": "720575940617000021",
+      "type": "Sensorial",
+      "region": "Protocerebro",
+      "neurotransmitter": "Glutamato",
+      "position": [
+        -2.3726839624062106,
+        8.856006030452445,
+        -2.388291009210639
+      ]
+    },
+    {
+      "id": "720575940617000022",
+      "type": "Interneurona",
+      "region": "Protocerebro",
+      "neurotransmitter": "Acetilcolina (ACh)",
+      "position": [
+        0.38691672646147096,
+        8.731517527170547,
+        -1.8429560412145451
+      ]
+    },
+    {
+      "id": "720575940617000023",
+      "type": "Motora",
+      "region": "Protocerebro",
+      "neurotransmitter": "Serotonina",
+      "position": [
+        -0.8608120399737035,
+        5.49975836669202,
+        -3.1054962673981756
+      ]
+    },
+    {
+      "id": "720575940617000024",
+      "type": "Sensorial",
+      "region": "Ganglio Subesofágico",
+      "neurotransmitter": "Dopamina",
+      "position": [
+        -0.6640746597066532,
+        -2.489126010859265,
+        2.044171597541704
+      ]
+    },
+    {
+      "id": "720575940617000025",
+      "type": "Proyección",
+      "region": "Cuerpo Central",
+      "neurotransmitter": "Glutamato",
+      "position": [
+        1.5305882774521373,
+        3.258920399271082,
+        1.6743869960738758
+      ]
+    },
+    {
+      "id": "720575940617000026",
+      "type": "Moduladora",
+      "region": "Ganglio Subesofágico",
+      "neurotransmitter": "Acetilcolina (ACh)",
+      "position": [
+        0.30667616768232153,
+        -2.263489889246303,
+        2.307424135017244
+      ]
+    },
+    {
+      "id": "720575940617000027",
+      "type": "Interneurona",
+      "region": "Lóbulo Óptico Derecho",
+      "neurotransmitter": "Glutamato",
+      "position": [
+        10.11976253911758,
+        -0.4318991843133639,
+        -1.0037460194762273
+      ]
+    },
+    {
+      "id": "720575940617000028",
+      "type": "Proyección",
+      "region": "Lóbulo Óptico Derecho",
+      "neurotransmitter": "GABA",
+      "position": [
+        9.418395926056816,
+        0.05477334624055095,
+        2.2668334733351525
+      ]
+    },
+    {
+      "id": "720575940617000029",
+      "type": "Sensorial",
+      "region": "Cuerpo Central",
+      "neurotransmitter": "Dopamina",
+      "position": [
+        0.44797657141811315,
+        2.14018010467846,
+        -1.1166651034052026
+      ]
+    },
+    {
+      "id": "720575940617000030",
+      "type": "Sensorial",
+      "region": "Lóbulo Antenal",
+      "neurotransmitter": "GABA",
+      "position": [
+        -1.1044330567620175,
+        0.30951743448519314,
+        5.702541031444782
+      ]
+    },
+    {
+      "id": "720575940617000031",
+      "type": "Sensorial",
+      "region": "Cuerpo Pedunculado",
+      "neurotransmitter": "Serotonina",
+      "position": [
+        -1.5534703106426722,
+        4.6994051701322,
+        -2.377607195944377
+      ]
+    },
+    {
+      "id": "720575940617000032",
+      "type": "Motora",
+      "region": "Lóbulo Óptico Derecho",
+      "neurotransmitter": "Acetilcolina (ACh)",
+      "position": [
+        9.304167064267093,
+        0.8954534211473532,
+        0.17452641702592847
+      ]
+    },
+    {
+      "id": "720575940617000033",
+      "type": "Sensorial",
+      "region": "Lóbulo Óptico Derecho",
+      "neurotransmitter": "Glutamato",
+      "position": [
+        9.435308322168323,
+        1.1396680381644206,
+        0.8980012212921528
+      ]
+    },
+    {
+      "id": "720575940617000034",
+      "type": "Interneurona",
+      "region": "Protocerebro",
+      "neurotransmitter": "Acetilcolina (ACh)",
+      "position": [
+        -2.267876592411557,
+        6.010642081937389,
+        -3.3622962889740227
+      ]
+    },
+    {
+      "id": "720575940617000035",
+      "type": "Sensorial",
+      "region": "Lóbulo Antenal",
+      "neurotransmitter": "Dopamina",
+      "position": [
+        -1.6075668589713343,
+        0.1847428698817639,
+        7.544444602823579
+      ]
+    },
+    {
+      "id": "720575940617000036",
+      "type": "Motora",
+      "region": "Lóbulo Óptico Derecho",
+      "neurotransmitter": "Serotonina",
+      "position": [
+        8.640148549770704,
+        4.714170971363243,
+        0.06203823626133085
+      ]
+    },
+    {
+      "id": "720575940617000037",
+      "type": "Proyección",
+      "region": "Lóbulo Óptico Derecho",
+      "neurotransmitter": "Acetilcolina (ACh)",
+      "position": [
+        11.36854615087143,
+        0.1711538101153046,
+        -2.5630852323462636
+      ]
+    },
+    {
+      "id": "720575940617000038",
+      "type": "Moduladora",
+      "region": "Ganglio Subesofágico",
+      "neurotransmitter": "Glutamato",
+      "position": [
+        0.5157587809621289,
+        -4.5446894893319385,
+        2.0999139052960833
+      ]
+    },
+    {
+      "id": "720575940617000039",
+      "type": "Motora",
+      "region": "Ganglio Subesofágico",
+      "neurotransmitter": "Dopamina",
+      "position": [
+        -1.0894402645674097,
+        -3.4341462793491377,
+        2.1605631903602465
+      ]
+    },
+    {
+      "id": "720575940617000040",
+      "type": "Proyección",
+      "region": "Lóbulo Óptico Derecho",
+      "neurotransmitter": "GABA",
+      "position": [
+        7.213575290950455,
+        3.0678023261077674,
+        2.064798878249554
+      ]
+    },
+    {
+      "id": "720575940617000041",
+      "type": "Proyección",
+      "region": "Lóbulo Antenal",
+      "neurotransmitter": "Serotonina",
+      "position": [
+        -0.3393826945106226,
+        1.5380010219530744,
+        8.412433731990545
+      ]
+    },
+    {
+      "id": "720575940617000042",
+      "type": "Sensorial",
+      "region": "Protocerebro",
+      "neurotransmitter": "Octopamina",
+      "position": [
+        0.7951668196884282,
+        8.801595175005659,
+        -0.43196983484468837
+      ]
+    },
+    {
+      "id": "720575940617000043",
+      "type": "Interneurona",
+      "region": "Lóbulo Óptico Derecho",
+      "neurotransmitter": "Acetilcolina (ACh)",
+      "position": [
+        10.29756271107721,
+        0.0032855950632286303,
+        -1.641988398858287
+      ]
+    },
+    {
+      "id": "720575940617000044",
+      "type": "Motora",
+      "region": "Lóbulo Óptico Derecho",
+      "neurotransmitter": "Glutamato",
+      "position": [
+        6.336540065717181,
+        0.5969740351004198,
+        -2.313123143412805
+      ]
+    },
+    {
+      "id": "720575940617000045",
+      "type": "Proyección",
+      "region": "Lóbulo Óptico Derecho",
+      "neurotransmitter": "Octopamina",
+      "position": [
+        10.020546403820306,
+        3.903502160816316,
+        -0.09041576104936393
+      ]
+    },
+    {
+      "id": "720575940617000046",
+      "type": "Moduladora",
+      "region": "Lóbulo Óptico Izquierdo",
+      "neurotransmitter": "Dopamina",
+      "position": [
+        -8.773477249725973,
+        3.041660693998656,
+        -0.9576249305053248
+      ]
+    },
+    {
+      "id": "720575940617000047",
+      "type": "Interneurona",
+      "region": "Ganglio Subesofágico",
+      "neurotransmitter": "GABA",
+      "position": [
+        -0.7454888177107737,
+        -5.068957291671972,
+        1.6949724834321893
+      ]
+    },
+    {
+      "id": "720575940617000048",
+      "type": "Interneurona",
+      "region": "Ganglio Subesofágico",
+      "neurotransmitter": "Glutamato",
+      "position": [
+        -1.6762530850297819,
+        -3.139669865010629,
+        2.5955895707016716
+      ]
+    },
+    {
+      "id": "720575940617000049",
+      "type": "Moduladora",
+      "region": "Lóbulo Antenal",
+      "neurotransmitter": "Acetilcolina (ACh)",
+      "position": [
+        1.0324149269858487,
+        0.4002995085081913,
+        8.22032716464246
+      ]
+    },
+    {
+      "id": "720575940617000050",
+      "type": "Moduladora",
+      "region": "Cuerpo Central",
+      "neurotransmitter": "Acetilcolina (ACh)",
+      "position": [
+        0.7280349118485369,
+        2.7738049011231163,
+        0.6922353517016081
+      ]
+    },
+    {
+      "id": "720575940617000051",
+      "type": "Interneurona",
+      "region": "Cuerpo Pedunculado",
+      "neurotransmitter": "Glutamato",
+      "position": [
+        2.5268569213622323,
+        6.826497158769497,
+        -4.361982812219932
+      ]
+    },
+    {
+      "id": "720575940617000052",
+      "type": "Sensorial",
+      "region": "Lóbulo Óptico Izquierdo",
+      "neurotransmitter": "Dopamina",
+      "position": [
+        -9.199883415801304,
+        2.095045102475304,
+        0.7712913113945491
+      ]
+    },
+    {
+      "id": "720575940617000053",
+      "type": "Motora",
+      "region": "Protocerebro",
+      "neurotransmitter": "Octopamina",
+      "position": [
+        3.0477643242229693,
+        6.846200066506843,
+        -3.9506506147182514
+      ]
+    },
+    {
+      "id": "720575940617000054",
+      "type": "Motora",
+      "region": "Cuerpo Pedunculado",
+      "neurotransmitter": "Glutamato",
+      "position": [
+        2.3895328500704696,
+        5.520750077747912,
+        -1.8437236459848467
+      ]
+    },
+    {
+      "id": "720575940617000055",
+      "type": "Sensorial",
+      "region": "Lóbulo Antenal",
+      "neurotransmitter": "Serotonina",
+      "position": [
+        -0.9107599232992089,
+        0.9388663898083333,
+        7.782268665981554
+      ]
+    },
+    {
+      "id": "720575940617000056",
+      "type": "Motora",
+      "region": "Ganglio Subesofágico",
+      "neurotransmitter": "Glutamato",
+      "position": [
+        -0.8343547026470869,
+        -4.921633357119533,
+        2.0014952273730366
+      ]
+    },
+    {
+      "id": "720575940617000057",
+      "type": "Sensorial",
+      "region": "Cuerpo Central",
+      "neurotransmitter": "Glutamato",
+      "position": [
+        -1.6326145064824102,
+        3.505381542702856,
+        -0.07079957518480198
+      ]
+    },
+    {
+      "id": "720575940617000058",
+      "type": "Interneurona",
+      "region": "Protocerebro",
+      "neurotransmitter": "Dopamina",
+      "position": [
+        -1.018240661300425,
+        6.8737251835085775,
+        0.1392673150188357
+      ]
+    },
+    {
+      "id": "720575940617000059",
+      "type": "Proyección",
+      "region": "Cuerpo Pedunculado",
+      "neurotransmitter": "GABA",
+      "position": [
+        -1.2482413509694614,
+        5.079992508498061,
+        -2.567143581517704
+      ]
+    },
+    {
+      "id": "720575940617000060",
+      "type": "Motora",
+      "region": "Lóbulo Óptico Izquierdo",
+      "neurotransmitter": "Acetilcolina (ACh)",
+      "position": [
+        -9.827134551144123,
+        1.115230870531841,
+        -1.506730894004729
+      ]
+    },
+    {
+      "id": "720575940617000061",
+      "type": "Interneurona",
+      "region": "Lóbulo Óptico Derecho",
+      "neurotransmitter": "GABA",
+      "position": [
+        11.662125188222758,
+        4.697427922475006,
+        -2.1858836138043927
+      ]
+    },
+    {
+      "id": "720575940617000062",
+      "type": "Sensorial",
+      "region": "Lóbulo Óptico Izquierdo",
+      "neurotransmitter": "GABA",
+      "position": [
+        -8.87587546164614,
+        -1.5401537607566824,
+        -1.4252870169749412
+      ]
+    },
+    {
+      "id": "720575940617000063",
+      "type": "Motora",
+      "region": "Ganglio Subesofágico",
+      "neurotransmitter": "Dopamina",
+      "position": [
+        -0.4910048803885805,
+        -4.978404017612202,
+        2.97809682720727
+      ]
+    },
+    {
+      "id": "720575940617000064",
+      "type": "Interneurona",
+      "region": "Lóbulo Óptico Izquierdo",
+      "neurotransmitter": "GABA",
+      "position": [
+        -7.34060863271809,
+        5.0363589011319565,
+        0.26061589148371594
+      ]
+    },
+    {
+      "id": "720575940617000065",
+      "type": "Moduladora",
+      "region": "Lóbulo Antenal",
+      "neurotransmitter": "Dopamina",
+      "position": [
+        -0.32771870450033114,
+        -0.00588173394076712,
+        6.358647819509366
+      ]
+    },
+    {
+      "id": "720575940617000066",
+      "type": "Interneurona",
+      "region": "Lóbulo Óptico Izquierdo",
+      "neurotransmitter": "GABA",
+      "position": [
+        -8.959878532765128,
+        -0.49717599802729534,
+        -0.4816087973506208
+      ]
+    },
+    {
+      "id": "720575940617000067",
+      "type": "Moduladora",
+      "region": "Cuerpo Pedunculado",
+      "neurotransmitter": "Octopamina",
+      "position": [
+        -2.6129097153839207,
+        4.16692584308749,
+        -3.799608121124966
+      ]
+    },
+    {
+      "id": "720575940617000068",
+      "type": "Interneurona",
+      "region": "Cuerpo Central",
+      "neurotransmitter": "Serotonina",
+      "position": [
+        0.27656984164569326,
+        3.5063893252651033,
+        0.9195445791963922
+      ]
+    },
+    {
+      "id": "720575940617000069",
+      "type": "Sensorial",
+      "region": "Lóbulo Óptico Izquierdo",
+      "neurotransmitter": "Acetilcolina (ACh)",
+      "position": [
+        -8.521120382510261,
+        0.15049024216463183,
+        0.809738168630704
+      ]
+    },
+    {
+      "id": "720575940617000070",
+      "type": "Interneurona",
+      "region": "Lóbulo Óptico Derecho",
+      "neurotransmitter": "Glutamato",
+      "position": [
+        9.545089954561144,
+        4.971299781899515,
+        2.6895236702499243
+      ]
+    },
+    {
+      "id": "720575940617000071",
+      "type": "Interneurona",
+      "region": "Lóbulo Óptico Derecho",
+      "neurotransmitter": "GABA",
+      "position": [
+        8.21918510223684,
+        2.2301787867945646,
+        -1.6060598301305795
+      ]
+    },
+    {
+      "id": "720575940617000072",
+      "type": "Proyección",
+      "region": "Ganglio Subesofágico",
+      "neurotransmitter": "Serotonina",
+      "position": [
+        -1.0760660655021892,
+        -3.2864332608354196,
+        2.2642423223484984
+      ]
+    },
+    {
+      "id": "720575940617000073",
+      "type": "Proyección",
+      "region": "Lóbulo Antenal",
+      "neurotransmitter": "Acetilcolina (ACh)",
+      "position": [
+        -0.8573353867551238,
+        0.08585339316809178,
+        8.121447380113377
+      ]
+    },
+    {
+      "id": "720575940617000074",
+      "type": "Proyección",
+      "region": "Cuerpo Pedunculado",
+      "neurotransmitter": "Dopamina",
+      "position": [
+        1.640946433091097,
+        4.746003119737101,
+        -3.660339679747332
+      ]
+    },
+    {
+      "id": "720575940617000075",
+      "type": "Moduladora",
+      "region": "Lóbulo Óptico Izquierdo",
+      "neurotransmitter": "Octopamina",
+      "position": [
+        -7.2461346393283605,
+        4.02979869346509,
+        -1.3635317632209485
+      ]
+    },
+    {
+      "id": "720575940617000076",
+      "type": "Interneurona",
+      "region": "Cuerpo Pedunculado",
+      "neurotransmitter": "Acetilcolina (ACh)",
+      "position": [
+        1.7399868800497795,
+        7.042843645913749,
+        -2.40684530619618
+      ]
+    },
+    {
+      "id": "720575940617000077",
+      "type": "Moduladora",
+      "region": "Cuerpo Central",
+      "neurotransmitter": "Serotonina",
+      "position": [
+        -1.6877823208157834,
+        2.3808801778939874,
+        -0.9060368727248252
+      ]
+    },
+    {
+      "id": "720575940617000078",
+      "type": "Sensorial",
+      "region": "Protocerebro",
+      "neurotransmitter": "Glutamato",
+      "position": [
+        -2.5344184640537972,
+        5.685290206947569,
+        -2.8676499805318825
+      ]
+    },
+    {
+      "id": "720575940617000079",
+      "type": "Sensorial",
+      "region": "Cuerpo Pedunculado",
+      "neurotransmitter": "Dopamina",
+      "position": [
+        2.2257873925559797,
+        6.063084521482917,
+        -2.0404054681946793
+      ]
+    },
+    {
+      "id": "720575940617000080",
+      "type": "Proyección",
+      "region": "Lóbulo Óptico Izquierdo",
+      "neurotransmitter": "Serotonina",
+      "position": [
+        -6.67320321598713,
+        -1.3020488122585196,
+        -0.4533961590326877
+      ]
+    },
+    {
+      "id": "720575940617000081",
+      "type": "Moduladora",
+      "region": "Lóbulo Antenal",
+      "neurotransmitter": "GABA",
+      "position": [
+        1.5835960469639123,
+        -0.4605960100820415,
+        5.6794723332635435
+      ]
+    },
+    {
+      "id": "720575940617000082",
+      "type": "Sensorial",
+      "region": "Protocerebro",
+      "neurotransmitter": "Dopamina",
+      "position": [
+        -2.8080191454530583,
+        5.780045629731114,
+        -3.687905990741321
+      ]
+    },
+    {
+      "id": "720575940617000083",
+      "type": "Interneurona",
+      "region": "Lóbulo Óptico Derecho",
+      "neurotransmitter": "Glutamato",
+      "position": [
+        11.594942457396726,
+        3.3839428486674663,
+        -1.151947377276964
+      ]
+    },
+    {
+      "id": "720575940617000084",
+      "type": "Motora",
+      "region": "Protocerebro",
+      "neurotransmitter": "Glutamato",
+      "position": [
+        -3.046834139812525,
+        6.106239927154102,
+        -3.455830366713376
+      ]
+    },
+    {
+      "id": "720575940617000085",
+      "type": "Proyección",
+      "region": "Protocerebro",
+      "neurotransmitter": "Dopamina",
+      "position": [
+        1.5689418186288047,
+        8.879232285699864,
+        -0.2584583872834135
+      ]
+    },
+    {
+      "id": "720575940617000086",
+      "type": "Proyección",
+      "region": "Lóbulo Antenal",
+      "neurotransmitter": "Serotonina",
+      "position": [
+        -1.7613362585169663,
+        -0.41459798574346873,
+        5.975391462325332
+      ]
+    },
+    {
+      "id": "720575940617000087",
+      "type": "Proyección",
+      "region": "Protocerebro",
+      "neurotransmitter": "Dopamina",
+      "position": [
+        -0.923002622235215,
+        5.64766651731533,
+        -0.20386171251116866
+      ]
+    },
+    {
+      "id": "720575940617000088",
+      "type": "Moduladora",
+      "region": "Ganglio Subesofágico",
+      "neurotransmitter": "Glutamato",
+      "position": [
+        1.617985428287623,
+        -2.008731063497534,
+        2.925995559217904
+      ]
+    },
+    {
+      "id": "720575940617000089",
+      "type": "Moduladora",
+      "region": "Ganglio Subesofágico",
+      "neurotransmitter": "Glutamato",
+      "position": [
+        0.6048514720871658,
+        -4.022180273834149,
+        2.339086428673599
+      ]
+    },
+    {
+      "id": "720575940617000090",
+      "type": "Interneurona",
+      "region": "Cuerpo Pedunculado",
+      "neurotransmitter": "Acetilcolina (ACh)",
+      "position": [
+        -1.3747165947668827,
+        5.221622518439099,
+        -3.726613469544459
+      ]
+    },
+    {
+      "id": "720575940617000091",
+      "type": "Proyección",
+      "region": "Cuerpo Pedunculado",
+      "neurotransmitter": "Glutamato",
+      "position": [
+        0.6598807971324765,
+        4.072928274694751,
+        -4.2833054308684035
+      ]
+    },
+    {
+      "id": "720575940617000092",
+      "type": "Proyección",
+      "region": "Cuerpo Central",
+      "neurotransmitter": "GABA",
+      "position": [
+        0.24423212431968944,
+        4.182169157307074,
+        1.3630569278282003
+      ]
+    },
+    {
+      "id": "720575940617000093",
+      "type": "Interneurona",
+      "region": "Cuerpo Central",
+      "neurotransmitter": "GABA",
+      "position": [
+        1.3790227810243891,
+        1.9008423158216385,
+        1.1119156113793462
+      ]
+    },
+    {
+      "id": "720575940617000094",
+      "type": "Proyección",
+      "region": "Protocerebro",
+      "neurotransmitter": "Octopamina",
+      "position": [
+        2.089124647692214,
+        7.258620474625488,
+        -0.10735555414776235
+      ]
+    },
+    {
+      "id": "720575940617000095",
+      "type": "Sensorial",
+      "region": "Lóbulo Antenal",
+      "neurotransmitter": "Serotonina",
+      "position": [
+        -1.7806281817283478,
+        1.5788363174260154,
+        7.000210835120955
+      ]
+    },
+    {
+      "id": "720575940617000096",
+      "type": "Proyección",
+      "region": "Cuerpo Central",
+      "neurotransmitter": "Acetilcolina (ACh)",
+      "position": [
+        -0.9810560984071782,
+        5.3840165105931375,
+        1.7853071709642236
+      ]
+    },
+    {
+      "id": "720575940617000097",
+      "type": "Sensorial",
+      "region": "Ganglio Subesofágico",
+      "neurotransmitter": "Octopamina",
+      "position": [
+        -0.7675303614589098,
+        -3.062663831559193,
+        0.3693680580558926
+      ]
+    },
+    {
+      "id": "720575940617000098",
+      "type": "Interneurona",
+      "region": "Lóbulo Óptico Derecho",
+      "neurotransmitter": "Octopamina",
+      "position": [
+        8.955623122755531,
+        5.1560016642657915,
+        0.1949601262209751
+      ]
+    },
+    {
+      "id": "720575940617000099",
+      "type": "Sensorial",
+      "region": "Ganglio Subesofágico",
+      "neurotransmitter": "Glutamato",
+      "position": [
+        -0.5052637242434428,
+        -4.9832266754630155,
+        2.902073576917674
+      ]
+    },
+    {
+      "id": "720575940617000100",
+      "type": "Proyección",
+      "region": "Ganglio Subesofágico",
+      "neurotransmitter": "Acetilcolina (ACh)",
+      "position": [
+        1.4245706688192485,
+        -2.940230525124297,
+        1.0500959890714252
+      ]
+    },
+    {
+      "id": "720575940617000101",
+      "type": "Sensorial",
+      "region": "Cuerpo Central",
+      "neurotransmitter": "Dopamina",
+      "position": [
+        0.8481183622968748,
+        2.9301096892158776,
+        -1.5375872633222591
+      ]
+    },
+    {
+      "id": "720575940617000102",
+      "type": "Sensorial",
+      "region": "Lóbulo Óptico Izquierdo",
+      "neurotransmitter": "Serotonina",
+      "position": [
+        -10.913234538182238,
+        2.97497680265035,
+        0.07407535519757423
+      ]
+    },
+    {
+      "id": "720575940617000103",
+      "type": "Moduladora",
+      "region": "Ganglio Subesofágico",
+      "neurotransmitter": "Dopamina",
+      "position": [
+        1.4492994946974058,
+        -4.158292492521406,
+        2.718113490637211
+      ]
+    },
+    {
+      "id": "720575940617000104",
+      "type": "Interneurona",
+      "region": "Cuerpo Central",
+      "neurotransmitter": "Octopamina",
+      "position": [
+        -1.4085397212448956,
+        3.617788093423796,
+        -0.3019480972238667
+      ]
+    },
+    {
+      "id": "720575940617000105",
+      "type": "Proyección",
+      "region": "Cuerpo Pedunculado",
+      "neurotransmitter": "Octopamina",
+      "position": [
+        2.002008925120161,
+        6.391894601330534,
+        -2.5562014868188756
+      ]
+    },
+    {
+      "id": "720575940617000106",
+      "type": "Motora",
+      "region": "Lóbulo Óptico Izquierdo",
+      "neurotransmitter": "Serotonina",
+      "position": [
+        -8.53097667496417,
+        -0.7280480428905334,
+        -1.9647048703681003
+      ]
+    },
+    {
+      "id": "720575940617000107",
+      "type": "Motora",
+      "region": "Cuerpo Pedunculado",
+      "neurotransmitter": "Serotonina",
+      "position": [
+        -1.4679449195010466,
+        4.974323094146141,
+        -2.076837994982526
+      ]
+    },
+    {
+      "id": "720575940617000108",
+      "type": "Proyección",
+      "region": "Protocerebro",
+      "neurotransmitter": "GABA",
+      "position": [
+        2.9746268136347864,
+        8.34958620132906,
+        0.2049445249961079
+      ]
+    },
+    {
+      "id": "720575940617000109",
+      "type": "Interneurona",
+      "region": "Lóbulo Óptico Izquierdo",
+      "neurotransmitter": "Acetilcolina (ACh)",
+      "position": [
+        -9.395835277543574,
+        2.1660635912359,
+        -2.470036464470305
+      ]
+    },
+    {
+      "id": "720575940617000110",
+      "type": "Sensorial",
+      "region": "Lóbulo Óptico Derecho",
+      "neurotransmitter": "Serotonina",
+      "position": [
+        8.377664711258682,
+        3.816799798067666,
+        -2.4932707752367835
+      ]
+    },
+    {
+      "id": "720575940617000111",
+      "type": "Interneurona",
+      "region": "Lóbulo Óptico Derecho",
+      "neurotransmitter": "Dopamina",
+      "position": [
+        11.404522838672666,
+        4.56471694467832,
+        -1.817893835120015
+      ]
+    },
+    {
+      "id": "720575940617000112",
+      "type": "Sensorial",
+      "region": "Cuerpo Central",
+      "neurotransmitter": "Glutamato",
+      "position": [
+        -1.4481579827473519,
+        4.215526594085211,
+        1.7006656936699303
+      ]
+    },
+    {
+      "id": "720575940617000113",
+      "type": "Interneurona",
+      "region": "Lóbulo Óptico Derecho",
+      "neurotransmitter": "Octopamina",
+      "position": [
+        9.07572076190642,
+        1.737308407460297,
+        -0.3882989505548495
+      ]
+    },
+    {
+      "id": "720575940617000114",
+      "type": "Motora",
+      "region": "Lóbulo Óptico Izquierdo",
+      "neurotransmitter": "Octopamina",
+      "position": [
+        -9.228927895990363,
+        1.839586875846869,
+        0.7880475891169161
+      ]
+    },
+    {
+      "id": "720575940617000115",
+      "type": "Proyección",
+      "region": "Lóbulo Óptico Derecho",
+      "neurotransmitter": "Acetilcolina (ACh)",
+      "position": [
+        10.469763608193343,
+        4.014502285856986,
+        -1.0793428285219495
+      ]
+    },
+    {
+      "id": "720575940617000116",
+      "type": "Proyección",
+      "region": "Cuerpo Central",
+      "neurotransmitter": "Glutamato",
+      "position": [
+        1.7447285641324604,
+        2.7061222087740773,
+        -1.0278634609101036
+      ]
+    },
+    {
+      "id": "720575940617000117",
+      "type": "Sensorial",
+      "region": "Lóbulo Óptico Derecho",
+      "neurotransmitter": "Dopamina",
+      "position": [
+        10.534268561085229,
+        0.8032224697585312,
+        -1.1538072261684817
+      ]
+    },
+    {
+      "id": "720575940617000118",
+      "type": "Moduladora",
+      "region": "Lóbulo Antenal",
+      "neurotransmitter": "Dopamina",
+      "position": [
+        0.6720735301058001,
+        -0.8323849739206465,
+        8.266730029851646
+      ]
+    },
+    {
+      "id": "720575940617000119",
+      "type": "Interneurona",
+      "region": "Lóbulo Antenal",
+      "neurotransmitter": "Octopamina",
+      "position": [
+        0.3667859201929239,
+        0.27729918823414157,
+        7.497619032984256
+      ]
+    },
+    {
+      "id": "720575940617000120",
+      "type": "Moduladora",
+      "region": "Lóbulo Antenal",
+      "neurotransmitter": "Octopamina",
+      "position": [
+        1.4751681321137335,
+        0.8434721387230596,
+        7.392599288398795
+      ]
+    },
+    {
+      "id": "720575940617000121",
+      "type": "Motora",
+      "region": "Protocerebro",
+      "neurotransmitter": "Serotonina",
+      "position": [
+        3.5864465938082857,
+        6.144574097338407,
+        -1.7298602674202233
+      ]
+    },
+    {
+      "id": "720575940617000122",
+      "type": "Interneurona",
+      "region": "Cuerpo Central",
+      "neurotransmitter": "GABA",
+      "position": [
+        -1.2417330256469692,
+        3.687142582176436,
+        -1.6450946333607683
+      ]
+    },
+    {
+      "id": "720575940617000123",
+      "type": "Proyección",
+      "region": "Lóbulo Óptico Derecho",
+      "neurotransmitter": "Dopamina",
+      "position": [
+        7.974804428087764,
+        0.5702758617130179,
+        -0.2312115044782675
+      ]
+    },
+    {
+      "id": "720575940617000124",
+      "type": "Moduladora",
+      "region": "Protocerebro",
+      "neurotransmitter": "Serotonina",
+      "position": [
+        2.089213280988207,
+        8.678897471671785,
+        0.581539495208338
+      ]
+    },
+    {
+      "id": "720575940617000125",
+      "type": "Interneurona",
+      "region": "Lóbulo Óptico Derecho",
+      "neurotransmitter": "Acetilcolina (ACh)",
+      "position": [
+        10.846687770647208,
+        -1.5136818466279038,
+        1.3174378044053605
+      ]
+    },
+    {
+      "id": "720575940617000126",
+      "type": "Motora",
+      "region": "Lóbulo Óptico Derecho",
+      "neurotransmitter": "Octopamina",
+      "position": [
+        7.97052468398678,
+        1.504614368706523,
+        -2.4607762294132804
+      ]
+    },
+    {
+      "id": "720575940617000127",
+      "type": "Moduladora",
+      "region": "Cuerpo Central",
+      "neurotransmitter": "Serotonina",
+      "position": [
+        -0.9432838856616178,
+        3.9237775577139287,
+        -0.9288349973231599
+      ]
+    },
+    {
+      "id": "720575940617000128",
+      "type": "Moduladora",
+      "region": "Cuerpo Central",
+      "neurotransmitter": "Glutamato",
+      "position": [
+        -0.6071581548480484,
+        2.773809791001055,
+        0.2885376782450771
+      ]
+    },
+    {
+      "id": "720575940617000129",
+      "type": "Sensorial",
+      "region": "Lóbulo Óptico Izquierdo",
+      "neurotransmitter": "Dopamina",
+      "position": [
+        -7.74118433330434,
+        1.3113559772404397,
+        2.6652122871889916
+      ]
+    },
+    {
+      "id": "720575940617000130",
+      "type": "Interneurona",
+      "region": "Protocerebro",
+      "neurotransmitter": "Acetilcolina (ACh)",
+      "position": [
+        -3.447976327597072,
+        6.05972520527203,
+        -2.1683171205390437
+      ]
+    },
+    {
+      "id": "720575940617000131",
+      "type": "Motora",
+      "region": "Lóbulo Antenal",
+      "neurotransmitter": "Octopamina",
+      "position": [
+        1.7445089694700144,
+        1.5836456992649859,
+        7.48336212009673
+      ]
+    },
+    {
+      "id": "720575940617000132",
+      "type": "Sensorial",
+      "region": "Cuerpo Central",
+      "neurotransmitter": "GABA",
+      "position": [
+        1.5393818813767068,
+        2.4073992818082024,
+        1.445006043603765
+      ]
+    },
+    {
+      "id": "720575940617000133",
+      "type": "Sensorial",
+      "region": "Lóbulo Óptico Derecho",
+      "neurotransmitter": "Serotonina",
+      "position": [
+        10.746812823845834,
+        4.1676916665636075,
+        -2.289905207757141
+      ]
+    },
+    {
+      "id": "720575940617000134",
+      "type": "Interneurona",
+      "region": "Lóbulo Óptico Izquierdo",
+      "neurotransmitter": "Octopamina",
+      "position": [
+        -6.707764876888229,
+        2.78096467357479,
+        0.5224255473492044
+      ]
+    },
+    {
+      "id": "720575940617000135",
+      "type": "Sensorial",
+      "region": "Lóbulo Antenal",
+      "neurotransmitter": "Octopamina",
+      "position": [
+        -0.6133140517677029,
+        1.374697064210579,
+        6.318653994139261
+      ]
+    },
+    {
+      "id": "720575940617000136",
+      "type": "Sensorial",
+      "region": "Lóbulo Óptico Izquierdo",
+      "neurotransmitter": "GABA",
+      "position": [
+        -9.736385812527551,
+        -0.40852630860812317,
+        -2.0049012641798636
+      ]
+    },
+    {
+      "id": "720575940617000137",
+      "type": "Sensorial",
+      "region": "Lóbulo Óptico Izquierdo",
+      "neurotransmitter": "Acetilcolina (ACh)",
+      "position": [
+        -8.501191124991538,
+        2.4414823637361454,
+        -2.362971817580505
+      ]
+    },
+    {
+      "id": "720575940617000138",
+      "type": "Proyección",
+      "region": "Protocerebro",
+      "neurotransmitter": "GABA",
+      "position": [
+        -0.8134294784925145,
+        6.143056428617105,
+        -2.8636453452188677
+      ]
+    },
+    {
+      "id": "720575940617000139",
+      "type": "Motora",
+      "region": "Lóbulo Óptico Derecho",
+      "neurotransmitter": "Serotonina",
+      "position": [
+        11.131859690508332,
+        1.1714817279802516,
+        0.5288585015097212
+      ]
+    },
+    {
+      "id": "720575940617000140",
+      "type": "Proyección",
+      "region": "Lóbulo Óptico Izquierdo",
+      "neurotransmitter": "Glutamato",
+      "position": [
+        -6.89512775749346,
+        2.8600950223231894,
+        -0.6459625214759033
+      ]
+    },
+    {
+      "id": "720575940617000141",
+      "type": "Sensorial",
+      "region": "Protocerebro",
+      "neurotransmitter": "Octopamina",
+      "position": [
+        -2.4449781715299936,
+        5.51477658893919,
+        0.3412028014343008
+      ]
+    },
+    {
+      "id": "720575940617000142",
+      "type": "Motora",
+      "region": "Cuerpo Central",
+      "neurotransmitter": "Acetilcolina (ACh)",
+      "position": [
+        0.7961293882793093,
+        4.90670368484156,
+        -1.4933507920262756
+      ]
+    },
+    {
+      "id": "720575940617000143",
+      "type": "Motora",
+      "region": "Cuerpo Pedunculado",
+      "neurotransmitter": "Glutamato",
+      "position": [
+        -1.3300074949230605,
+        5.580922805954777,
+        -4.115385135415709
+      ]
+    },
+    {
+      "id": "720575940617000144",
+      "type": "Interneurona",
+      "region": "Cuerpo Central",
+      "neurotransmitter": "Octopamina",
+      "position": [
+        0.8960880200393417,
+        4.084618066638441,
+        0.8356238297609095
+      ]
+    },
+    {
+      "id": "720575940617000145",
+      "type": "Motora",
+      "region": "Lóbulo Óptico Derecho",
+      "neurotransmitter": "GABA",
+      "position": [
+        10.281013449802456,
+        1.4884629107615182,
+        -2.587164530098297
+      ]
+    },
+    {
+      "id": "720575940617000146",
+      "type": "Proyección",
+      "region": "Lóbulo Óptico Izquierdo",
+      "neurotransmitter": "Acetilcolina (ACh)",
+      "position": [
+        -8.764234850052967,
+        4.478713517640079,
+        1.7475854686789285
+      ]
+    },
+    {
+      "id": "720575940617000147",
+      "type": "Sensorial",
+      "region": "Lóbulo Óptico Izquierdo",
+      "neurotransmitter": "Glutamato",
+      "position": [
+        -10.794550188747879,
+        0.38401080659395176,
+        0.41379873329853656
+      ]
+    },
+    {
+      "id": "720575940617000148",
+      "type": "Moduladora",
+      "region": "Lóbulo Óptico Derecho",
+      "neurotransmitter": "GABA",
+      "position": [
+        10.966003439948516,
+        1.7244514785698448,
+        -1.4833045430181508
+      ]
+    },
+    {
+      "id": "720575940617000149",
+      "type": "Interneurona",
+      "region": "Protocerebro",
+      "neurotransmitter": "Glutamato",
+      "position": [
+        2.8886377664986504,
+        7.939582944002701,
+        -2.521414835926149
+      ]
+    },
+    {
+      "id": "720575940617000150",
+      "type": "Interneurona",
+      "region": "Lóbulo Óptico Izquierdo",
+      "neurotransmitter": "Octopamina",
+      "position": [
+        -6.343359568871742,
+        1.4082965763191155,
+        -1.0149006306930104
+      ]
+    },
+    {
+      "id": "720575940617000151",
+      "type": "Moduladora",
+      "region": "Cuerpo Central",
+      "neurotransmitter": "Octopamina",
+      "position": [
+        0.3179763443959186,
+        4.840399676364126,
+        1.2131930053916506
+      ]
+    },
+    {
+      "id": "720575940617000152",
+      "type": "Proyección",
+      "region": "Lóbulo Antenal",
+      "neurotransmitter": "Dopamina",
+      "position": [
+        1.7239406246436786,
+        -0.6794262250872027,
+        6.580371480629433
+      ]
+    },
+    {
+      "id": "720575940617000153",
+      "type": "Motora",
+      "region": "Lóbulo Óptico Izquierdo",
+      "neurotransmitter": "Serotonina",
+      "position": [
+        -9.270725456797267,
+        -0.5419247133897795,
+        1.3608749336562973
+      ]
+    },
+    {
+      "id": "720575940617000154",
+      "type": "Motora",
+      "region": "Ganglio Subesofágico",
+      "neurotransmitter": "Acetilcolina (ACh)",
+      "position": [
+        0.14340548557420268,
+        -3.369932092839556,
+        3.4823857479131104
+      ]
+    },
+    {
+      "id": "720575940617000155",
+      "type": "Proyección",
+      "region": "Lóbulo Óptico Izquierdo",
+      "neurotransmitter": "Acetilcolina (ACh)",
+      "position": [
+        -11.23601428991065,
+        5.301102406887723,
+        -0.9295825800603226
+      ]
+    },
+    {
+      "id": "720575940617000156",
+      "type": "Sensorial",
+      "region": "Protocerebro",
+      "neurotransmitter": "GABA",
+      "position": [
+        0.8926089366600642,
+        8.83945765890179,
+        -0.5550407897001524
+      ]
+    },
+    {
+      "id": "720575940617000157",
+      "type": "Moduladora",
+      "region": "Lóbulo Óptico Derecho",
+      "neurotransmitter": "Serotonina",
+      "position": [
+        6.778895355059082,
+        -1.74582036095407,
+        0.7112495492383569
+      ]
+    },
+    {
+      "id": "720575940617000158",
+      "type": "Motora",
+      "region": "Lóbulo Óptico Izquierdo",
+      "neurotransmitter": "GABA",
+      "position": [
+        -8.865374873675544,
+        2.7881927809614595,
+        -2.4232725320515556
+      ]
+    },
+    {
+      "id": "720575940617000159",
+      "type": "Moduladora",
+      "region": "Cuerpo Central",
+      "neurotransmitter": "Serotonina",
+      "position": [
+        -1.580685722312287,
+        4.691960523309697,
+        -1.7780403194512604
+      ]
+    },
+    {
+      "id": "720575940617000160",
+      "type": "Motora",
+      "region": "Protocerebro",
+      "neurotransmitter": "Glutamato",
+      "position": [
+        2.4569770961546697,
+        7.966003723209159,
+        -3.110520589853633
+      ]
+    },
+    {
+      "id": "720575940617000161",
+      "type": "Proyección",
+      "region": "Cuerpo Central",
+      "neurotransmitter": "Octopamina",
+      "position": [
+        -1.4296867472083385,
+        2.907801985089875,
+        -0.08758027105924167
+      ]
+    },
+    {
+      "id": "720575940617000162",
+      "type": "Sensorial",
+      "region": "Lóbulo Óptico Izquierdo",
+      "neurotransmitter": "Glutamato",
+      "position": [
+        -11.473043092218994,
+        -0.9338951693105426,
+        2.178798047465026
+      ]
+    },
+    {
+      "id": "720575940617000163",
+      "type": "Motora",
+      "region": "Lóbulo Antenal",
+      "neurotransmitter": "Octopamina",
+      "position": [
+        0.5175089250051376,
+        -0.4150642391390311,
+        7.497880694345058
+      ]
+    },
+    {
+      "id": "720575940617000164",
+      "type": "Interneurona",
+      "region": "Ganglio Subesofágico",
+      "neurotransmitter": "Glutamato",
+      "position": [
+        0.6449364871577826,
+        -2.0805881838503226,
+        1.274115846604689
+      ]
+    },
+    {
+      "id": "720575940617000165",
+      "type": "Interneurona",
+      "region": "Protocerebro",
+      "neurotransmitter": "Serotonina",
+      "position": [
+        2.724470736401027,
+        7.397740501264763,
+        -1.0135768777559795
+      ]
+    },
+    {
+      "id": "720575940617000166",
+      "type": "Moduladora",
+      "region": "Protocerebro",
+      "neurotransmitter": "Glutamato",
+      "position": [
+        0.12919678583029431,
+        7.51726687757995,
+        -2.4231305156289027
+      ]
+    },
+    {
+      "id": "720575940617000167",
+      "type": "Interneurona",
+      "region": "Lóbulo Óptico Derecho",
+      "neurotransmitter": "Octopamina",
+      "position": [
+        11.523925167900495,
+        0.3843973328147165,
+        0.7927331765334618
+      ]
+    },
+    {
+      "id": "720575940617000168",
+      "type": "Motora",
+      "region": "Cuerpo Central",
+      "neurotransmitter": "Octopamina",
+      "position": [
+        -1.3297758974440077,
+        2.7254242253453214,
+        1.5636710189337164
+      ]
+    },
+    {
+      "id": "720575940617000169",
+      "type": "Moduladora",
+      "region": "Cuerpo Central",
+      "neurotransmitter": "Acetilcolina (ACh)",
+      "position": [
+        -0.3727881111237272,
+        3.3324554960268395,
+        1.052209037180628
+      ]
+    },
+    {
+      "id": "720575940617000170",
+      "type": "Proyección",
+      "region": "Ganglio Subesofágico",
+      "neurotransmitter": "Dopamina",
+      "position": [
+        -0.17881308520738273,
+        -3.7569651139050246,
+        2.271053345752658
+      ]
+    },
+    {
+      "id": "720575940617000171",
+      "type": "Sensorial",
+      "region": "Lóbulo Óptico Derecho",
+      "neurotransmitter": "GABA",
+      "position": [
+        9.103941794942815,
+        -0.32458681476921386,
+        -1.0422969866935694
+      ]
+    },
+    {
+      "id": "720575940617000172",
+      "type": "Interneurona",
+      "region": "Lóbulo Antenal",
+      "neurotransmitter": "Acetilcolina (ACh)",
+      "position": [
+        -1.7762964178918461,
+        0.6801960635569921,
+        6.950879376666075
+      ]
+    },
+    {
+      "id": "720575940617000173",
+      "type": "Sensorial",
+      "region": "Lóbulo Óptico Izquierdo",
+      "neurotransmitter": "Octopamina",
+      "position": [
+        -11.606524681242565,
+        5.070242889159824,
+        2.4377147291298322
+      ]
+    },
+    {
+      "id": "720575940617000174",
+      "type": "Interneurona",
+      "region": "Cuerpo Central",
+      "neurotransmitter": "Serotonina",
+      "position": [
+        -0.400538965473546,
+        4.24330288808722,
+        0.9218023086713146
+      ]
+    },
+    {
+      "id": "720575940617000175",
+      "type": "Interneurona",
+      "region": "Protocerebro",
+      "neurotransmitter": "Acetilcolina (ACh)",
+      "position": [
+        2.4295290654848207,
+        7.528769849612925,
+        -3.2662798875487207
+      ]
+    },
+    {
+      "id": "720575940617000176",
+      "type": "Sensorial",
+      "region": "Protocerebro",
+      "neurotransmitter": "Glutamato",
+      "position": [
+        -2.5742498883926257,
+        5.715106090208849,
+        -2.6059859424784593
+      ]
+    },
+    {
+      "id": "720575940617000177",
+      "type": "Proyección",
+      "region": "Lóbulo Óptico Derecho",
+      "neurotransmitter": "Octopamina",
+      "position": [
+        11.196629205774627,
+        5.006267922124537,
+        -1.767467887280903
+      ]
+    },
+    {
+      "id": "720575940617000178",
+      "type": "Motora",
+      "region": "Protocerebro",
+      "neurotransmitter": "Dopamina",
+      "position": [
+        0.14055945553927707,
+        6.071178390805703,
+        -0.663961023588496
+      ]
+    },
+    {
+      "id": "720575940617000179",
+      "type": "Motora",
+      "region": "Lóbulo Óptico Derecho",
+      "neurotransmitter": "GABA",
+      "position": [
+        11.304635192856612,
+        1.7635286824981469,
+        -0.1930830676309084
+      ]
+    },
+    {
+      "id": "720575940617000180",
+      "type": "Sensorial",
+      "region": "Protocerebro",
+      "neurotransmitter": "Glutamato",
+      "position": [
+        -1.4000442955403603,
+        7.703183520831714,
+        -0.22899510454770589
+      ]
+    },
+    {
+      "id": "720575940617000181",
+      "type": "Sensorial",
+      "region": "Cuerpo Pedunculado",
+      "neurotransmitter": "Glutamato",
+      "position": [
+        0.3121740036707665,
+        4.6174308028579,
+        -2.2813933868211547
+      ]
+    },
+    {
+      "id": "720575940617000182",
+      "type": "Interneurona",
+      "region": "Lóbulo Óptico Izquierdo",
+      "neurotransmitter": "GABA",
+      "position": [
+        -11.21131860887308,
+        -1.0124465752953598,
+        -0.16163777875053703
+      ]
+    },
+    {
+      "id": "720575940617000183",
+      "type": "Motora",
+      "region": "Ganglio Subesofágico",
+      "neurotransmitter": "Octopamina",
+      "position": [
+        -0.9343501791173497,
+        -3.263419985270344,
+        1.1598369466084897
+      ]
+    },
+    {
+      "id": "720575940617000184",
+      "type": "Proyección",
+      "region": "Lóbulo Óptico Izquierdo",
+      "neurotransmitter": "Acetilcolina (ACh)",
+      "position": [
+        -6.319750038933029,
+        0.8366316318910164,
+        -0.9601750755330484
+      ]
+    },
+    {
+      "id": "720575940617000185",
+      "type": "Proyección",
+      "region": "Cuerpo Central",
+      "neurotransmitter": "Serotonina",
+      "position": [
+        -1.764170217344448,
+        3.3057040149690855,
+        0.9030683023757246
+      ]
+    },
+    {
+      "id": "720575940617000186",
+      "type": "Sensorial",
+      "region": "Lóbulo Óptico Izquierdo",
+      "neurotransmitter": "GABA",
+      "position": [
+        -9.004653331850042,
+        1.69881778804637,
+        -1.5389327393757732
+      ]
+    },
+    {
+      "id": "720575940617000187",
+      "type": "Proyección",
+      "region": "Protocerebro",
+      "neurotransmitter": "GABA",
+      "position": [
+        2.4517787711018957,
+        5.706881162267936,
+        -4.37721698268395
+      ]
+    },
+    {
+      "id": "720575940617000188",
+      "type": "Motora",
+      "region": "Cuerpo Central",
+      "neurotransmitter": "Dopamina",
+      "position": [
+        -1.297245526584453,
+        3.4048127757392095,
+        0.3025337650058746
+      ]
+    },
+    {
+      "id": "720575940617000189",
+      "type": "Interneurona",
+      "region": "Lóbulo Antenal",
+      "neurotransmitter": "Dopamina",
+      "position": [
+        -0.12958511894775726,
+        -1.5600097039377239,
+        6.463375785660274
+      ]
+    },
+    {
+      "id": "720575940617000190",
+      "type": "Proyección",
+      "region": "Cuerpo Central",
+      "neurotransmitter": "Serotonina",
+      "position": [
+        -0.07826108102824762,
+        1.8975910952047597,
+        -0.585467791404325
+      ]
+    },
+    {
+      "id": "720575940617000191",
+      "type": "Moduladora",
+      "region": "Protocerebro",
+      "neurotransmitter": "Serotonina",
+      "position": [
+        0.5402578263591805,
+        8.085062703353417,
+        -4.241226827296762
+      ]
+    },
+    {
+      "id": "720575940617000192",
+      "type": "Motora",
+      "region": "Cuerpo Pedunculado",
+      "neurotransmitter": "GABA",
+      "position": [
+        -1.3623393570442561,
+        4.431411073248158,
+        -3.4073103025590585
+      ]
+    },
+    {
+      "id": "720575940617000193",
+      "type": "Interneurona",
+      "region": "Lóbulo Óptico Izquierdo",
+      "neurotransmitter": "Acetilcolina (ACh)",
+      "position": [
+        -9.339768398852915,
+        0.621930197777819,
+        1.7345836607432605
+      ]
+    },
+    {
+      "id": "720575940617000194",
+      "type": "Sensorial",
+      "region": "Cuerpo Pedunculado",
+      "neurotransmitter": "Glutamato",
+      "position": [
+        -1.7315231643761984,
+        4.8314365441483655,
+        -3.244152021985176
+      ]
+    },
+    {
+      "id": "720575940617000195",
+      "type": "Interneurona",
+      "region": "Lóbulo Óptico Derecho",
+      "neurotransmitter": "Octopamina",
+      "position": [
+        10.485432766749561,
+        -0.8106879760752571,
+        -2.3418375750045257
+      ]
+    },
+    {
+      "id": "720575940617000196",
+      "type": "Interneurona",
+      "region": "Cuerpo Central",
+      "neurotransmitter": "Serotonina",
+      "position": [
+        0.2666679749418209,
+        2.6177883959882813,
+        -1.4916113065108467
+      ]
+    },
+    {
+      "id": "720575940617000197",
+      "type": "Motora",
+      "region": "Lóbulo Óptico Derecho",
+      "neurotransmitter": "Serotonina",
+      "position": [
+        10.247024729724552,
+        4.215855663574468,
+        -1.5630525682015268
+      ]
+    },
+    {
+      "id": "720575940617000198",
+      "type": "Proyección",
+      "region": "Lóbulo Óptico Izquierdo",
+      "neurotransmitter": "Acetilcolina (ACh)",
+      "position": [
+        -6.39812629620139,
+        3.075599772341092,
+        -0.9821744969830792
+      ]
+    },
+    {
+      "id": "720575940617000199",
+      "type": "Interneurona",
+      "region": "Ganglio Subesofágico",
+      "neurotransmitter": "Octopamina",
+      "position": [
+        -0.8929812307621802,
+        -4.903903528841745,
+        1.3763770628026082
+      ]
+    }
+  ],
+  "synapses": [
+    {
+      "from": "720575940617000083",
+      "to": "720575940617000044",
+      "weight": 0.5454455675188425
+    },
+    {
+      "from": "720575940617000185",
+      "to": "720575940617000169",
+      "weight": 0.9216470633697647
+    },
+    {
+      "from": "720575940617000001",
+      "to": "720575940617000068",
+      "weight": 0.873554610503358
+    },
+    {
+      "from": "720575940617000048",
+      "to": "720575940617000046",
+      "weight": 0.5571268524989645
+    },
+    {
+      "from": "720575940617000063",
+      "to": "720575940617000059",
+      "weight": 0.6550662558578491
+    },
+    {
+      "from": "720575940617000020",
+      "to": "720575940617000039",
+      "weight": 0.20049802372686357
+    },
+    {
+      "from": "720575940617000088",
+      "to": "720575940617000019",
+      "weight": 0.7042618957622861
+    },
+    {
+      "from": "720575940617000032",
+      "to": "720575940617000133",
+      "weight": 0.7325275602865498
+    },
+    {
+      "from": "720575940617000136",
+      "to": "720575940617000080",
+      "weight": 0.22204750517725635
+    },
+    {
+      "from": "720575940617000171",
+      "to": "720575940617000145",
+      "weight": 0.3596144760685845
+    },
+    {
+      "from": "720575940617000199",
+      "to": "720575940617000038",
+      "weight": 0.3955263129871412
+    },
+    {
+      "from": "720575940617000094",
+      "to": "720575940617000017",
+      "weight": 0.21923765431393846
+    },
+    {
+      "from": "720575940617000198",
+      "to": "720575940617000114",
+      "weight": 0.9447614179423127
+    },
+    {
+      "from": "720575940617000038",
+      "to": "720575940617000191",
+      "weight": 0.9565833293226795
+    },
+    {
+      "from": "720575940617000145",
+      "to": "720575940617000037",
+      "weight": 0.6744750432686888
+    },
+    {
+      "from": "720575940617000163",
+      "to": "720575940617000135",
+      "weight": 0.6694230690492196
+    },
+    {
+      "from": "720575940617000164",
+      "to": "720575940617000048",
+      "weight": 0.38443686481551237
+    },
+    {
+      "from": "720575940617000199",
+      "to": "720575940617000099",
+      "weight": 0.8160781499330276
+    },
+    {
+      "from": "720575940617000018",
+      "to": "720575940617000147",
+      "weight": 0.43958109912794435
+    },
+    {
+      "from": "720575940617000134",
+      "to": "720575940617000158",
+      "weight": 0.4203317670873718
+    },
+    {
+      "from": "720575940617000105",
+      "to": "720575940617000029",
+      "weight": 0.7511026450023441
+    },
+    {
+      "from": "720575940617000119",
+      "to": "720575940617000018",
+      "weight": 0.6984963444260136
+    },
+    {
+      "from": "720575940617000147",
+      "to": "720575940617000167",
+      "weight": 0.7578664632588021
+    },
+    {
+      "from": "720575940617000173",
+      "to": "720575940617000137",
+      "weight": 0.3406200795339974
+    },
+    {
+      "from": "720575940617000160",
+      "to": "720575940617000138",
+      "weight": 0.332954998865182
+    },
+    {
+      "from": "720575940617000009",
+      "to": "720575940617000083",
+      "weight": 0.936738640922433
+    },
+    {
+      "from": "720575940617000160",
+      "to": "720575940617000022",
+      "weight": 0.7208117712712325
+    },
+    {
+      "from": "720575940617000066",
+      "to": "720575940617000162",
+      "weight": 0.6205585923162498
+    },
+    {
+      "from": "720575940617000136",
+      "to": "720575940617000162",
+      "weight": 0.4416624104791992
+    },
+    {
+      "from": "720575940617000138",
+      "to": "720575940617000124",
+      "weight": 0.6864068582092191
+    },
+    {
+      "from": "720575940617000183",
+      "to": "720575940617000038",
+      "weight": 0.3636202768466992
+    },
+    {
+      "from": "720575940617000150",
+      "to": "720575940617000080",
+      "weight": 0.41413962702949525
+    },
+    {
+      "from": "720575940617000039",
+      "to": "720575940617000199",
+      "weight": 0.4136357284437203
+    },
+    {
+      "from": "720575940617000185",
+      "to": "720575940617000128",
+      "weight": 0.667887494704408
+    },
+    {
+      "from": "720575940617000092",
+      "to": "720575940617000159",
+      "weight": 0.8835296796830459
+    },
+    {
+      "from": "720575940617000005",
+      "to": "720575940617000073",
+      "weight": 0.725043577524479
+    },
+    {
+      "from": "720575940617000001",
+      "to": "720575940617000029",
+      "weight": 0.44055398459353656
+    },
+    {
+      "from": "720575940617000024",
+      "to": "720575940617000103",
+      "weight": 0.562283379519844
+    },
+    {
+      "from": "720575940617000123",
+      "to": "720575940617000070",
+      "weight": 0.9561927988512877
+    },
+    {
+      "from": "720575940617000089",
+      "to": "720575940617000094",
+      "weight": 0.6191254190528978
+    },
+    {
+      "from": "720575940617000135",
+      "to": "720575940617000073",
+      "weight": 0.9794306119329967
+    },
+    {
+      "from": "720575940617000025",
+      "to": "720575940617000128",
+      "weight": 0.8836670176368435
+    },
+    {
+      "from": "720575940617000145",
+      "to": "720575940617000051",
+      "weight": 0.7448332782471812
+    },
+    {
+      "from": "720575940617000170",
+      "to": "720575940617000071",
+      "weight": 0.6080127728582233
+    },
+    {
+      "from": "720575940617000106",
+      "to": "720575940617000003",
+      "weight": 0.47131214516353614
+    },
+    {
+      "from": "720575940617000026",
+      "to": "720575940617000100",
+      "weight": 0.4664963537201354
+    },
+    {
+      "from": "720575940617000054",
+      "to": "720575940617000121",
+      "weight": 0.2231070380412506
+    },
+    {
+      "from": "720575940617000046",
+      "to": "720575940617000146",
+      "weight": 0.7502228974566125
+    },
+    {
+      "from": "720575940617000068",
+      "to": "720575940617000168",
+      "weight": 0.6600400413302467
+    },
+    {
+      "from": "720575940617000053",
+      "to": "720575940617000058",
+      "weight": 0.38195268570013846
+    },
+    {
+      "from": "720575940617000015",
+      "to": "720575940617000009",
+      "weight": 0.9369609784969757
+    },
+    {
+      "from": "720575940617000142",
+      "to": "720575940617000188",
+      "weight": 0.41642076571267755
+    },
+    {
+      "from": "720575940617000168",
+      "to": "720575940617000096",
+      "weight": 0.6671213255757082
+    },
+    {
+      "from": "720575940617000186",
+      "to": "720575940617000153",
+      "weight": 0.8816668074895382
+    },
+    {
+      "from": "720575940617000169",
+      "to": "720575940617000112",
+      "weight": 0.9906388528474908
+    },
+    {
+      "from": "720575940617000039",
+      "to": "720575940617000063",
+      "weight": 0.9070653257211123
+    },
+    {
+      "from": "720575940617000046",
+      "to": "720575940617000031",
+      "weight": 0.6723428265231243
+    },
+    {
+      "from": "720575940617000160",
+      "to": "720575940617000078",
+      "weight": 0.48181646327352745
+    },
+    {
+      "from": "720575940617000143",
+      "to": "720575940617000074",
+      "weight": 0.21521851259426114
+    },
+    {
+      "from": "720575940617000065",
+      "to": "720575940617000095",
+      "weight": 0.5268089785039516
+    },
+    {
+      "from": "720575940617000099",
+      "to": "720575940617000170",
+      "weight": 0.7689270935727899
+    },
+    {
+      "from": "720575940617000058",
+      "to": "720575940617000149",
+      "weight": 0.9111603842778415
+    },
+    {
+      "from": "720575940617000099",
+      "to": "720575940617000164",
+      "weight": 0.6038052522405277
+    },
+    {
+      "from": "720575940617000028",
+      "to": "720575940617000167",
+      "weight": 0.7182544103026614
+    },
+    {
+      "from": "720575940617000090",
+      "to": "720575940617000006",
+      "weight": 0.89933369180576
+    },
+    {
+      "from": "720575940617000118",
+      "to": "720575940617000198",
+      "weight": 0.22273516013575767
+    },
+    {
+      "from": "720575940617000164",
+      "to": "720575940617000154",
+      "weight": 0.7116169636297334
+    },
+    {
+      "from": "720575940617000177",
+      "to": "720575940617000013",
+      "weight": 0.9850709952163816
+    },
+    {
+      "from": "720575940617000066",
+      "to": "720575940617000198",
+      "weight": 0.6467186243387497
+    },
+    {
+      "from": "720575940617000177",
+      "to": "720575940617000171",
+      "weight": 0.7267300201716556
+    },
+    {
+      "from": "720575940617000096",
+      "to": "720575940617000122",
+      "weight": 0.2931498686005409
+    },
+    {
+      "from": "720575940617000141",
+      "to": "720575940617000078",
+      "weight": 0.9201105218861427
+    },
+    {
+      "from": "720575940617000041",
+      "to": "720575940617000005",
+      "weight": 0.6206069928959428
+    },
+    {
+      "from": "720575940617000073",
+      "to": "720575940617000095",
+      "weight": 0.28050811319989316
+    },
+    {
+      "from": "720575940617000045",
+      "to": "720575940617000148",
+      "weight": 0.6555051882516933
+    },
+    {
+      "from": "720575940617000084",
+      "to": "720575940617000180",
+      "weight": 0.8711757925453629
+    },
+    {
+      "from": "720575940617000177",
+      "to": "720575940617000113",
+      "weight": 0.7204083251180953
+    },
+    {
+      "from": "720575940617000048",
+      "to": "720575940617000199",
+      "weight": 0.5652439897227177
+    },
+    {
+      "from": "720575940617000151",
+      "to": "720575940617000053",
+      "weight": 0.914808023398453
+    },
+    {
+      "from": "720575940617000189",
+      "to": "720575940617000035",
+      "weight": 0.24968516765520266
+    },
+    {
+      "from": "720575940617000057",
+      "to": "720575940617000104",
+      "weight": 0.9134513504424098
+    },
+    {
+      "from": "720575940617000189",
+      "to": "720575940617000152",
+      "weight": 0.7258885457591213
+    },
+    {
+      "from": "720575940617000123",
+      "to": "720575940617000027",
+      "weight": 0.5575520334209938
+    },
+    {
+      "from": "720575940617000024",
+      "to": "720575940617000089",
+      "weight": 0.36821637218176584
+    },
+    {
+      "from": "720575940617000018",
+      "to": "720575940617000004",
+      "weight": 0.5579126702275381
+    },
+    {
+      "from": "720575940617000172",
+      "to": "720575940617000066",
+      "weight": 0.6530055136589124
+    },
+    {
+      "from": "720575940617000078",
+      "to": "720575940617000179",
+      "weight": 0.4041293867166072
+    },
+    {
+      "from": "720575940617000165",
+      "to": "720575940617000166",
+      "weight": 0.8388773706992725
+    },
+    {
+      "from": "720575940617000158",
+      "to": "720575940617000122",
+      "weight": 0.20127080365962124
+    },
+    {
+      "from": "720575940617000158",
+      "to": "720575940617000130",
+      "weight": 0.8765031535930272
+    },
+    {
+      "from": "720575940617000186",
+      "to": "720575940617000183",
+      "weight": 0.2630006851473745
+    },
+    {
+      "from": "720575940617000104",
+      "to": "720575940617000144",
+      "weight": 0.8004973641785447
+    },
+    {
+      "from": "720575940617000127",
+      "to": "720575940617000169",
+      "weight": 0.9539112801008809
+    },
+    {
+      "from": "720575940617000038",
+      "to": "720575940617000155",
+      "weight": 0.9915528337880659
+    },
+    {
+      "from": "720575940617000194",
+      "to": "720575940617000067",
+      "weight": 0.8499543473597302
+    },
+    {
+      "from": "720575940617000199",
+      "to": "720575940617000019",
+      "weight": 0.6412148851330595
+    },
+    {
+      "from": "720575940617000193",
+      "to": "720575940617000023",
+      "weight": 0.9600775818565803
+    },
+    {
+      "from": "720575940617000062",
+      "to": "720575940617000102",
+      "weight": 0.6814660008540123
+    },
+    {
+      "from": "720575940617000169",
+      "to": "720575940617000027",
+      "weight": 0.381832194693877
+    },
+    {
+      "from": "720575940617000106",
+      "to": "720575940617000114",
+      "weight": 0.7858848256620179
+    },
+    {
+      "from": "720575940617000196",
+      "to": "720575940617000057",
+      "weight": 0.7813999544033015
+    },
+    {
+      "from": "720575940617000178",
+      "to": "720575940617000149",
+      "weight": 0.47843810263777287
+    },
+    {
+      "from": "720575940617000111",
+      "to": "720575940617000099",
+      "weight": 0.6754095466739993
+    },
+    {
+      "from": "720575940617000194",
+      "to": "720575940617000014",
+      "weight": 0.7269952097403853
+    },
+    {
+      "from": "720575940617000071",
+      "to": "720575940617000106",
+      "weight": 0.5024543479941908
+    },
+    {
+      "from": "720575940617000005",
+      "to": "720575940617000049",
+      "weight": 0.7392379587941325
+    },
+    {
+      "from": "720575940617000029",
+      "to": "720575940617000112",
+      "weight": 0.537656128119649
+    },
+    {
+      "from": "720575940617000107",
+      "to": "720575940617000067",
+      "weight": 0.214517485573736
+    },
+    {
+      "from": "720575940617000152",
+      "to": "720575940617000005",
+      "weight": 0.7399663271256158
+    },
+    {
+      "from": "720575940617000065",
+      "to": "720575940617000111",
+      "weight": 0.2967124721687256
+    },
+    {
+      "from": "720575940617000108",
+      "to": "720575940617000160",
+      "weight": 0.769145922694062
+    },
+    {
+      "from": "720575940617000174",
+      "to": "720575940617000190",
+      "weight": 0.5434105180646833
+    },
+    {
+      "from": "720575940617000076",
+      "to": "720575940617000016",
+      "weight": 0.3495119385491881
+    },
+    {
+      "from": "720575940617000008",
+      "to": "720575940617000093",
+      "weight": 0.2920640351381767
+    },
+    {
+      "from": "720575940617000006",
+      "to": "720575940617000074",
+      "weight": 0.6051575578507911
+    },
+    {
+      "from": "720575940617000137",
+      "to": "720575940617000186",
+      "weight": 0.4509300439698389
+    },
+    {
+      "from": "720575940617000005",
+      "to": "720575940617000086",
+      "weight": 0.8027029464606981
+    },
+    {
+      "from": "720575940617000155",
+      "to": "720575940617000176",
+      "weight": 0.569327671313502
+    },
+    {
+      "from": "720575940617000062",
+      "to": "720575940617000157",
+      "weight": 0.943954798293994
+    },
+    {
+      "from": "720575940617000090",
+      "to": "720575940617000091",
+      "weight": 0.6071483314890945
+    },
+    {
+      "from": "720575940617000149",
+      "to": "720575940617000047",
+      "weight": 0.7652145587834436
+    },
+    {
+      "from": "720575940617000026",
+      "to": "720575940617000039",
+      "weight": 0.8618260104942042
+    },
+    {
+      "from": "720575940617000137",
+      "to": "720575940617000052",
+      "weight": 0.4312886972736519
+    },
+    {
+      "from": "720575940617000072",
+      "to": "720575940617000127",
+      "weight": 0.7828569672168944
+    },
+    {
+      "from": "720575940617000197",
+      "to": "720575940617000177",
+      "weight": 0.4447073284331672
+    },
+    {
+      "from": "720575940617000162",
+      "to": "720575940617000184",
+      "weight": 0.37195940919334813
+    },
+    {
+      "from": "720575940617000079",
+      "to": "720575940617000031",
+      "weight": 0.5226664396429604
+    },
+    {
+      "from": "720575940617000142",
+      "to": "720575940617000193",
+      "weight": 0.8894699643481947
+    },
+    {
+      "from": "720575940617000102",
+      "to": "720575940617000173",
+      "weight": 0.500609295611087
+    },
+    {
+      "from": "720575940617000186",
+      "to": "720575940617000003",
+      "weight": 0.9667627428675876
+    },
+    {
+      "from": "720575940617000096",
+      "to": "720575940617000103",
+      "weight": 0.9794053084326526
+    },
+    {
+      "from": "720575940617000067",
+      "to": "720575940617000014",
+      "weight": 0.7111935457651839
+    },
+    {
+      "from": "720575940617000114",
+      "to": "720575940617000182",
+      "weight": 0.44406661949556414
+    },
+    {
+      "from": "720575940617000158",
+      "to": "720575940617000137",
+      "weight": 0.563052098985995
+    },
+    {
+      "from": "720575940617000030",
+      "to": "720575940617000073",
+      "weight": 0.3913626391234716
+    },
+    {
+      "from": "720575940617000093",
+      "to": "720575940617000092",
+      "weight": 0.6339326387848403
+    },
+    {
+      "from": "720575940617000020",
+      "to": "720575940617000023",
+      "weight": 0.7022960228178727
+    },
+    {
+      "from": "720575940617000068",
+      "to": "720575940617000144",
+      "weight": 0.9825345491371811
+    },
+    {
+      "from": "720575940617000018",
+      "to": "720575940617000163",
+      "weight": 0.7402388075963175
+    },
+    {
+      "from": "720575940617000135",
+      "to": "720575940617000184",
+      "weight": 0.2049408223509399
+    },
+    {
+      "from": "720575940617000096",
+      "to": "720575940617000093",
+      "weight": 0.27799130110148274
+    },
+    {
+      "from": "720575940617000019",
+      "to": "720575940617000170",
+      "weight": 0.6870940598156403
+    },
+    {
+      "from": "720575940617000056",
+      "to": "720575940617000048",
+      "weight": 0.9120209542123694
+    },
+    {
+      "from": "720575940617000152",
+      "to": "720575940617000189",
+      "weight": 0.31795950080986324
+    },
+    {
+      "from": "720575940617000170",
+      "to": "720575940617000026",
+      "weight": 0.9670848895893458
+    },
+    {
+      "from": "720575940617000024",
+      "to": "720575940617000019",
+      "weight": 0.23582697045570972
+    },
+    {
+      "from": "720575940617000036",
+      "to": "720575940617000111",
+      "weight": 0.8197546447865842
+    },
+    {
+      "from": "720575940617000109",
+      "to": "720575940617000169",
+      "weight": 0.540843317018123
+    },
+    {
+      "from": "720575940617000139",
+      "to": "720575940617000006",
+      "weight": 0.3907903231058243
+    },
+    {
+      "from": "720575940617000027",
+      "to": "720575940617000197",
+      "weight": 0.3712677829652129
+    },
+    {
+      "from": "720575940617000034",
+      "to": "720575940617000121",
+      "weight": 0.3435895534360024
+    },
+    {
+      "from": "720575940617000142",
+      "to": "720575940617000161",
+      "weight": 0.5293251466557185
+    },
+    {
+      "from": "720575940617000066",
+      "to": "720575940617000117",
+      "weight": 0.5039291037022366
+    },
+    {
+      "from": "720575940617000014",
+      "to": "720575940617000054",
+      "weight": 0.4089790428700586
+    },
+    {
+      "from": "720575940617000122",
+      "to": "720575940617000050",
+      "weight": 0.316165017809817
+    },
+    {
+      "from": "720575940617000169",
+      "to": "720575940617000194",
+      "weight": 0.9106332549615248
+    },
+    {
+      "from": "720575940617000145",
+      "to": "720575940617000093",
+      "weight": 0.8483007442200117
+    },
+    {
+      "from": "720575940617000176",
+      "to": "720575940617000082",
+      "weight": 0.4080240978800402
+    },
+    {
+      "from": "720575940617000171",
+      "to": "720575940617000177",
+      "weight": 0.551806588703824
+    },
+    {
+      "from": "720575940617000137",
+      "to": "720575940617000025",
+      "weight": 0.8227872165440646
+    },
+    {
+      "from": "720575940617000096",
+      "to": "720575940617000196",
+      "weight": 0.5557205062240951
+    },
+    {
+      "from": "720575940617000056",
+      "to": "720575940617000017",
+      "weight": 0.9879318840817082
+    },
+    {
+      "from": "720575940617000097",
+      "to": "720575940617000038",
+      "weight": 0.7682237721845437
+    },
+    {
+      "from": "720575940617000053",
+      "to": "720575940617000108",
+      "weight": 0.2618765679874443
+    },
+    {
+      "from": "720575940617000096",
+      "to": "720575940617000036",
+      "weight": 0.9257568111785861
+    },
+    {
+      "from": "720575940617000188",
+      "to": "720575940617000011",
+      "weight": 0.45331923338282937
+    },
+    {
+      "from": "720575940617000106",
+      "to": "720575940617000104",
+      "weight": 0.8497814903069794
+    },
+    {
+      "from": "720575940617000040",
+      "to": "720575940617000091",
+      "weight": 0.38424239018777917
+    },
+    {
+      "from": "720575940617000166",
+      "to": "720575940617000020",
+      "weight": 0.2553377957845407
+    },
+    {
+      "from": "720575940617000166",
+      "to": "720575940617000084",
+      "weight": 0.6163807076228258
+    },
+    {
+      "from": "720575940617000130",
+      "to": "720575940617000021",
+      "weight": 0.634754486252235
+    },
+    {
+      "from": "720575940617000187",
+      "to": "720575940617000046",
+      "weight": 0.8126491745888584
+    },
+    {
+      "from": "720575940617000110",
+      "to": "720575940617000183",
+      "weight": 0.37504276025337646
+    },
+    {
+      "from": "720575940617000143",
+      "to": "720575940617000147",
+      "weight": 0.8305550387934348
+    },
+    {
+      "from": "720575940617000041",
+      "to": "720575940617000177",
+      "weight": 0.3727940445745316
+    },
+    {
+      "from": "720575940617000086",
+      "to": "720575940617000135",
+      "weight": 0.7240996306786647
+    },
+    {
+      "from": "720575940617000006",
+      "to": "720575940617000059",
+      "weight": 0.9154350938882625
+    },
+    {
+      "from": "720575940617000051",
+      "to": "720575940617000059",
+      "weight": 0.4826730953890378
+    },
+    {
+      "from": "720575940617000068",
+      "to": "720575940617000001",
+      "weight": 0.6315154690884588
+    },
+    {
+      "from": "720575940617000124",
+      "to": "720575940617000022",
+      "weight": 0.3889256962001718
+    },
+    {
+      "from": "720575940617000085",
+      "to": "720575940617000102",
+      "weight": 0.5751358591165481
+    },
+    {
+      "from": "720575940617000001",
+      "to": "720575940617000169",
+      "weight": 0.22659538000551038
+    },
+    {
+      "from": "720575940617000178",
+      "to": "720575940617000130",
+      "weight": 0.4137321684445146
+    },
+    {
+      "from": "720575940617000050",
+      "to": "720575940617000180",
+      "weight": 0.765153224284975
+    },
+    {
+      "from": "720575940617000092",
+      "to": "720575940617000132",
+      "weight": 0.9232738733348635
+    },
+    {
+      "from": "720575940617000016",
+      "to": "720575940617000090",
+      "weight": 0.25338400892064455
+    },
+    {
+      "from": "720575940617000111",
+      "to": "720575940617000110",
+      "weight": 0.34703742597472687
+    },
+    {
+      "from": "720575940617000023",
+      "to": "720575940617000148",
+      "weight": 0.8964444632797721
+    },
+    {
+      "from": "720575940617000105",
+      "to": "720575940617000054",
+      "weight": 0.21222209834579653
+    },
+    {
+      "from": "720575940617000182",
+      "to": "720575940617000153",
+      "weight": 0.7521342143190752
+    },
+    {
+      "from": "720575940617000183",
+      "to": "720575940617000170",
+      "weight": 0.7163312643708692
+    },
+    {
+      "from": "720575940617000128",
+      "to": "720575940617000101",
+      "weight": 0.9292966106203813
+    },
+    {
+      "from": "720575940617000026",
+      "to": "720575940617000189",
+      "weight": 0.6097212144423909
+    },
+    {
+      "from": "720575940617000189",
+      "to": "720575940617000065",
+      "weight": 0.2761525712130218
+    },
+    {
+      "from": "720575940617000126",
+      "to": "720575940617000009",
+      "weight": 0.2163811433700726
+    },
+    {
+      "from": "720575940617000178",
+      "to": "720575940617000076",
+      "weight": 0.7645372573829743
+    },
+    {
+      "from": "720575940617000140",
+      "to": "720575940617000109",
+      "weight": 0.9861943281214927
+    },
+    {
+      "from": "720575940617000188",
+      "to": "720575940617000112",
+      "weight": 0.46544082897886385
+    },
+    {
+      "from": "720575940617000098",
+      "to": "720575940617000154",
+      "weight": 0.5098028989938569
+    },
+    {
+      "from": "720575940617000176",
+      "to": "720575940617000078",
+      "weight": 0.7923273303004692
+    },
+    {
+      "from": "720575940617000121",
+      "to": "720575940617000034",
+      "weight": 0.8089646796504237
+    },
+    {
+      "from": "720575940617000003",
+      "to": "720575940617000007",
+      "weight": 0.5280074496064553
+    },
+    {
+      "from": "720575940617000078",
+      "to": "720575940617000176",
+      "weight": 0.7326719406785405
+    },
+    {
+      "from": "720575940617000047",
+      "to": "720575940617000170",
+      "weight": 0.7439356808041626
+    },
+    {
+      "from": "720575940617000051",
+      "to": "720575940617000079",
+      "weight": 0.5807977492235504
+    },
+    {
+      "from": "720575940617000072",
+      "to": "720575940617000097",
+      "weight": 0.8482914144363185
+    },
+    {
+      "from": "720575940617000038",
+      "to": "720575940617000170",
+      "weight": 0.8705674385083872
+    },
+    {
+      "from": "720575940617000158",
+      "to": "720575940617000080",
+      "weight": 0.20866876492003153
+    },
+    {
+      "from": "720575940617000128",
+      "to": "720575940617000103",
+      "weight": 0.5219918516381639
+    },
+    {
+      "from": "720575940617000079",
+      "to": "720575940617000054",
+      "weight": 0.5201307035786302
+    },
+    {
+      "from": "720575940617000013",
+      "to": "720575940617000108",
+      "weight": 0.40534751915326095
+    },
+    {
+      "from": "720575940617000050",
+      "to": "720575940617000188",
+      "weight": 0.24310459479445914
+    },
+    {
+      "from": "720575940617000050",
+      "to": "720575940617000190",
+      "weight": 0.2460917457105869
+    },
+    {
+      "from": "720575940617000174",
+      "to": "720575940617000168",
+      "weight": 0.9406772554572997
+    },
+    {
+      "from": "720575940617000000",
+      "to": "720575940617000085",
+      "weight": 0.41547891245038315
+    },
+    {
+      "from": "720575940617000053",
+      "to": "720575940617000156",
+      "weight": 0.8619955241002872
+    },
+    {
+      "from": "720575940617000182",
+      "to": "720575940617000117",
+      "weight": 0.21509909456671955
+    },
+    {
+      "from": "720575940617000103",
+      "to": "720575940617000047",
+      "weight": 0.828161645545588
+    },
+    {
+      "from": "720575940617000026",
+      "to": "720575940617000164",
+      "weight": 0.29950741670673164
+    },
+    {
+      "from": "720575940617000049",
+      "to": "720575940617000073",
+      "weight": 0.32716186467540886
+    },
+    {
+      "from": "720575940617000192",
+      "to": "720575940617000039",
+      "weight": 0.6924343443136682
+    },
+    {
+      "from": "720575940617000125",
+      "to": "720575940617000032",
+      "weight": 0.9531502235290559
+    },
+    {
+      "from": "720575940617000053",
+      "to": "720575940617000078",
+      "weight": 0.6060691470663666
+    },
+    {
+      "from": "720575940617000071",
+      "to": "720575940617000139",
+      "weight": 0.47362518270703174
+    },
+    {
+      "from": "720575940617000045",
+      "to": "720575940617000191",
+      "weight": 0.6824003636175294
+    },
+    {
+      "from": "720575940617000188",
+      "to": "720575940617000132",
+      "weight": 0.407542823130131
+    },
+    {
+      "from": "720575940617000198",
+      "to": "720575940617000087",
+      "weight": 0.3905557343494157
+    },
+    {
+      "from": "720575940617000179",
+      "to": "720575940617000134",
+      "weight": 0.5521947121914306
+    },
+    {
+      "from": "720575940617000025",
+      "to": "720575940617000104",
+      "weight": 0.9744255556072619
+    },
+    {
+      "from": "720575940617000109",
+      "to": "720575940617000182",
+      "weight": 0.5270940648833238
+    },
+    {
+      "from": "720575940617000106",
+      "to": "720575940617000116",
+      "weight": 0.8008448466682254
+    },
+    {
+      "from": "720575940617000050",
+      "to": "720575940617000159",
+      "weight": 0.9908168152687324
+    },
+    {
+      "from": "720575940617000115",
+      "to": "720575940617000135",
+      "weight": 0.9912819637006938
+    },
+    {
+      "from": "720575940617000059",
+      "to": "720575940617000036",
+      "weight": 0.5460751578688756
+    },
+    {
+      "from": "720575940617000120",
+      "to": "720575940617000030",
+      "weight": 0.28478179913324797
+    },
+    {
+      "from": "720575940617000164",
+      "to": "720575940617000039",
+      "weight": 0.47713258202307396
+    },
+    {
+      "from": "720575940617000165",
+      "to": "720575940617000078",
+      "weight": 0.9105144952652273
+    },
+    {
+      "from": "720575940617000022",
+      "to": "720575940617000121",
+      "weight": 0.20184027242996178
+    },
+    {
+      "from": "720575940617000065",
+      "to": "720575940617000073",
+      "weight": 0.2984610473370012
+    },
+    {
+      "from": "720575940617000192",
+      "to": "720575940617000014",
+      "weight": 0.6362743809164396
+    },
+    {
+      "from": "720575940617000051",
+      "to": "720575940617000112",
+      "weight": 0.58344151108885
+    },
+    {
+      "from": "720575940617000079",
+      "to": "720575940617000059",
+      "weight": 0.8308592860798092
+    },
+    {
+      "from": "720575940617000146",
+      "to": "720575940617000198",
+      "weight": 0.6090397623404389
+    },
+    {
+      "from": "720575940617000093",
+      "to": "720575940617000127",
+      "weight": 0.6857350688345845
+    },
+    {
+      "from": "720575940617000198",
+      "to": "720575940617000137",
+      "weight": 0.38237517451029596
+    },
+    {
+      "from": "720575940617000015",
+      "to": "720575940617000032",
+      "weight": 0.7704258548452632
+    },
+    {
+      "from": "720575940617000170",
+      "to": "720575940617000038",
+      "weight": 0.2630513049042977
+    },
+    {
+      "from": "720575940617000065",
+      "to": "720575940617000000",
+      "weight": 0.4785566544791974
+    },
+    {
+      "from": "720575940617000171",
+      "to": "720575940617000111",
+      "weight": 0.9726723326257591
+    },
+    {
+      "from": "720575940617000121",
+      "to": "720575940617000130",
+      "weight": 0.8625428934951176
+    },
+    {
+      "from": "720575940617000057",
+      "to": "720575940617000188",
+      "weight": 0.34005545694869255
+    },
+    {
+      "from": "720575940617000086",
+      "to": "720575940617000018",
+      "weight": 0.3628246814531365
+    },
+    {
+      "from": "720575940617000134",
+      "to": "720575940617000075",
+      "weight": 0.42945885601290623
+    },
+    {
+      "from": "720575940617000171",
+      "to": "720575940617000015",
+      "weight": 0.4826838059001355
+    },
+    {
+      "from": "720575940617000146",
+      "to": "720575940617000150",
+      "weight": 0.8728269549680672
+    },
+    {
+      "from": "720575940617000094",
+      "to": "720575940617000125",
+      "weight": 0.6727359115539349
+    },
+    {
+      "from": "720575940617000039",
+      "to": "720575940617000038",
+      "weight": 0.645864009403839
+    },
+    {
+      "from": "720575940617000042",
+      "to": "720575940617000082",
+      "weight": 0.760516134831758
+    },
+    {
+      "from": "720575940617000042",
+      "to": "720575940617000111",
+      "weight": 0.925594812653781
+    },
+    {
+      "from": "720575940617000068",
+      "to": "720575940617000067",
+      "weight": 0.4523304288026168
+    },
+    {
+      "from": "720575940617000043",
+      "to": "720575940617000104",
+      "weight": 0.43778457594651815
+    },
+    {
+      "from": "720575940617000164",
+      "to": "720575940617000047",
+      "weight": 0.34080693189304734
+    },
+    {
+      "from": "720575940617000082",
+      "to": "720575940617000180",
+      "weight": 0.39198785713583395
+    },
+    {
+      "from": "720575940617000041",
+      "to": "720575940617000097",
+      "weight": 0.5164617702656666
+    },
+    {
+      "from": "720575940617000054",
+      "to": "720575940617000194",
+      "weight": 0.541048224416284
+    },
+    {
+      "from": "720575940617000161",
+      "to": "720575940617000029",
+      "weight": 0.29175421954456415
+    },
+    {
+      "from": "720575940617000065",
+      "to": "720575940617000152",
+      "weight": 0.3265282176936203
+    },
+    {
+      "from": "720575940617000000",
+      "to": "720575940617000160",
+      "weight": 0.42188954730103423
+    },
+    {
+      "from": "720575940617000003",
+      "to": "720575940617000109",
+      "weight": 0.9453950412806245
+    },
+    {
+      "from": "720575940617000031",
+      "to": "720575940617000059",
+      "weight": 0.50865718000457
+    },
+    {
+      "from": "720575940617000185",
+      "to": "720575940617000176",
+      "weight": 0.870530209751819
+    },
+    {
+      "from": "720575940617000183",
+      "to": "720575940617000199",
+      "weight": 0.9699470407029738
+    },
+    {
+      "from": "720575940617000172",
+      "to": "720575940617000012",
+      "weight": 0.8233734230292327
+    },
+    {
+      "from": "720575940617000169",
+      "to": "720575940617000190",
+      "weight": 0.8295977482655668
+    },
+    {
+      "from": "720575940617000122",
+      "to": "720575940617000112",
+      "weight": 0.28352776119221856
+    },
+    {
+      "from": "720575940617000182",
+      "to": "720575940617000155",
+      "weight": 0.9719109229175855
+    },
+    {
+      "from": "720575940617000192",
+      "to": "720575940617000067",
+      "weight": 0.5475701255414944
+    },
+    {
+      "from": "720575940617000123",
+      "to": "720575940617000009",
+      "weight": 0.23844581846431662
+    },
+    {
+      "from": "720575940617000188",
+      "to": "720575940617000068",
+      "weight": 0.8727975925447209
+    },
+    {
+      "from": "720575940617000004",
+      "to": "720575940617000086",
+      "weight": 0.345031893841094
+    },
+    {
+      "from": "720575940617000170",
+      "to": "720575940617000047",
+      "weight": 0.5911187018110116
+    },
+    {
+      "from": "720575940617000144",
+      "to": "720575940617000120",
+      "weight": 0.6134693769889399
+    },
+    {
+      "from": "720575940617000157",
+      "to": "720575940617000040",
+      "weight": 0.9185318439487777
+    },
+    {
+      "from": "720575940617000020",
+      "to": "720575940617000013",
+      "weight": 0.4829182913275384
+    },
+    {
+      "from": "720575940617000038",
+      "to": "720575940617000072",
+      "weight": 0.7770922979740542
+    },
+    {
+      "from": "720575940617000078",
+      "to": "720575940617000130",
+      "weight": 0.3347473999214269
+    },
+    {
+      "from": "720575940617000042",
+      "to": "720575940617000112",
+      "weight": 0.4144147862604669
+    },
+    {
+      "from": "720575940617000057",
+      "to": "720575940617000144",
+      "weight": 0.4012507254008811
+    },
+    {
+      "from": "720575940617000125",
+      "to": "720575940617000167",
+      "weight": 0.28186229856423967
+    },
+    {
+      "from": "720575940617000147",
+      "to": "720575940617000137",
+      "weight": 0.9860146346744396
+    },
+    {
+      "from": "720575940617000057",
+      "to": "720575940617000128",
+      "weight": 0.7732743357639851
+    },
+    {
+      "from": "720575940617000131",
+      "to": "720575940617000049",
+      "weight": 0.3593659081913271
+    },
+    {
+      "from": "720575940617000091",
+      "to": "720575940617000105",
+      "weight": 0.3448294866988837
+    },
+    {
+      "from": "720575940617000080",
+      "to": "720575940617000186",
+      "weight": 0.9299774458200873
+    },
+    {
+      "from": "720575940617000047",
+      "to": "720575940617000164",
+      "weight": 0.879415250555541
+    },
+    {
+      "from": "720575940617000151",
+      "to": "720575940617000052",
+      "weight": 0.24152741961957816
+    },
+    {
+      "from": "720575940617000114",
+      "to": "720575940617000195",
+      "weight": 0.22508834723741247
+    },
+    {
+      "from": "720575940617000076",
+      "to": "720575940617000059",
+      "weight": 0.39744559060706885
+    },
+    {
+      "from": "720575940617000174",
+      "to": "720575940617000104",
+      "weight": 0.8892112182884342
+    },
+    {
+      "from": "720575940617000046",
+      "to": "720575940617000062",
+      "weight": 0.20112001876907462
+    },
+    {
+      "from": "720575940617000138",
+      "to": "720575940617000166",
+      "weight": 0.6685955971779884
+    },
+    {
+      "from": "720575940617000003",
+      "to": "720575940617000080",
+      "weight": 0.34499982795821915
+    },
+    {
+      "from": "720575940617000028",
+      "to": "720575940617000133",
+      "weight": 0.5314261422199773
+    },
+    {
+      "from": "720575940617000077",
+      "to": "720575940617000001",
+      "weight": 0.4101143335606331
+    },
+    {
+      "from": "720575940617000053",
+      "to": "720575940617000176",
+      "weight": 0.39501940218227194
+    },
+    {
+      "from": "720575940617000118",
+      "to": "720575940617000121",
+      "weight": 0.5238991182951622
+    },
+    {
+      "from": "720575940617000149",
+      "to": "720575940617000087",
+      "weight": 0.4500831214254329
+    },
+    {
+      "from": "720575940617000053",
+      "to": "720575940617000160",
+      "weight": 0.5501062373950723
+    },
+    {
+      "from": "720575940617000107",
+      "to": "720575940617000090",
+      "weight": 0.4859840420599393
+    },
+    {
+      "from": "720575940617000076",
+      "to": "720575940617000170",
+      "weight": 0.48360613695924093
+    },
+    {
+      "from": "720575940617000162",
+      "to": "720575940617000198",
+      "weight": 0.7123535263589809
+    },
+    {
+      "from": "720575940617000156",
+      "to": "720575940617000149",
+      "weight": 0.2178307647509694
+    },
+    {
+      "from": "720575940617000124",
+      "to": "720575940617000144",
+      "weight": 0.6800464384469926
+    },
+    {
+      "from": "720575940617000031",
+      "to": "720575940617000067",
+      "weight": 0.3313512314143614
+    },
+    {
+      "from": "720575940617000139",
+      "to": "720575940617000040",
+      "weight": 0.5824949762174143
+    },
+    {
+      "from": "720575940617000039",
+      "to": "720575940617000056",
+      "weight": 0.7089467024045135
+    },
+    {
+      "from": "720575940617000171",
+      "to": "720575940617000005",
+      "weight": 0.9235097149717875
+    },
+    {
+      "from": "720575940617000107",
+      "to": "720575940617000079",
+      "weight": 0.31124901160004426
+    },
+    {
+      "from": "720575940617000170",
+      "to": "720575940617000183",
+      "weight": 0.6519385835135185
+    },
+    {
+      "from": "720575940617000090",
+      "to": "720575940617000143",
+      "weight": 0.7753516129458584
+    },
+    {
+      "from": "720575940617000048",
+      "to": "720575940617000126",
+      "weight": 0.6304786765918489
+    },
+    {
+      "from": "720575940617000073",
+      "to": "720575940617000055",
+      "weight": 0.37262456646425185
+    },
+    {
+      "from": "720575940617000052",
+      "to": "720575940617000064",
+      "weight": 0.41261524778031644
+    },
+    {
+      "from": "720575940617000135",
+      "to": "720575940617000189",
+      "weight": 0.8677386254495552
+    },
+    {
+      "from": "720575940617000155",
+      "to": "720575940617000146",
+      "weight": 0.49463066800578437
+    },
+    {
+      "from": "720575940617000123",
+      "to": "720575940617000148",
+      "weight": 0.7802843877328625
+    },
+    {
+      "from": "720575940617000134",
+      "to": "720575940617000184",
+      "weight": 0.8854334572650453
+    },
+    {
+      "from": "720575940617000010",
+      "to": "720575940617000199",
+      "weight": 0.40009925231119275
+    }
+  ]
+}

@@ -24,6 +24,8 @@ export default function HudPanel({
   onResetView,
   onToggleXRay,
   isXRay,
+  isExploded,
+  onToggleExplode,
   onJumpToRegion
 }) {
   const [searchQuery, setSearchQuery] = useState('');
@@ -160,6 +162,12 @@ export default function HudPanel({
                   🔬 Rayos X
                 </button>
               </div>
+              <button 
+                onClick={onToggleExplode}
+                className={`w-full py-2 px-4 rounded-md border transition-colors text-sm font-medium ${isExploded ? 'bg-indigo-500/30 text-indigo-300 border-indigo-500/50' : 'bg-slate-800 text-slate-300 border-slate-700 hover:bg-slate-700'}`}
+              >
+                💥 Vista Expandida (Capas)
+              </button>
             </div>
           </div>
         ) : (

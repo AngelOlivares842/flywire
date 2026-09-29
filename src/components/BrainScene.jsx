@@ -22,7 +22,8 @@ export default function BrainScene({
   visibleTypes = new Set(),
   cameraTarget = null,
   highlightedSynapses = new Set(),
-  isXRay = false
+  isXRay = false,
+  isExploded = false
 }) {
   const controlsRef = useRef();
   const { camera } = useThree();
@@ -100,12 +101,13 @@ export default function BrainScene({
         return (
           <SynapticLink
             key={`synapse-${idx}`}
-            start={sourceNode.position}
-            end={targetNode.position}
+            sourceNode={sourceNode}
+            targetNode={targetNode}
             isActive={isActive}
             isHighlighted={isHighlighted}
             weight={synapse.weight}
             visible={isVisible}
+            isExploded={isExploded}
           />
         );
       })}
@@ -117,6 +119,7 @@ export default function BrainScene({
           isSelected={selectedNeuron && selectedNeuron.id === neuron.id}
           isActivated={activatedNeurons.has(neuron.id)}
           isVisible={visibleTypes ? visibleTypes.has(neuron.type) : true}
+          isExploded={isExploded}
           onSelect={onSelectNeuron}
           onFocus={onFocusNeuron}
         />

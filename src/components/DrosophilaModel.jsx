@@ -1,4 +1,4 @@
-import React, { useRef, useMemo } from 'react';
+import React, { useRef } from 'react';
 import { useFrame } from '@react-three/fiber';
 import { QuadraticBezierLine } from '@react-three/drei';
 import * as THREE from 'three';
@@ -12,141 +12,143 @@ const DrosophilaModel = React.memo(({ opacity = 1 }) => {
   useFrame((state) => {
     const t = state.clock.getElapsedTime();
     
-    // Smooth, eerie floating of the entire fly
     if (groupRef.current) {
       groupRef.current.position.y = Math.sin(t * 0.5) * 0.1;
-      groupRef.current.rotation.x = Math.sin(t * 0.3) * 0.02;
     }
 
-    // Wing flutter (approx 6Hz, very fast for flies)
     if (leftWingRef.current && rightWingRef.current) {
-      const flutter = Math.sin(t * Math.PI * 12) * 0.15;
-      leftWingRef.current.rotation.z = 0.2 + flutter;
-      rightWingRef.current.rotation.z = -0.2 - flutter;
+      const isFlying = Math.sin(t * 0.5) > 0;
+      if (isFlying) {
+        const flutter = Math.sin(t * Math.PI * 25) * 0.2;
+        leftWingRef.current.rotation.z = 0.4 + flutter;
+        rightWingRef.current.rotation.z = -0.4 - flutter;
+      } else {
+        leftWingRef.current.rotation.z = 0.1;
+        rightWingRef.current.rotation.z = -0.1;
+      }
     }
     
-    // Abdomen breathing (2 second cycle)
     if (abdomenRef.current) {
-      const scale = 1.0 + Math.sin(t * Math.PI) * 0.03;
-      abdomenRef.current.scale.set(1.8 * scale, 1.8 * scale, 4.5 * scale);
+      const scale = 1.0 + Math.sin(t * 3) * 0.015;
+      abdomenRef.current.scale.set(3.5 * scale, 3.5 * scale, 8.0 * scale);
     }
   });
 
-  // Holographic Material for the exoskeleton
-  const holoMaterial = (
+  const chitinMaterial = (
     <meshPhysicalMaterial 
-      color="#0ea5e9" 
-      emissive="#0284c7"
-      emissiveIntensity={0.2}
+      color="#1f1412"
+      roughness={0.6}
+      metalness={0.1}
+      clearcoat={0.3}
+      clearcoatRoughness={0.5}
       transparent 
-      opacity={0.08 * opacity} 
+      opacity={0.35 * opacity}
       depthWrite={false} 
-      roughness={0.2}
-      metalness={1}
-      clearcoat={1}
       side={THREE.DoubleSide}
-      blending={THREE.AdditiveBlending}
     />
   );
 
-  // Red glowing material for the compound eyes
   const eyeMaterial = (
     <meshPhysicalMaterial 
-      color="#ef4444" 
-      emissive="#991b1b"
-      emissiveIntensity={0.5}
+      color="#4a0404"
+      emissive="#2a0000"
+      roughness={0.2}
+      metalness={0.8}
+      clearcoat={1.0}
       transparent 
-      opacity={0.2 * opacity} 
+      opacity={0.45 * opacity} 
       depthWrite={false} 
-      blending={THREE.AdditiveBlending}
     />
   );
 
   return (
-    <group ref={groupRef}>
+    <group ref={groupRef} scale={[1.8, 1.8, 1.8]}>
       {/* Head */}
-      <mesh position={[0, 0.3, 0]} scale={[1.2, 0.9, 0.8]}>
-        <sphereGeometry args={[4.2, 32, 32]} />
-        {holoMaterial}
+      <mesh position={[0, 1.5, 0]} scale={[2.0, 1.5, 1.5]}>
+        <sphereGeometry args={[2.5, 32, 32]} />
+        {chitinMaterial}
       </mesh>
 
-      {/* Eyes (Compound, Large) */}
-      <mesh position={[-4.0, 0.8, 1.2]} scale={[0.5, 0.9, 0.8]} rotation={[0, -0.3, 0]}>
-        <sphereGeometry args={[2.5, 32, 32]} />
+      {/* Eyes */}
+      <mesh position={[-2.8, 2.0, 0.5]} scale={[0.6, 1.2, 1.0]} rotation={[0, -0.4, -0.3]}>
+        <sphereGeometry args={[2.0, 32, 32]} />
         {eyeMaterial}
       </mesh>
-      <mesh position={[4.0, 0.8, 1.2]} scale={[0.5, 0.9, 0.8]} rotation={[0, 0.3, 0]}>
-        <sphereGeometry args={[2.5, 32, 32]} />
+      <mesh position={[2.8, 2.0, 0.5]} scale={[0.6, 1.2, 1.0]} rotation={[0, 0.4, 0.3]}>
+        <sphereGeometry args={[2.0, 32, 32]} />
         {eyeMaterial}
       </mesh>
 
       {/* Thorax */}
-      <mesh position={[0, -0.5, -4.5]} scale={[2.2, 2.0, 2.8]}>
+      <mesh position={[0, 0.5, -4.5]} scale={[2.5, 2.8, 3.2]} rotation={[0.2, 0, 0]}>
         <sphereGeometry args={[1.5, 32, 32]} />
-        {holoMaterial}
+        {chitinMaterial}
       </mesh>
 
       {/* Abdomen */}
-      <mesh ref={abdomenRef} position={[0, -1.0, -9.5]} scale={[1.8, 1.8, 4.5]}>
+      <mesh ref={abdomenRef} position={[0, -1.5, -11.0]} scale={[3.5, 3.5, 8.0]} rotation={[-0.1, 0, 0]}>
         <sphereGeometry args={[1, 32, 32]} />
-        {holoMaterial}
+        {chitinMaterial}
       </mesh>
 
-      {/* Wings - Elegant long ellipses */}
-      <group position={[-2.0, 1.5, -4.5]} ref={leftWingRef}>
-        <mesh position={[-2.5, 0, -2]} rotation={[0.2, 0.5, 0]} scale={[2.5, 0.05, 5]}>
+      {/* Wings */}
+      <group position={[-1.5, 4.0, -3.5]} ref={leftWingRef}>
+        <mesh position={[-2.5, 0, -4]} rotation={[0.1, 0.5, 0]} scale={[2.5, 0.01, 7]}>
           <sphereGeometry args={[1, 32, 16]} />
           <meshPhysicalMaterial 
-            color="#e0e7ff" 
-            emissive="#a5b4fc"
-            emissiveIntensity={0.2}
+            color="#ffffff" 
+            roughness={0.1}
+            transmission={0.9}
+            thickness={0.1}
+            ior={1.2}
             transparent 
-            opacity={0.15 * opacity} 
+            opacity={0.2 * opacity} 
             depthWrite={false} 
-            blending={THREE.AdditiveBlending}
+            side={THREE.DoubleSide}
           />
         </mesh>
       </group>
-      <group position={[2.0, 1.5, -4.5]} ref={rightWingRef}>
-        <mesh position={[2.5, 0, -2]} rotation={[0.2, -0.5, 0]} scale={[2.5, 0.05, 5]}>
+      <group position={[1.5, 4.0, -3.5]} ref={rightWingRef}>
+        <mesh position={[2.5, 0, -4]} rotation={[0.1, -0.5, 0]} scale={[2.5, 0.01, 7]}>
           <sphereGeometry args={[1, 32, 16]} />
           <meshPhysicalMaterial 
-            color="#e0e7ff" 
-            emissive="#a5b4fc"
-            emissiveIntensity={0.2}
+            color="#ffffff" 
+            roughness={0.1}
+            transmission={0.9}
+            thickness={0.1}
+            ior={1.2}
             transparent 
-            opacity={0.15 * opacity} 
+            opacity={0.2 * opacity} 
             depthWrite={false} 
-            blending={THREE.AdditiveBlending}
+            side={THREE.DoubleSide}
           />
         </mesh>
       </group>
 
-      {/* Legs - Bio-organic curves */}
+      {/* Legs */}
       {[
-        { start: [-1.8, -1.5, -3], mid: [-3, -4, -3], end: [-4, -6, -2] },
-        { start: [1.8, -1.5, -3], mid: [3, -4, -3], end: [4, -6, -2] },
-        { start: [-2.2, -1.8, -4.5], mid: [-4, -4.5, -4], end: [-5, -6.5, -3] },
-        { start: [2.2, -1.8, -4.5], mid: [4, -4.5, -4], end: [5, -6.5, -3] },
-        { start: [-2.0, -1.8, -6], mid: [-3.5, -4, -7], end: [-4.5, -6, -8] },
-        { start: [2.0, -1.8, -6], mid: [3.5, -4, -7], end: [4.5, -6, -8] }
+        { start: [-2.0, -1.0, -3], mid: [-4, -4, -3], end: [-5, -8, -1] },
+        { start: [2.0, -1.0, -3], mid: [4, -4, -3], end: [5, -8, -1] },
+        { start: [-2.5, -1.5, -5], mid: [-5, -5, -4], end: [-6, -9, -2] },
+        { start: [2.5, -1.5, -5], mid: [5, -5, -4], end: [6, -9, -2] },
+        { start: [-2.0, -1.5, -7], mid: [-4.5, -4, -8], end: [-5, -8, -9] },
+        { start: [2.0, -1.5, -7], mid: [4.5, -4, -8], end: [5, -8, -9] }
       ].map((leg, i) => (
         <QuadraticBezierLine
           key={i}
           start={leg.start}
           mid={leg.mid}
           end={leg.end}
-          color="#0ea5e9"
-          lineWidth={1.5}
+          color="#1f1412"
+          lineWidth={2.5}
           transparent
-          opacity={0.2 * opacity}
-          blending={THREE.AdditiveBlending}
+          opacity={0.5 * opacity}
         />
       ))}
 
       {/* Antennae */}
-      <QuadraticBezierLine start={[0.8, 1.5, 2.8]} mid={[1.5, 3.5, 4]} end={[1.0, 4.5, 5.5]} color="#38bdf8" lineWidth={2} transparent opacity={0.3 * opacity} blending={THREE.AdditiveBlending} />
-      <QuadraticBezierLine start={[-0.8, 1.5, 2.8]} mid={[-1.5, 3.5, 4]} end={[-1.0, 4.5, 5.5]} color="#38bdf8" lineWidth={2} transparent opacity={0.3 * opacity} blending={THREE.AdditiveBlending} />
+      <QuadraticBezierLine start={[1.0, 2.5, 3.0]} mid={[1.5, 3.5, 4.5]} end={[1.2, 4.0, 5.0]} color="#1f1412" lineWidth={3} transparent opacity={0.6 * opacity} />
+      <QuadraticBezierLine start={[-1.0, 2.5, 3.0]} mid={[-1.5, 3.5, 4.5]} end={[-1.2, 4.0, 5.0]} color="#1f1412" lineWidth={3} transparent opacity={0.6 * opacity} />
     </group>
   );
 });

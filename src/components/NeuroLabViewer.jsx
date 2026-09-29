@@ -1,20 +1,26 @@
-import React, { useState, useCallback, useEffect, useRef } from 'react';
+import React, { useState, useCallback, useRef, useEffect } from 'react';
 import { Canvas } from '@react-three/fiber';
+import { NEURON_TYPE_COLORS, BRAIN_REGIONS } from '../data/neurons.js';
+import { useAIAnalysis } from '../hooks/useAIAnalysis.js';
 import BrainScene from './BrainScene.jsx';
 import HudPanel from './HudPanel.jsx';
-import { useAIAnalysis } from '../hooks/useAIAnalysis.js';
-import { neurons, synapses, NEURON_TYPE_COLORS, BRAIN_REGIONS } from '../data/neurons.js';
 
 export default function NeuroLabViewer() {
+  const [neuronsData, setNeuronsData] = useState([]);
+  const [synapsesData, setSynapsesData] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+
   const [selectedNeuron, setSelectedNeuron] = useState(null);
   const [hudOpen, setHudOpen] = useState(true);
   
-  const { aiStatus, progressText, analysisText, requestAnalysis, resetAnalysis } = useAIAnalysis();
-
+  const { status: aiStatus, progressText, analysisText } = useAIAnalysis(selectedNeuron);
+  
+  // State for visual features
   const [activatedNeurons, setActivatedNeurons] = useState(new Set());
   const [signalPulses, setSignalPulses] = useState([]);
   const [highlightedSynapses, setHighlightedSynapses] = useState(new Set());
   const [isSimulating, setIsSimulating] = useState(false);
+  const [simulationReach, setSimulationReach] = useState(0);
   
   const [visibleTypes, setVisibleTypes] = useState(new Set(Object.keys(NEURON_TYPE_COLORS)));
   
@@ -22,86 +28,36 @@ export default function NeuroLabViewer() {
   const [tourRegion, setTourRegion] = useState('');
   const [cameraTarget, setCameraTarget] = useState(null);
   const tourTimerRef = useRef(null);
-  
+
   const [isXRay, setIsXRay] = useState(false);
+  const [isExploded, setIsExploded] = useState(false); // Capas separadas
+
+  useEffect(() => {
+    fetch('/data/brain_data.json')
+      .then(res => res.json())
+      .then(data => {
+        setNeuronsData(data.neurons);
+        setSynapsesData(data.synapses);
+        setIsLoading(false);
+      })
+      .catch(err => {
+        console.error("Error loading brain data:", err);
+        setIsLoading(false);
+      });
+  }, []);
 
   const handleSelectNeuron = useCallback((neuron) => {
-    setSelectedNeuron(neuron);
-    setHudOpen(true);
-    requestAnalysis(neuron);
-  }, [requestAnalysis]);
+    // Avoid blocking the main thread when clicking by using requestAnimationFrame
+    requestAnimationFrame(() => {
+      setSelectedNeuron(neuron);
+      setHudOpen(true);
+    });
+  }, []);
 
   const handleDeselect = useCallback(() => {
     setSelectedNeuron(null);
-    resetAnalysis();
-  }, [resetAnalysis]);
-
-  const toggleHud = useCallback(() => {
-    setHudOpen(prev => !prev);
   }, []);
 
-  useEffect(() => {
-    const handleKeyDown = (e) => {
-      if (e.key === 'Escape') {
-        handleDeselect();
-      }
-    };
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [handleDeselect]);
-
-  // A. Signal Propagation Logic
-  const propagateSignal = useCallback((neuronId, depth) => {
-    if (depth >= 4) { // Max 4 hops
-      setTimeout(() => setIsSimulating(false), 1500);
-      return;
-    }
-    
-    const outgoing = synapses
-      .map((s, idx) => ({ ...s, idx }))
-      .filter(s => s.from === neuronId);
-    
-    if (outgoing.length === 0) {
-      setTimeout(() => setIsSimulating(false), 1500);
-      return;
-    }
-    
-    setTimeout(() => {
-      outgoing.forEach((syn, i) => {
-        const pulseId = `pulse-${depth}-${i}-${Date.now()}`;
-        setSignalPulses(prev => [...prev, { 
-          id: pulseId, 
-          fromId: syn.from, 
-          toId: syn.to,
-          color: '#06b6d4' 
-        }]);
-        setHighlightedSynapses(prev => new Set([...prev, syn.idx]));
-      });
-    }, depth * 600);
-  }, []);
-
-  const handleSimulateSignal = useCallback(() => {
-    if (!selectedNeuron || isSimulating) return;
-    setIsSimulating(true);
-    setActivatedNeurons(new Set([selectedNeuron.id]));
-    
-    propagateSignal(selectedNeuron.id, 0);
-  }, [selectedNeuron, isSimulating, propagateSignal]);
-
-  const handlePulseComplete = useCallback((pulseId) => {
-    setSignalPulses(prev => {
-      const pulse = prev.find(p => p.id === pulseId);
-      if (pulse) {
-        setActivatedNeurons(prevSet => new Set([...prevSet, pulse.toId]));
-        const depthMatch = pulseId.match(/pulse-(\d+)/);
-        const depth = depthMatch ? parseInt(depthMatch[1]) : 0;
-        propagateSignal(pulse.toId, depth + 1);
-      }
-      return prev.filter(p => p.id !== pulseId);
-    });
-  }, [propagateSignal]);
-
-  // B. Type Filtering
   const handleToggleType = useCallback((typeName) => {
     setVisibleTypes(prev => {
       const next = new Set(prev);
@@ -111,9 +67,77 @@ export default function NeuroLabViewer() {
     });
   }, []);
 
-  // C. Auto Tour
+  // Signal propagation logic
+  const propagateSignal = useCallback((neuronId, depth, currentSet) => {
+    if (depth >= 5) {
+      setTimeout(() => {
+        setIsSimulating(false);
+        setActivatedNeurons(new Set());
+        setHighlightedSynapses(new Set());
+        setSimulationReach(0);
+      }, 3000);
+      return;
+    }
+    
+    const outgoing = synapsesData
+      .map((s, idx) => ({ ...s, idx }))
+      .filter(s => s.from === neuronId);
+    
+    if (outgoing.length === 0) {
+      setTimeout(() => {
+        setIsSimulating(false);
+        setActivatedNeurons(new Set());
+        setHighlightedSynapses(new Set());
+        setSimulationReach(0);
+      }, 3000);
+      return;
+    }
+    
+    setTimeout(() => {
+      outgoing.forEach((syn, i) => {
+        const pulseId = `pulse-${depth}-${i}-${Math.random().toString(36).substring(7)}`;
+        setSignalPulses(prev => [...prev, { 
+          id: pulseId, 
+          fromId: syn.from, 
+          toId: syn.to,
+          color: '#22d3ee' 
+        }]);
+        setHighlightedSynapses(prev => new Set([...prev, syn.idx]));
+      });
+    }, depth * 400);
+  }, [synapsesData]);
+
+  const handleSimulateSignal = useCallback(() => {
+    if (!selectedNeuron || isSimulating) return;
+    setIsSimulating(true);
+    setSimulationReach(1);
+    setActivatedNeurons(new Set([selectedNeuron.id]));
+    propagateSignal(selectedNeuron.id, 0, new Set([selectedNeuron.id]));
+  }, [selectedNeuron, isSimulating, propagateSignal]);
+
+  const handlePulseComplete = useCallback((pulseId) => {
+    setSignalPulses(prev => {
+      const pulse = prev.find(p => p.id === pulseId);
+      if (pulse) {
+        setActivatedNeurons(prevSet => {
+          const newSet = new Set([...prevSet, pulse.toId]);
+          setSimulationReach(newSet.size);
+          return newSet;
+        });
+        const depthMatch = pulseId.match(/pulse-(\\d+)/);
+        const depth = depthMatch ? parseInt(depthMatch[1]) : 0;
+        propagateSignal(pulse.toId, depth + 1);
+      }
+      return prev.filter(p => p.id !== pulseId);
+    });
+  }, [propagateSignal]);
+
+  const handleFocusNeuron = useCallback((neuron) => {
+    setCameraTarget(neuron.position);
+  }, []);
+
   const handleStartTour = useCallback(() => {
-    if (isTouring) return;
+    if (isTouring || neuronsData.length === 0) return;
     setIsTouring(true);
     handleDeselect();
     
@@ -131,7 +155,7 @@ export default function NeuroLabViewer() {
       const region = regions[index];
       setTourRegion(region);
       
-      const regionNeurons = neurons.filter(n => n.region === region);
+      const regionNeurons = neuronsData.filter(n => n.region === region);
       if (regionNeurons.length > 0) {
         const centroid = regionNeurons.reduce(
           (acc, n) => [acc[0] + n.position[0], acc[1] + n.position[1], acc[2] + n.position[2]],
@@ -141,11 +165,11 @@ export default function NeuroLabViewer() {
       }
       
       index++;
-      tourTimerRef.current = setTimeout(advanceTour, 3500);
+      tourTimerRef.current = setTimeout(advanceTour, 4000);
     };
     
     advanceTour();
-  }, [isTouring, handleDeselect]);
+  }, [isTouring, handleDeselect, neuronsData]);
 
   const handleStopTour = useCallback(() => {
     clearTimeout(tourTimerRef.current);
@@ -154,29 +178,20 @@ export default function NeuroLabViewer() {
     setCameraTarget(null);
   }, []);
 
-  useEffect(() => {
-    return () => clearTimeout(tourTimerRef.current);
-  }, []);
-
-  // D. Focus & Reset
-  const handleFocusNeuron = useCallback((neuron) => {
-    setCameraTarget(neuron.position);
-  }, []);
-
   const handleResetView = useCallback(() => {
     setCameraTarget([0, 0, 0]);
     handleDeselect();
     setActivatedNeurons(new Set());
     setHighlightedSynapses(new Set());
     setIsSimulating(false);
+    setIsExploded(false);
   }, [handleDeselect]);
 
-  // E. X-Ray Mode
   const handleToggleXRay = useCallback(() => setIsXRay(prev => !prev), []);
+  const handleToggleExplode = useCallback(() => setIsExploded(prev => !prev), []);
 
-  // F. Region Jump
   const handleJumpToRegion = useCallback((regionName) => {
-    const regionNeurons = neurons.filter(n => n.region === regionName);
+    const regionNeurons = neuronsData.filter(n => n.region === regionName);
     if (regionNeurons.length > 0) {
       const centroid = regionNeurons.reduce(
         (acc, n) => [acc[0] + n.position[0], acc[1] + n.position[1], acc[2] + n.position[2]],
@@ -184,20 +199,29 @@ export default function NeuroLabViewer() {
       ).map(v => v / regionNeurons.length);
       setCameraTarget(centroid);
     }
+  }, [neuronsData]);
+
+  useEffect(() => {
+    return () => clearTimeout(tourTimerRef.current);
   }, []);
 
+  if (isLoading) {
+    return (
+      <div className="flex-1 h-full flex flex-col items-center justify-center bg-[#020617] text-cyan-400">
+        <div className="w-16 h-16 border-4 border-cyan-500/30 border-t-cyan-400 rounded-full animate-spin mb-4"></div>
+        <h2 className="text-xl font-bold tracking-widest animate-pulse">Iniciando NeuroLab 3D...</h2>
+        <p className="text-slate-500 text-sm mt-2">Cargando sinapsis y tensores de IA locales</p>
+      </div>
+    );
+  }
+
   return (
-    <div className="w-full h-full flex relative">
-      <div className="flex-1 h-full relative">
-        <Canvas
-          camera={{ position: [0, 2, 10], fov: 50 }}
-          gl={{ antialias: true, alpha: false, powerPreference: 'high-performance' }}
-          dpr={[1, 2]}
-          style={{ background: '#020617' }}
-        >
-          <BrainScene
-            neurons={neurons}
-            synapses={synapses}
+    <div className="flex-1 flex flex-col md:flex-row h-full overflow-hidden bg-[#020617]">
+      <div className="flex-1 h-full relative" onPointerMissed={handleDeselect}>
+        <Canvas camera={{ position: [0, 8, 25], fov: 45 }} dpr={[1, 2]}>
+          <BrainScene 
+            neurons={neuronsData}
+            synapses={synapsesData}
             selectedNeuron={selectedNeuron}
             onSelectNeuron={handleSelectNeuron}
             onFocusNeuron={handleFocusNeuron}
@@ -208,58 +232,51 @@ export default function NeuroLabViewer() {
             cameraTarget={cameraTarget}
             highlightedSynapses={highlightedSynapses}
             isXRay={isXRay}
+            isExploded={isExploded}
           />
         </Canvas>
         
-        <div className="absolute bottom-4 left-4 text-xs text-slate-500 space-y-1 pointer-events-none">
-          <p>ESC - Deseleccionar</p>
-          <p>Doble clic - Enfocar neurona</p>
-          <p>Arrastra - Rotar vista</p>
-          <p>Scroll - Zoom</p>
-        </div>
-
         {isTouring && tourRegion && (
           <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-10">
-            <div className="bg-slate-900/80 backdrop-blur-sm px-8 py-4 rounded-2xl border border-cyan-500/30 animate-fade-in tour-overlay">
-              <p className="text-cyan-400 text-2xl font-bold text-center text-glow">{tourRegion}</p>
-              <p className="text-slate-400 text-sm text-center">Región cerebral</p>
+            <div className="bg-slate-900/80 backdrop-blur-sm px-10 py-5 rounded-2xl border border-cyan-500/50 tour-overlay shadow-[0_0_30px_rgba(6,182,212,0.3)]">
+              <p className="text-cyan-400 text-3xl font-extrabold text-center drop-shadow-md">{tourRegion}</p>
+              <p className="text-slate-400 text-sm text-center mt-2 tracking-widest uppercase">Explorando región</p>
             </div>
           </div>
         )}
-        
+
+        {/* Shortcuts */}
+        <div className="absolute bottom-4 left-4 text-xs text-slate-500 space-y-1 pointer-events-none hidden md:block bg-slate-900/50 p-3 rounded-lg backdrop-blur-sm">
+          <p><span className="font-bold text-slate-300">ESC</span> - Deseleccionar</p>
+          <p><span className="font-bold text-slate-300">Doble clic</span> - Enfocar neurona</p>
+          <p><span className="font-bold text-slate-300">Arrastra</span> - Rotar vista</p>
+          <p><span className="font-bold text-slate-300">Scroll</span> - Zoom</p>
+        </div>
+
+        {/* Mobile toggle */}
         <button 
-          onClick={toggleHud} 
-          className="md:hidden absolute top-4 right-4 z-50 p-2 bg-slate-800/80 backdrop-blur rounded-md border border-slate-700 text-white shadow-lg"
-          aria-label="Toggle Menu"
+          className="md:hidden absolute top-4 right-4 z-20 bg-slate-800 p-2 rounded-lg text-white border border-slate-700"
+          onClick={() => setHudOpen(!hudOpen)}
         >
-          {hudOpen ? (
-            <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-            </svg>
-          ) : (
-            <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
-            </svg>
-          )}
+          {hudOpen ? 'Ocultar Panel' : 'Mostrar Info'}
         </button>
       </div>
-      
-      <HudPanel
+
+      <HudPanel 
         selectedNeuron={selectedNeuron}
+        isOpen={hudOpen} 
+        onClose={() => setHudOpen(false)}
+        neurons={neuronsData}
+        synapses={synapsesData}
+        onDeselect={handleDeselect}
         aiStatus={aiStatus}
         progressText={progressText}
         analysisText={analysisText}
-        neurons={neurons}
-        synapses={synapses}
-        onSelectNeuron={handleSelectNeuron}
-        onDeselect={handleDeselect}
-        isOpen={hudOpen}
-        onToggle={toggleHud}
         visibleTypes={visibleTypes}
         onToggleType={handleToggleType}
         onSimulateSignal={handleSimulateSignal}
         isSimulating={isSimulating}
-        simulationReach={activatedNeurons.size}
+        simulationReach={simulationReach}
         onStartTour={handleStartTour}
         onStopTour={handleStopTour}
         isTouring={isTouring}
@@ -267,6 +284,8 @@ export default function NeuroLabViewer() {
         onResetView={handleResetView}
         onToggleXRay={handleToggleXRay}
         isXRay={isXRay}
+        onToggleExplode={handleToggleExplode}
+        isExploded={isExploded}
         onJumpToRegion={handleJumpToRegion}
       />
     </div>
