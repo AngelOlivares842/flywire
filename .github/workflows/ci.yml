@@ -16,17 +16,22 @@ jobs:
       - name: 📥 Clonar repositorio
         uses: actions/checkout@v4
 
+      - name: 📦 Instalar pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9
+
       - name: ⚙️ Configurar Node.js 22.x
         uses: actions/setup-node@v4
         with:
           node-version: 22
-          cache: 'npm'
+          cache: 'pnpm'
 
-      - name: 📦 Instalar dependencias
-        run: npm ci
+      - name: 📦 Instalar dependencias con pnpm
+        run: pnpm install --frozen-lockfile
 
       - name: 🚀 Compilar sitio de producción (Astro Build)
-        run: npm run build
+        run: pnpm run build
 
       - name: ✅ Confirmación de integridad
-        run: echo "¡Compilación completada exitosamente! El código cumple con todos los requisitos de producción."
+        run: echo "¡Compilación completada exitosamente con pnpm! El código cumple con todos los requisitos de producción."

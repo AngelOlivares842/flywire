@@ -7,7 +7,7 @@ on:
 
 jobs:
   publish:
-    name: Build & Publish Package
+    name: Build & Publish Package with pnpm
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -17,20 +17,26 @@ jobs:
       - name: 📥 Clonar repositorio
         uses: actions/checkout@v4
 
+      - name: 📦 Instalar pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9
+
       - name: ⚙️ Configurar Node.js 22 para GitHub Packages
         uses: actions/setup-node@v4
         with:
           node-version: 22
           registry-url: 'https://npm.pkg.github.com'
           scope: '@angelolivares842'
+          cache: 'pnpm'
 
-      - name: 📦 Instalar dependencias
-        run: npm ci
+      - name: 📦 Instalar dependencias con pnpm
+        run: pnpm install --frozen-lockfile
 
       - name: 🚀 Compilar proyecto (Astro Build)
-        run: npm run build
+        run: pnpm run build
 
       - name: 📤 Publicar en GitHub Packages
-        run: npm publish
+        run: pnpm publish --no-git-checks
         env:
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
