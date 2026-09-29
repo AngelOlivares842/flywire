@@ -81,34 +81,38 @@ La locomoción de la mosca no está pre-animada. Un motor continuo a 60 Hz imple
 
 ```mermaid
 flowchart TD
-    subgraph Entorno Físico
+    subgraph S1 ["Entorno Físico"]
         E["Fuente de Estímulo (Luz / Olor) en Arena 3D"]
         W["Límites de Arena (Muros y Obstáculos)"]
     end
 
-    subgraph Transducción Sensorial
+    subgraph S2 ["Transducción Sensorial"]
         SL["Sensor Izquierdo (Retina / Antena)"]
         SR["Sensor Derecho (Retina / Antena)"]
         MS["Mecanorreceptores Periféricos"]
     end
 
-    subgraph Conectoma (ConnectomeEngine.js)
+    subgraph S3 ["Conectoma (ConnectomeEngine.js)"]
         OL["Lóbulos Ópticos / Antenales"]
         CX["Complejo Central (Cuerpo Central)"]
         DN["Neuronas Descendentes Motoras (DN_L / DN_R)"]
     end
 
-    subgraph Actuación Cinemática (FlyPhysics.js)
+    subgraph S4 ["Actuación Cinemática (FlyPhysics.js)"]
         TK["Cálculo de Torque de Guiñada y Empuje"]
         KIN["Integración de Posición, Velocidad y Heading"]
     end
 
-    E -->|Flujo de fotones / odorantes| SL & SR
-    W -->|Gradiente de proximidad| MS
-    SL & SR --> OL
+    E -->|Flujo sensorial| SL
+    E -->|Flujo sensorial| SR
+    W -->|Proximidad| MS
+    SL --> OL
+    SR --> OL
     MS --> DN
-    OL --> CX --> DN
-    DN --> TK --> KIN
+    OL --> CX
+    CX --> DN
+    DN --> TK
+    TK --> KIN
     KIN -->|Actualización de pose 3D| E
 ```
 
@@ -136,38 +140,46 @@ El vector resultante de las neuronas motoras descendentes bilaterales ($DN_{\tex
 ### 3.1 Diagrama de Componentes
 
 ```mermaid
-graph TB
-    subgraph Frontend / Interfaz de Usuario
+flowchart TD
+    subgraph UI_Layer ["Frontend / Interfaz de Usuario"]
         UI["Astro 7 / React 19 Shell"]
-        HUD["HudPanel (Telemetría / Modo Microscopio / Modo Vuelo)"]
-        MM["NeuralMinimap (Canvas 2D HUD en Tiempo Real)"]
+        HUD["HudPanel (Telemetría / Modos)"]
+        MM["NeuralMinimap (HUD 2D en Vivo)"]
     end
 
-    subgraph Pipeline Gráfico 3D (WebGL / Three.js)
+    subgraph Graphics_Layer ["Pipeline Gráfico 3D (WebGL / Three.js)"]
         R3F["React Three Fiber Canvas"]
         NC["NeuronCloud (InstancedMesh: 2,002 somas)"]
         SN["SynapseNetwork (BufferGeometry: 5,045 segmentos)"]
         NM["NeuronMorphology (Estructuras SWC Dinámicas)"]
         RF["RealisticFly (Modelo Anatómico y Cinemático)"]
-        AB["ArenaBox (Límites Físicos y Baliza de Estímulo)"]
+        AB["ArenaBox (Límites Físicos y Baliza)"]
     end
 
-    subgraph Núcleo de Computación Biofísica
+    subgraph Physics_Layer ["Núcleo de Computación Biofísica"]
         CE["ConnectomeEngine (Integración de Voltaje y Tasas)"]
-        FP["FlyPhysics (Cinemática 3D de Vuelo en Arena)"]
+        FP["FlyPhysics (Cinemática 3D de Vuelo)"]
     end
 
-    subgraph Capa de Datos e Inteligencia Artificial
-        BD["brain_data.json (Dataset Optimizado de 3.2 MB)"]
-        AIW["aiWorker (WebLLM en WebGPU / Inferencia Local)"]
-        GEM["Gemini Flash API Fallback (Endpoint Serverless)"]
+    subgraph Data_Layer ["Capa de Datos e Inteligencia Artificial"]
+        BD["brain_data.json (Dataset Optimizado 3.2 MB)"]
+        AIW["aiWorker (WebLLM en WebGPU)"]
+        GEM["Gemini Flash API (Endpoint Serverless)"]
     end
 
-    UI --> HUD & MM
-    R3F --> NC & SN & NM & RF & AB
-    CE <--> FP
-    BD --> CE & NC & SN
-    HUD --> AIW & GEM
+    UI --> HUD
+    UI --> MM
+    R3F --> NC
+    R3F --> SN
+    R3F --> NM
+    R3F --> RF
+    R3F --> AB
+    CE --- FP
+    BD --> CE
+    BD --> NC
+    BD --> SN
+    HUD --> AIW
+    HUD --> GEM
 ```
 
 ### 3.2 Optimización Gráfica y Renderizado GPU
