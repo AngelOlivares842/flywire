@@ -40,7 +40,7 @@ export default function BrainScene({
   const neuronLookup = useMemo(() => {
     const map = new Map();
     neurons.forEach(n => {
-      map.set(n.id, { position: n.position, type: n.type });
+      map.set(n.id, { position: n.position, type: n.type, region: n.region });
     });
     return map;
   }, [neurons]);
@@ -153,8 +153,7 @@ export default function BrainScene({
         ref={controlsRef}
         enableDamping
         dampingFactor={0.05}
-        autoRotate={!selectedNeuron && introPlayed.current}
-        autoRotateSpeed={0.5}
+        autoRotate={false}
       />
     </>
   );

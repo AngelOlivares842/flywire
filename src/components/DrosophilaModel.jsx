@@ -34,7 +34,7 @@ const DrosophilaModel = React.memo(({ opacity = 1 }) => {
     }
   });
 
-  const chitinMaterial = (
+  const ChitinMaterial = () => (
     <meshPhysicalMaterial 
       color="#1f1412"
       roughness={0.6}
@@ -48,7 +48,7 @@ const DrosophilaModel = React.memo(({ opacity = 1 }) => {
     />
   );
 
-  const eyeMaterial = (
+  const EyeMaterial = () => (
     <meshPhysicalMaterial 
       color="#4a0404"
       emissive="#2a0000"
@@ -62,63 +62,55 @@ const DrosophilaModel = React.memo(({ opacity = 1 }) => {
   );
 
   return (
-    <group ref={groupRef} scale={[1.8, 1.8, 1.8]}>
+    <group ref={groupRef} scale={[1.8, 1.8, 1.8]} raycast={() => null}>
       {/* Head */}
-      <mesh position={[0, 1.5, 0]} scale={[2.0, 1.5, 1.5]}>
+      <mesh position={[0, 1.5, 0]} scale={[2.0, 1.5, 1.5]} raycast={() => null}>
         <sphereGeometry args={[2.5, 32, 32]} />
-        {chitinMaterial}
+        <ChitinMaterial />
       </mesh>
 
       {/* Eyes */}
-      <mesh position={[-2.8, 2.0, 0.5]} scale={[0.6, 1.2, 1.0]} rotation={[0, -0.4, -0.3]}>
+      <mesh position={[-2.8, 2.0, 0.5]} scale={[0.6, 1.2, 1.0]} rotation={[0, -0.4, -0.3]} raycast={() => null}>
         <sphereGeometry args={[2.0, 32, 32]} />
-        {eyeMaterial}
+        <EyeMaterial />
       </mesh>
-      <mesh position={[2.8, 2.0, 0.5]} scale={[0.6, 1.2, 1.0]} rotation={[0, 0.4, 0.3]}>
+      <mesh position={[2.8, 2.0, 0.5]} scale={[0.6, 1.2, 1.0]} rotation={[0, 0.4, 0.3]} raycast={() => null}>
         <sphereGeometry args={[2.0, 32, 32]} />
-        {eyeMaterial}
+        <EyeMaterial />
       </mesh>
 
       {/* Thorax */}
-      <mesh position={[0, 0.5, -4.5]} scale={[2.5, 2.8, 3.2]} rotation={[0.2, 0, 0]}>
+      <mesh position={[0, 0.5, -4.5]} scale={[2.5, 2.8, 3.2]} rotation={[0.2, 0, 0]} raycast={() => null}>
         <sphereGeometry args={[1.5, 32, 32]} />
-        {chitinMaterial}
+        <ChitinMaterial />
       </mesh>
 
       {/* Abdomen */}
-      <mesh ref={abdomenRef} position={[0, -1.5, -11.0]} scale={[3.5, 3.5, 8.0]} rotation={[-0.1, 0, 0]}>
+      <mesh ref={abdomenRef} position={[0, -1.5, -11.0]} scale={[3.5, 3.5, 8.0]} rotation={[-0.1, 0, 0]} raycast={() => null}>
         <sphereGeometry args={[1, 32, 32]} />
-        {chitinMaterial}
+        <ChitinMaterial />
       </mesh>
 
       {/* Wings */}
-      <group position={[-1.5, 4.0, -3.5]} ref={leftWingRef}>
-        <mesh position={[-2.5, 0, -4]} rotation={[0.1, 0.5, 0]} scale={[2.5, 0.01, 7]}>
+      <group position={[-1.5, 4.0, -3.5]} ref={leftWingRef} raycast={() => null}>
+        <mesh position={[-2.5, 0, -4]} rotation={[0.1, 0.5, 0]} scale={[2.5, 0.01, 7]} raycast={() => null}>
           <sphereGeometry args={[1, 32, 16]} />
-          <meshPhysicalMaterial 
+          <meshStandardMaterial 
             color="#ffffff" 
-            roughness={0.1}
-            transmission={0.9}
-            thickness={0.1}
-            ior={1.2}
             transparent 
-            opacity={0.2 * opacity} 
+            opacity={0.15 * opacity} 
             depthWrite={false} 
             side={THREE.DoubleSide}
           />
         </mesh>
       </group>
-      <group position={[1.5, 4.0, -3.5]} ref={rightWingRef}>
-        <mesh position={[2.5, 0, -4]} rotation={[0.1, -0.5, 0]} scale={[2.5, 0.01, 7]}>
+      <group position={[1.5, 4.0, -3.5]} ref={rightWingRef} raycast={() => null}>
+        <mesh position={[2.5, 0, -4]} rotation={[0.1, -0.5, 0]} scale={[2.5, 0.01, 7]} raycast={() => null}>
           <sphereGeometry args={[1, 32, 16]} />
-          <meshPhysicalMaterial 
+          <meshStandardMaterial 
             color="#ffffff" 
-            roughness={0.1}
-            transmission={0.9}
-            thickness={0.1}
-            ior={1.2}
             transparent 
-            opacity={0.2 * opacity} 
+            opacity={0.15 * opacity} 
             depthWrite={false} 
             side={THREE.DoubleSide}
           />

@@ -4,13 +4,13 @@ import * as THREE from 'three';
 
 const getRegionOffset = (region) => {
   switch (region) {
-    case 'Lóbulo Óptico Izquierdo': return new THREE.Vector3(-15, 0, 0);
-    case 'Lóbulo Óptico Derecho': return new THREE.Vector3(15, 0, 0);
-    case 'Lóbulo Antenal': return new THREE.Vector3(0, -5, 10);
-    case 'Cuerpo Central': return new THREE.Vector3(0, 10, 0);
-    case 'Cuerpo Pedunculado': return new THREE.Vector3(0, 12, -8);
-    case 'Protocerebro': return new THREE.Vector3(0, 8, -12);
-    case 'Ganglio Subesofágico': return new THREE.Vector3(0, -10, 0);
+    case 'Lóbulo Óptico Izquierdo': return new THREE.Vector3(-25, 0, 0);
+    case 'Lóbulo Óptico Derecho': return new THREE.Vector3(25, 0, 0);
+    case 'Lóbulo Antenal': return new THREE.Vector3(0, -10, 15);
+    case 'Cuerpo Central': return new THREE.Vector3(0, 5, 0);
+    case 'Cuerpo Pedunculado': return new THREE.Vector3(0, 20, -10);
+    case 'Protocerebro': return new THREE.Vector3(0, 15, -20);
+    case 'Ganglio Subesofágico': return new THREE.Vector3(0, -20, 0);
     default: return new THREE.Vector3(0, 0, 0);
   }
 };
@@ -44,42 +44,71 @@ export default function SynapticLink({
     return geo;
   }, []);
 
+  const curveRef = useRef(new THREE.QuadraticBezierCurve3());
+  const midRef = useRef(new THREE.Vector3());
+  const needsGeomUpdate = useRef(true);
+
+  const targetSRef = useRef(new THREE.Vector3());
+  const targetERef = useRef(new THREE.Vector3());
+
   useFrame((state, delta) => {
     if (!lineRef.current) return;
     
     // Animate positions for explode view
-    const targetS = isExploded ? baseStart.clone().add(offsetStart) : baseStart;
-    const targetE = isExploded ? baseEnd.clone().add(offsetEnd) : baseEnd;
-    
-    currentStart.current.lerp(targetS, 0.05);
-    currentEnd.current.lerp(targetE, 0.05);
-
-    // Build curve
-    const mid = currentStart.current.clone().lerp(currentEnd.current, 0.5);
-    const dist = currentStart.current.distanceTo(currentEnd.current);
-    mid.y += dist * 0.25;
-    
-    const curve = new THREE.QuadraticBezierCurve3(
-      currentStart.current,
-      mid,
-      currentEnd.current
-    );
-    
-    const points = curve.getPoints(19);
-    const positions = lineRef.current.geometry.attributes.position.array;
-    for (let i = 0; i < 20; i++) {
-      positions[i * 3] = points[i].x;
-      positions[i * 3 + 1] = points[i].y;
-      positions[i * 3 + 2] = points[i].z;
+    if (isExploded) {
+      targetSRef.current.copy(baseStart).add(offsetStart);
+      targetERef.current.copy(baseEnd).add(offsetEnd);
+    } else {
+      targetSRef.current.copy(baseStart);
+      targetERef.current.copy(baseEnd);
     }
-    lineRef.current.geometry.attributes.position.needsUpdate = true;
     
-    // Animate dash
+    const targetS = targetSRef.current;
+    const targetE = targetERef.current;
+    
+    const distS = currentStart.current.distanceToSquared(targetS);
+    const distE = currentEnd.current.distanceToSquared(targetE);
+
+    if (distS > 0.001 || distE > 0.001) {
+      currentStart.current.lerp(targetS, 0.08);
+      currentEnd.current.lerp(targetE, 0.08);
+      needsGeomUpdate.current = true;
+    } else if (needsGeomUpdate.current) {
+      currentStart.current.copy(targetS);
+      currentEnd.current.copy(targetE);
+      needsGeomUpdate.current = true;
+    }
+
+    if (needsGeomUpdate.current) {
+      // Build curve without allocating new objects if possible
+      midRef.current.copy(currentStart.current).lerp(currentEnd.current, 0.5);
+      const dist = currentStart.current.distanceTo(currentEnd.current);
+      midRef.current.y += dist * 0.25;
+      
+      curveRef.current.v0.copy(currentStart.current);
+      curveRef.current.v1.copy(midRef.current);
+      curveRef.current.v2.copy(currentEnd.current);
+      
+      const points = curveRef.current.getPoints(19);
+      const positions = lineRef.current.geometry.attributes.position.array;
+      for (let i = 0; i < 20; i++) {
+        positions[i * 3] = points[i].x;
+        positions[i * 3 + 1] = points[i].y;
+        positions[i * 3 + 2] = points[i].z;
+      }
+      lineRef.current.geometry.attributes.position.needsUpdate = true;
+      
+      if (distS <= 0.001 && distE <= 0.001) {
+        needsGeomUpdate.current = false;
+      }
+    }
+    
+    // Animate opacity based on active state
     if (materialRef.current) {
       if (isActive || isHighlighted) {
-        materialRef.current.dashOffset -= delta * (isActive ? 4.0 : 1.5);
+        materialRef.current.opacity = 1;
       } else {
-        materialRef.current.dashOffset -= delta * 0.2;
+        materialRef.current.opacity = 0.15;
       }
     }
   });
@@ -87,18 +116,14 @@ export default function SynapticLink({
   if (!visible) return null;
 
   const color = isHighlighted ? '#22d3ee' : (isActive ? '#f472b6' : '#3b82f6');
-  const opacity = isHighlighted ? 1 : (isActive ? 0.9 : 0.15);
 
   return (
     <line ref={lineRef} geometry={geometry}>
-      <lineDashedMaterial
+      <lineBasicMaterial
         ref={materialRef}
         color={color}
-        linewidth={1}
         transparent
-        opacity={opacity}
-        dashSize={0.5}
-        gapSize={0.5}
+        opacity={0.15}
         blending={THREE.AdditiveBlending}
         depthWrite={false}
       />

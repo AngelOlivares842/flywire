@@ -67,44 +67,63 @@ export default function NeuroLabViewer() {
     });
   }, []);
 
-  // Signal propagation logic
-  const propagateSignal = useCallback((neuronId, depth, currentSet) => {
-    if (depth >= 5) {
+  // Recursive signal propagation
+  const propagateSignal = useCallback((neuronIds, depth) => {
+    if (depth >= 4 || neuronIds.length === 0) {
       setTimeout(() => {
         setIsSimulating(false);
         setActivatedNeurons(new Set());
         setHighlightedSynapses(new Set());
         setSimulationReach(0);
-      }, 3000);
-      return;
-    }
-    
-    const outgoing = synapsesData
-      .map((s, idx) => ({ ...s, idx }))
-      .filter(s => s.from === neuronId);
-    
-    if (outgoing.length === 0) {
-      setTimeout(() => {
-        setIsSimulating(false);
-        setActivatedNeurons(new Set());
-        setHighlightedSynapses(new Set());
-        setSimulationReach(0);
-      }, 3000);
+      }, 2500);
       return;
     }
     
     setTimeout(() => {
-      outgoing.forEach((syn, i) => {
-        const pulseId = `pulse-${depth}-${i}-${Math.random().toString(36).substring(7)}`;
-        setSignalPulses(prev => [...prev, { 
-          id: pulseId, 
-          fromId: syn.from, 
-          toId: syn.to,
-          color: '#22d3ee' 
-        }]);
-        setHighlightedSynapses(prev => new Set([...prev, syn.idx]));
+      const newPulses = [];
+      const newSynapseIndices = [];
+      const nextNeuronIds = new Set();
+      
+      neuronIds.forEach(nId => {
+        const outgoing = synapsesData
+          .map((s, idx) => ({ ...s, idx }))
+          .filter(s => s.from === nId)
+          .slice(0, 3); // Max 3 branches per neuron
+        
+        outgoing.forEach(syn => {
+          newPulses.push({
+            id: `pulse-${depth}-${syn.idx}-${Math.random().toString(36).substring(7)}`,
+            fromId: syn.from,
+            toId: syn.to,
+            color: '#22d3ee'
+          });
+          newSynapseIndices.push(syn.idx);
+          nextNeuronIds.add(syn.to);
+        });
       });
-    }, depth * 400);
+      
+      if (newPulses.length === 0) {
+        setIsSimulating(false);
+        return;
+      }
+      
+      setSignalPulses(prev => [...prev, ...newPulses]);
+      setHighlightedSynapses(prev => new Set([...prev, ...newSynapseIndices]));
+      
+      // Schedule the activation of the target neurons after the pulse duration (800ms)
+      setTimeout(() => {
+        setSignalPulses(prev => prev.filter(p => !newPulses.find(np => np.id === p.id)));
+        setActivatedNeurons(prev => {
+          const updated = new Set([...prev, ...nextNeuronIds]);
+          setSimulationReach(updated.size);
+          return updated;
+        });
+        
+        // Continue cascade
+        propagateSignal(Array.from(nextNeuronIds), depth + 1);
+      }, 800);
+      
+    }, 100);
   }, [synapsesData]);
 
   const handleSimulateSignal = useCallback(() => {
@@ -112,25 +131,15 @@ export default function NeuroLabViewer() {
     setIsSimulating(true);
     setSimulationReach(1);
     setActivatedNeurons(new Set([selectedNeuron.id]));
-    propagateSignal(selectedNeuron.id, 0, new Set([selectedNeuron.id]));
+    setSignalPulses([]);
+    setHighlightedSynapses(new Set());
+    
+    // Start cascade with just the selected neuron
+    propagateSignal([selectedNeuron.id], 0);
   }, [selectedNeuron, isSimulating, propagateSignal]);
 
-  const handlePulseComplete = useCallback((pulseId) => {
-    setSignalPulses(prev => {
-      const pulse = prev.find(p => p.id === pulseId);
-      if (pulse) {
-        setActivatedNeurons(prevSet => {
-          const newSet = new Set([...prevSet, pulse.toId]);
-          setSimulationReach(newSet.size);
-          return newSet;
-        });
-        const depthMatch = pulseId.match(/pulse-(\\d+)/);
-        const depth = depthMatch ? parseInt(depthMatch[1]) : 0;
-        propagateSignal(pulse.toId, depth + 1);
-      }
-      return prev.filter(p => p.id !== pulseId);
-    });
-  }, [propagateSignal]);
+  // We no longer use handlePulseComplete from the component since we handle it via timeouts
+  const handlePulseComplete = useCallback(() => {}, []);
 
   const handleFocusNeuron = useCallback((neuron) => {
     setCameraTarget(neuron.position);
@@ -217,8 +226,12 @@ export default function NeuroLabViewer() {
 
   return (
     <div className="flex-1 flex flex-col md:flex-row h-full overflow-hidden bg-[#020617]">
-      <div className="flex-1 h-full relative" onPointerMissed={handleDeselect}>
-        <Canvas camera={{ position: [0, 8, 25], fov: 45 }} dpr={[1, 2]}>
+      <div className="flex-1 h-full relative">
+        <Canvas 
+          camera={{ position: [0, 8, 25], fov: 45 }} 
+          dpr={[1, 2]}
+          onPointerMissed={handleDeselect}
+        >
           <BrainScene 
             neurons={neuronsData}
             synapses={synapsesData}

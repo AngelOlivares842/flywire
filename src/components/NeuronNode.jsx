@@ -6,13 +6,13 @@ import { NEURON_TYPE_COLORS } from '../data/neurons.js';
 
 const getRegionOffset = (region) => {
   switch (region) {
-    case 'Lóbulo Óptico Izquierdo': return new THREE.Vector3(-15, 0, 0);
-    case 'Lóbulo Óptico Derecho': return new THREE.Vector3(15, 0, 0);
-    case 'Lóbulo Antenal': return new THREE.Vector3(0, -5, 10);
-    case 'Cuerpo Central': return new THREE.Vector3(0, 10, 0);
-    case 'Cuerpo Pedunculado': return new THREE.Vector3(0, 12, -8);
-    case 'Protocerebro': return new THREE.Vector3(0, 8, -12);
-    case 'Ganglio Subesofágico': return new THREE.Vector3(0, -10, 0);
+    case 'Lóbulo Óptico Izquierdo': return new THREE.Vector3(-25, 0, 0);
+    case 'Lóbulo Óptico Derecho': return new THREE.Vector3(25, 0, 0);
+    case 'Lóbulo Antenal': return new THREE.Vector3(0, -10, 15);
+    case 'Cuerpo Central': return new THREE.Vector3(0, 5, 0);
+    case 'Cuerpo Pedunculado': return new THREE.Vector3(0, 20, -10);
+    case 'Protocerebro': return new THREE.Vector3(0, 15, -20);
+    case 'Ganglio Subesofágico': return new THREE.Vector3(0, -20, 0);
     default: return new THREE.Vector3(0, 0, 0);
   }
 };
@@ -58,12 +58,10 @@ export default function NeuronNode({
 
     // Exploded View Position Interpolation
     const targetPos = isExploded ? basePos.clone().add(regionOffset) : basePos;
-    currentPos.current.lerp(targetPos, 0.05);
+    currentPos.current.lerp(targetPos, 0.08); // Slightly faster snap
     
-    // Apply position + organic float
-    const floatY = Math.sin(t * 1.5 + parseInt(neuron.id.slice(-4))) * 0.05;
+    // Apply position WITHOUT organic float so it's easy to click
     groupRef.current.position.copy(currentPos.current);
-    groupRef.current.position.y += floatY;
 
     // Scale & Glow Effects
     let currentScale = 1;
@@ -110,6 +108,17 @@ export default function NeuronNode({
 
   return (
     <group ref={groupRef}>
+      {/* Invisible Hitbox (Massive click target) */}
+      <mesh
+        onClick={(e) => { e.stopPropagation(); onSelect(neuron); }}
+        onDoubleClick={(e) => { e.stopPropagation(); onFocus(neuron); }}
+        onPointerOver={(e) => { e.stopPropagation(); setHovered(true); document.body.style.cursor = 'pointer'; }}
+        onPointerOut={(e) => { e.stopPropagation(); setHovered(false); document.body.style.cursor = 'default'; }}
+      >
+        <sphereGeometry args={[0.8, 16, 16]} />
+        <meshBasicMaterial transparent opacity={0} depthWrite={false} colorWrite={false} />
+      </mesh>
+
       {/* Halo Effect */}
       <mesh ref={haloRef}>
         <sphereGeometry args={[0.35, 32, 32]} />
@@ -122,14 +131,8 @@ export default function NeuronNode({
         />
       </mesh>
 
-      {/* Core Node */}
-      <mesh
-        ref={meshRef}
-        onClick={(e) => { e.stopPropagation(); onSelect(neuron); }}
-        onDoubleClick={(e) => { e.stopPropagation(); onFocus(neuron); }}
-        onPointerOver={(e) => { e.stopPropagation(); setHovered(true); document.body.style.cursor = 'pointer'; }}
-        onPointerOut={(e) => { e.stopPropagation(); setHovered(false); document.body.style.cursor = 'default'; }}
-      >
+      {/* Core Node (Visual only, no events) */}
+      <mesh ref={meshRef}>
         <sphereGeometry args={[0.2, 32, 32]} />
         <meshStandardMaterial
           ref={materialRef}
