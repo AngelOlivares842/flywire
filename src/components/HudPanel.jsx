@@ -1,335 +1,422 @@
 import React, { useState, useMemo } from 'react';
 import { NEURON_TYPE_COLORS, BRAIN_REGIONS } from '../data/neurons.js';
+import StatsPanel from './StatsPanel.jsx';
+import StimulusPanel from './StimulusPanel.jsx';
 
 export default function HudPanel({
   selectedNeuron,
+  isOpen,
+  onToggle,
+  neurons = [],
+  synapses = [],
+  stats,
+  morphologyNeurons = [],
+  onSelectNeuron,
+  onDeselect,
   aiStatus,
   progressText,
   analysisText,
-  neurons,
-  synapses,
-  onSelectNeuron,
-  onDeselect,
-  isOpen,
-  onToggle,
   visibleTypes,
   onToggleType,
-  onSimulateSignal,
-  isSimulating,
-  simulationReach,
   onStartTour,
   onStopTour,
   isTouring,
   tourRegion,
   onResetView,
-  onToggleXRay,
-  isXRay,
-  isExploded,
+  bodyMode = 'silhouette',
+  onCycleBodyMode,
+  neuronScale = 1.0,
+  onCycleNeuronScale,
   onToggleExplode,
-  isRealistic,
-  onToggleRealistic,
-  onJumpToRegion
+  isExploded,
+  onJumpToRegion,
+  activeStimulus,
+  onActivateStimulus,
+  isSimulatingStimulus,
+  onSimulateSignal,
+  isSimulatingSignal,
+  simulationReach = 0,
 }) {
   const [searchQuery, setSearchQuery] = useState('');
-  
+  const [activeTab, setActiveTab] = useState('explore'); // 'explore' | 'morphology' | 'stats'
+
+  // Count incoming + outgoing connections for selected neuron
   const connectionsCount = useMemo(() => {
-    if (!selectedNeuron) return 0;
-    return synapses.filter(s => s.pre === selectedNeuron.id || s.post === selectedNeuron.id || s.from === selectedNeuron.id || s.to === selectedNeuron.id).length;
+    if (!selectedNeuron || !synapses.length) return 0;
+    const sId = selectedNeuron.id;
+    return synapses.filter(s => s.from === sId || s.to === sId).length;
   }, [selectedNeuron, synapses]);
 
   const searchResults = useMemo(() => {
     if (searchQuery.trim().length < 2) return [];
-    const lowerQuery = searchQuery.toLowerCase();
-    return neurons.filter(n => 
-      n.id.toLowerCase().includes(lowerQuery) ||
-      n.type.toLowerCase().includes(lowerQuery) ||
-      n.region.toLowerCase().includes(lowerQuery)
-    ).slice(0, 5);
+    const lower = searchQuery.toLowerCase();
+    return neurons
+      .filter(n =>
+        n.id.toLowerCase().includes(lower) ||
+        (n.label && n.label.toLowerCase().includes(lower)) ||
+        (n.cellType && n.cellType.toLowerCase().includes(lower)) ||
+        n.region.toLowerCase().includes(lower) ||
+        (n.neurotransmitter && n.neurotransmitter.toLowerCase().includes(lower))
+      )
+      .slice(0, 6);
   }, [searchQuery, neurons]);
 
-  if (!isOpen) {
-    return null;
-  }
+  if (!isOpen) return null;
+
+  // Body mode label and icon
+  const bodyModeInfo = {
+    silhouette: { label: 'Silueta Anatómica', icon: '🪰', color: 'text-cyan-400 border-cyan-500/40 bg-cyan-500/10' },
+    translucent: { label: 'Cristal Ámbar', icon: '🔬', color: 'text-amber-400 border-amber-500/40 bg-amber-500/10' },
+    none: { label: 'Solo Cerebro', icon: '🌌', color: 'text-indigo-400 border-indigo-500/40 bg-indigo-500/10' },
+  }[bodyMode] || { label: 'Silueta Anatómica', icon: '🪰', color: 'text-cyan-400' };
+
+  const neuronScaleLabel = neuronScale <= 0.8 ? 'Somas: Finos' : neuronScale <= 1.05 ? 'Somas: Medios' : 'Somas: Grandes';
 
   return (
-    <div className="absolute top-0 right-0 h-full w-full md:w-80 md:relative bg-slate-900/70 backdrop-blur-xl border-l border-slate-700/50 flex flex-col z-40 animate-slide-in">
-      
-      <div className="p-4 border-b border-slate-800/50 flex justify-between items-center md:hidden">
-        <h2 className="text-lg font-bold text-white">Panel de Control</h2>
-        <button onClick={onToggle} className="text-slate-400 hover:text-white">
+    <div className="absolute top-0 right-0 h-full w-full md:w-[410px] md:relative bg-slate-900/90 backdrop-blur-2xl border-l border-slate-700/60 flex flex-col z-40 animate-slide-in shadow-2xl">
+      {/* Mobile Top Header */}
+      <div className="p-4 border-b border-slate-800/60 flex justify-between items-center md:hidden">
+        <h2 className="text-lg font-bold text-white flex items-center space-x-2">
+          <span>🧠</span>
+          <span>NeuroLab 3D</span>
+        </h2>
+        <button onClick={onToggle} className="text-slate-400 hover:text-white p-1">
           <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
           </svg>
         </button>
       </div>
 
-      <div className="p-4 relative">
+      {/* Global Search Bar */}
+      <div className="p-3.5 border-b border-slate-800/50 relative">
         <div className="relative">
           <input
             type="text"
-            placeholder="Buscar por ID, tipo o región..."
-            className="w-full bg-slate-800/80 border border-slate-700 rounded-md py-2 pl-9 pr-3 text-sm text-white placeholder-slate-400 focus:outline-none focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500"
+            placeholder="Buscar por ID, tipo celular, región..."
+            className="w-full bg-slate-800/90 border border-slate-700/80 rounded-xl py-2 pl-9 pr-3 text-xs text-white placeholder-slate-400 focus:outline-none focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 transition-all"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
           />
           <svg className="absolute left-3 top-2.5 w-4 h-4 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
           </svg>
+          {searchQuery && (
+            <button onClick={() => setSearchQuery('')} className="absolute right-2.5 top-2 text-slate-400 hover:text-white text-xs">✕</button>
+          )}
         </div>
 
+        {/* Search Results Dropdown */}
         {searchResults.length > 0 && (
-          <div className="absolute top-full left-4 right-4 mt-1 bg-slate-800 border border-slate-700 rounded-md shadow-lg overflow-hidden z-50">
+          <div className="absolute top-full left-3.5 right-3.5 mt-1 bg-slate-900 border border-slate-700/80 rounded-xl shadow-2xl overflow-hidden z-50 divide-y divide-slate-800">
             {searchResults.map(result => (
               <button
                 key={result.id}
-                className="w-full text-left px-3 py-2 text-sm hover:bg-slate-700 focus:bg-slate-700 focus:outline-none transition-colors border-b border-slate-700/50 last:border-0 flex items-center space-x-2"
+                className="w-full text-left px-3.5 py-2.5 text-xs hover:bg-slate-800 focus:bg-slate-800 focus:outline-none transition-colors flex items-center space-x-2.5"
                 onClick={() => {
                   onSelectNeuron(result);
                   setSearchQuery('');
                 }}
               >
-                <span className="w-2 h-2 rounded-full" style={{ backgroundColor: NEURON_TYPE_COLORS[result.type] || '#ffffff' }}></span>
-                <span className="truncate text-white">{result.id}</span>
-                <span className="text-xs text-slate-400">({result.type})</span>
+                <span className="w-2.5 h-2.5 rounded-full shrink-0" style={{ backgroundColor: NEURON_TYPE_COLORS[result.type] || '#38bdf8' }}></span>
+                <div className="flex-1 truncate">
+                  <p className="text-white font-medium truncate">{result.label || result.cellType || result.id}</p>
+                  <p className="text-[10px] text-slate-400 truncate">{result.region} • {result.type}</p>
+                </div>
               </button>
             ))}
           </div>
         )}
       </div>
 
-      <div className="flex-1 overflow-y-auto p-4 custom-scrollbar">
-        <div className="mb-4 space-y-2">
-          <h4 className="text-xs font-semibold text-slate-400 uppercase tracking-wider">Saltar a Región</h4>
-          <div className="flex flex-wrap gap-2">
-            {BRAIN_REGIONS.map(region => (
-              <button
-                key={region}
-                onClick={() => onJumpToRegion(region)}
-                className="region-pill px-2 py-1 bg-slate-800/80 border border-slate-700 rounded-full text-xs text-slate-300 hover:text-white"
-              >
-                {region}
-              </button>
-            ))}
-          </div>
-        </div>
-
-        {!selectedNeuron ? (
-          <div className="animate-fade-in space-y-6">
-            <div className="text-center space-y-3">
-              <h3 className="text-xl font-bold text-white">Bienvenido a NeuroLab 3D</h3>
-              <p className="text-sm text-slate-300">
-                Selecciona una neurona haciendo clic en el modelo 3D o usa el buscador para ver su información y análisis por IA.
-              </p>
-            </div>
-
-            <div className="bg-slate-800/50 rounded-lg p-4 border border-slate-700/50">
-              <h4 className="text-sm font-semibold text-slate-200 mb-3 uppercase tracking-wider">Filtros de Tipo</h4>
-              <div className="space-y-3">
-                {Object.entries(NEURON_TYPE_COLORS).map(([type, color]) => {
-                  const isVisible = visibleTypes?.has(type);
-                  return (
-                    <div key={type} className={`flex items-center justify-between text-sm transition-opacity ${isVisible ? 'opacity-100' : 'opacity-50'}`}>
-                      <div className="flex items-center space-x-3 text-slate-300">
-                        <span className="w-3 h-3 rounded-full shadow-sm" style={{ backgroundColor: color }}></span>
-                        <span className="capitalize">{type}</span>
-                      </div>
-                      <div 
-                        onClick={() => onToggleType(type)}
-                        className={`toggle-switch ${isVisible ? 'active' : ''}`}
-                      ></div>
-                    </div>
-                  );
-                })}
-              </div>
-            </div>
-
-            <div className="space-y-3">
-              <button 
-                onClick={isTouring ? onStopTour : onStartTour}
-                className={`w-full py-2 px-4 rounded-md border transition-colors text-sm font-medium ${isTouring ? 'bg-red-500/20 text-red-400 border-red-500/50 hover:bg-red-500/30' : 'bg-transparent text-cyan-400 border-cyan-500 hover:bg-cyan-500/10'}`}
-              >
-                {isTouring ? 'Detener Tour' : '🎯 Tour Guiado'}
-              </button>
-              <div className="flex space-x-2">
-                <button 
-                  onClick={onResetView}
-                  className="flex-1 py-2 px-3 bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white rounded-md border border-slate-700 transition-colors text-sm font-medium"
-                >
-                  ↺ Reset Vista
-                </button>
-                <button 
-                  onClick={onToggleXRay}
-                  className={`flex-1 py-2 px-3 rounded-md border transition-colors text-sm font-medium ${isXRay ? 'bg-cyan-500/20 text-cyan-400 border-cyan-500/50' : 'bg-slate-800 text-slate-300 border-slate-700 hover:bg-slate-700'}`}
-                >
-                  🔬 Rayos X
-                </button>
-              </div>
-              <button 
-                onClick={onToggleExplode}
-                className={`w-full py-2 px-4 rounded-md border transition-colors text-sm font-medium ${isExploded ? 'bg-indigo-500/30 text-indigo-300 border-indigo-500/50' : 'bg-slate-800 text-slate-300 border-slate-700 hover:bg-slate-700'}`}
-              >
-                💥 Vista Expandida (Capas)
-              </button>
-              <button 
-                onClick={onToggleRealistic}
-                className={`w-full py-2 px-4 rounded-md border transition-colors text-sm font-medium ${isRealistic ? 'bg-fuchsia-500/30 text-fuchsia-300 border-fuchsia-500/50' : 'bg-slate-800 text-slate-300 border-slate-700 hover:bg-slate-700'}`}
-              >
-                🌌 Modo Realista (130k Neuronas)
-              </button>
-            </div>
-          </div>
-        ) : (
-          <div className="animate-fade-in space-y-5">
-            <div 
-              className="bg-slate-800/80 rounded-lg p-4 shadow-lg border border-slate-700/50 relative overflow-hidden"
-              style={{ borderLeftColor: NEURON_TYPE_COLORS[selectedNeuron.type] || '#ffffff', borderLeftWidth: '4px' }}
+      {/* Main Content Area */}
+      <div className="flex-1 overflow-y-auto p-4 custom-scrollbar space-y-4">
+        {/* If a neuron is selected, show its deep inspection card */}
+        {selectedNeuron ? (
+          <div className="animate-fade-in space-y-4">
+            {/* Top selected card */}
+            <div
+              className="bg-slate-800/80 rounded-xl p-4 shadow-lg border border-slate-700/60 relative overflow-hidden"
+              style={{ borderLeftColor: NEURON_TYPE_COLORS[selectedNeuron.type] || '#38bdf8', borderLeftWidth: '5px' }}
             >
               <div className="flex justify-between items-start mb-2">
-                <h3 className="text-lg font-bold text-white break-all">{selectedNeuron.id}</h3>
-                <span className="px-2 py-0.5 rounded text-xs font-medium bg-slate-700 text-slate-200 border border-slate-600">
+                <div>
+                  <h3 className="text-base font-bold text-white break-words">
+                    {selectedNeuron.label || selectedNeuron.cellType || 'Neurona'}
+                  </h3>
+                  <p className="text-[11px] text-slate-400 font-mono mt-0.5">ID: {selectedNeuron.id}</p>
+                </div>
+                <span
+                  className="px-2.5 py-0.5 rounded-full text-[11px] font-semibold tracking-wide border"
+                  style={{
+                    backgroundColor: (NEURON_TYPE_COLORS[selectedNeuron.type] || '#38bdf8') + '20',
+                    borderColor: (NEURON_TYPE_COLORS[selectedNeuron.type] || '#38bdf8') + '60',
+                    color: NEURON_TYPE_COLORS[selectedNeuron.type] || '#38bdf8',
+                  }}
+                >
                   {selectedNeuron.type}
                 </span>
               </div>
-              
-              <div className="space-y-1.5 text-sm">
+
+              {/* Anatomy details */}
+              <div className="space-y-1.5 text-xs mt-3 pt-2.5 border-t border-slate-700/50">
                 <div className="flex justify-between">
                   <span className="text-slate-400">Neurotransmisor:</span>
-                  <span className="text-slate-200">{selectedNeuron.neurotransmitter || 'Desconocido'}</span>
+                  <span className="text-slate-200 font-medium">{selectedNeuron.neurotransmitter || 'Desconocido'}</span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-slate-400">Región:</span>
-                  <span className="text-slate-200">{selectedNeuron.region || 'Cerebro entero'}</span>
+                  <span className="text-slate-400">Región Cerebral:</span>
+                  <span className="text-slate-200 font-medium">{selectedNeuron.region || 'Cerebro entero'}</span>
                 </div>
-                <div className="flex justify-between mt-2 pt-2 border-t border-slate-700/50">
-                  <span className="text-slate-400">Conexiones:</span>
-                  <span className="text-cyan-400 font-semibold">{connectionsCount}</span>
+                <div className="flex justify-between">
+                  <span className="text-slate-400">Neuropilo:</span>
+                  <span className="text-slate-300 font-mono">{selectedNeuron.neuropil || 'N/A'}</span>
+                </div>
+                {selectedNeuron.hemisphere && (
+                  <div className="flex justify-between">
+                    <span className="text-slate-400">Hemisferio:</span>
+                    <span className="text-slate-200 capitalize">{selectedNeuron.hemisphere}</span>
+                  </div>
+                )}
+                <div className="flex justify-between pt-1 text-cyan-300 font-medium">
+                  <span>Sinapsis Conectadas:</span>
+                  <span className="font-bold">{connectionsCount}</span>
                 </div>
               </div>
             </div>
 
-            <div className="bg-slate-800/50 rounded-lg p-4 border border-slate-700/50 space-y-3">
-              <h4 className="text-sm font-semibold text-slate-200 mb-2 uppercase tracking-wider">Acciones</h4>
-              
-              <button 
+            {/* Signal Simulation Action Button */}
+            <div className="space-y-2">
+              <button
                 onClick={onSimulateSignal}
-                disabled={!selectedNeuron || isSimulating}
-                className={`w-full py-2.5 px-4 rounded-md font-bold text-sm transition-all duration-300 flex items-center justify-center space-x-2
-                  ${isSimulating 
-                    ? 'bg-slate-700 text-cyan-300 cursor-wait scan-line animate-pulse-glow overflow-hidden relative' 
-                    : !selectedNeuron
-                      ? 'bg-slate-800 text-slate-500 cursor-not-allowed'
-                      : 'bg-gradient-to-r from-cyan-600 to-cyan-500 text-white hover:from-cyan-500 hover:to-cyan-400 hover:shadow-[0_0_15px_rgba(6,182,212,0.5)]'
+                disabled={isSimulatingSignal}
+                className={`w-full py-2.5 px-4 rounded-xl font-bold text-xs uppercase tracking-wider transition-all duration-300 flex items-center justify-center space-x-2 border
+                  ${isSimulatingSignal
+                    ? 'bg-cyan-950/70 border-cyan-500 text-cyan-300 cursor-wait animate-pulse'
+                    : 'bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-500 hover:to-blue-500 text-white border-cyan-400/40 shadow-[0_0_20px_rgba(6,182,212,0.35)]'
                   }`}
               >
                 <span>⚡</span>
-                <span>{isSimulating ? 'Simulando...' : 'Simular Señal'}</span>
+                <span>{isSimulatingSignal ? 'Propagando Sinapsis...' : 'Simular Impulso Eléctrico'}</span>
               </button>
 
-              {isSimulating && (
-                <div className="text-xs text-cyan-400 bg-cyan-950/40 p-2 rounded border border-cyan-800/50 flex items-center justify-between animate-fade-in">
-                  <span>Señal propagándose...</span>
+              {isSimulatingSignal && (
+                <div className="text-xs text-cyan-300 bg-cyan-950/40 p-2.5 rounded-lg border border-cyan-700/50 flex items-center justify-between animate-fade-in">
+                  <span>Cascada neural activa</span>
                   <span className="font-bold">Alcance: {simulationReach} neuronas</span>
                 </div>
               )}
+            </div>
 
-              <button 
-                onClick={isTouring ? onStopTour : onStartTour}
-                className={`w-full py-2 px-4 rounded-md border transition-colors text-sm font-medium ${isTouring ? 'bg-red-500/20 text-red-400 border-red-500/50 hover:bg-red-500/30' : 'bg-transparent text-cyan-400 border-cyan-500 hover:bg-cyan-500/10'}`}
-              >
-                {isTouring ? 'Detener Tour' : '🎯 Tour Guiado'}
-              </button>
+            {/* Chemical & Neurotransmitter Confidence Profile */}
+            <StatsPanel selectedNeuron={selectedNeuron} />
 
-              <div className="flex space-x-2">
-                <button 
-                  onClick={onResetView}
-                  className="flex-1 py-2 px-3 bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white rounded-md border border-slate-700 transition-colors text-sm font-medium"
-                >
-                  ↺ Reset Vista
-                </button>
-                <button 
-                  onClick={onToggleXRay}
-                  className={`flex-1 py-2 px-3 rounded-md border transition-colors text-sm font-medium ${isXRay ? 'bg-cyan-500/20 text-cyan-400 border-cyan-500/50' : 'bg-slate-800 text-slate-300 border-slate-700 hover:bg-slate-700'}`}
-                >
-                  🔬 Rayos X
-                </button>
+            {/* AI Neuroscience Analysis */}
+            <div className="bg-slate-800/60 rounded-xl p-3.5 border border-slate-700/50 space-y-2">
+              <div className="flex items-center justify-between">
+                <h4 className="text-xs font-semibold text-cyan-400 uppercase tracking-wider flex items-center space-x-1.5">
+                  <span>🤖</span>
+                  <span>Análisis Biológico por IA</span>
+                </h4>
+                <span className="text-[10px] text-slate-500">Qwen / Gemini</span>
               </div>
-              <button 
-                onClick={onToggleExplode}
-                className={`w-full py-2 px-4 rounded-md border transition-colors text-sm font-medium ${isExploded ? 'bg-indigo-500/30 text-indigo-300 border-indigo-500/50' : 'bg-slate-800 text-slate-300 border-slate-700 hover:bg-slate-700'}`}
-              >
-                💥 Vista Expandida (Capas)
-              </button>
-              <button 
-                onClick={onToggleRealistic}
-                className={`w-full py-2 px-4 rounded-md border transition-colors text-sm font-medium ${isRealistic ? 'bg-fuchsia-500/30 text-fuchsia-300 border-fuchsia-500/50' : 'bg-slate-800 text-slate-300 border-slate-700 hover:bg-slate-700'}`}
-              >
-                🌌 Modo Realista (130k Neuronas)
-              </button>
+
+              {aiStatus === 'loading' || aiStatus === 'thinking' ? (
+                <div className="flex items-center space-x-3 py-3">
+                  <div className="w-5 h-5 rounded-full border-2 border-cyan-500/30 border-t-cyan-400 animate-spin"></div>
+                  <p className="text-xs text-slate-400 animate-pulse">{progressText || 'Analizando conectoma...'}</p>
+                </div>
+              ) : analysisText ? (
+                <p className="text-xs text-slate-300 leading-relaxed bg-slate-900/50 p-2.5 rounded-lg border border-slate-800">
+                  {analysisText}
+                </p>
+              ) : null}
             </div>
 
-            <div className="bg-slate-800/60 rounded-lg p-4 border border-slate-700/50 flex flex-col space-y-3 min-h-[200px]">
-              <h4 className="text-sm font-semibold text-cyan-400 flex items-center space-x-2">
-                <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-                  <path d="M10 2a8 8 0 100 16 8 8 0 000-16zM9.5 4a1.5 1.5 0 110 3 1.5 1.5 0 010-3zm1 11.5a.5.5 0 01-1 0v-5a.5.5 0 011 0v5z"/>
-                </svg>
-                <span>Análisis por IA</span>
-              </h4>
-              
-              {aiStatus === 'no-webgpu' && (
-                <div className="text-sm text-orange-400 bg-orange-400/10 p-3 rounded">
-                  ⚠️ WebGPU no está disponible en este navegador. El análisis por IA no funcionará localmente.
-                </div>
-              )}
-
-              {(aiStatus === 'loading' || aiStatus === 'thinking') && (
-                <div className="flex-1 flex flex-col items-center justify-center space-y-3 py-4 text-center">
-                  <div className="w-8 h-8 rounded-full border-2 border-cyan-500/30 border-t-cyan-500 animate-spin"></div>
-                  <p className="text-xs text-slate-400 animate-pulse">{progressText || 'Pensando...'}</p>
-                </div>
-              )}
-
-              {(aiStatus === 'ready' || aiStatus === 'thinking') && analysisText && (
-                <div className={`text-sm text-slate-200 leading-relaxed ${aiStatus === 'thinking' ? 'shimmer text-transparent bg-clip-text' : ''}`}>
-                  {analysisText.split('\n').map((paragraph, i) => (
-                    <p key={i} className="mb-2 last:mb-0">{paragraph}</p>
-                  ))}
-                </div>
-              )}
-
-              {aiStatus === 'error' && (
-                <div className="text-sm text-red-400 bg-red-400/10 p-3 rounded">
-                  ❌ Error al cargar el modelo de IA. Inténtalo de nuevo más tarde.
-                </div>
-              )}
-            </div>
-
+            {/* Deselect button */}
             <button
               onClick={onDeselect}
-              className="w-full py-2 px-4 bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white rounded-md border border-slate-700 transition-colors text-sm font-medium"
+              className="w-full py-2 px-4 bg-slate-800/80 hover:bg-slate-700 text-slate-300 hover:text-white rounded-xl border border-slate-700 text-xs font-medium transition-colors"
             >
-              Deseleccionar
+              ✕ Deseleccionar Neurona
             </button>
           </div>
-        )}
-      </div>
+        ) : (
+          /* Default Global View: Stimuli, SWC Morphology list, Stats, View tools */
+          <div className="animate-fade-in space-y-4">
+            {/* View Tool Quick Bar */}
+            <div className="grid grid-cols-3 gap-2">
+              <button
+                onClick={onCycleBodyMode}
+                className={`py-2 px-2 rounded-xl border text-[11px] font-medium transition-all flex items-center justify-center space-x-1 ${bodyModeInfo.color}`}
+              >
+                <span>{bodyModeInfo.icon}</span>
+                <span className="truncate">{bodyModeInfo.label}</span>
+              </button>
 
-      <div className="p-4 bg-slate-950/50 border-t border-slate-800/50 text-xs text-slate-500 flex justify-between">
-        <div>
-          <span className="block font-medium text-slate-400">Neuronas</span>
-          <span>{neurons.length.toLocaleString()}</span>
-        </div>
-        <div>
-          <span className="block font-medium text-slate-400">Conexiones</span>
-          <span>{synapses.length.toLocaleString()}</span>
-        </div>
-        {selectedNeuron && (
-          <div>
-            <span className="block font-medium text-slate-400">Seleccionada</span>
-            <span className="text-cyan-500">{connectionsCount}</span>
+              <button
+                onClick={onCycleNeuronScale}
+                className="py-2 px-2 rounded-xl border border-slate-700 bg-slate-800/80 hover:bg-slate-700 text-slate-300 text-[11px] font-medium transition-colors flex items-center justify-center space-x-1"
+                title="Cambiar tamaño de los somas neuronales"
+              >
+                <span>🔍</span>
+                <span className="truncate">{neuronScaleLabel}</span>
+              </button>
+
+              <button
+                onClick={onResetView}
+                className="py-2 px-2 rounded-xl border border-slate-700 bg-slate-800/80 hover:bg-slate-700 text-slate-300 text-[11px] font-medium transition-colors flex items-center justify-center space-x-1"
+              >
+                <span>↺</span>
+                <span>Reset</span>
+              </button>
+            </div>
+
+            {/* Sub-tabs for content */}
+            <div className="flex border-b border-slate-800 text-xs font-medium text-slate-400">
+              <button
+                onClick={() => setActiveTab('explore')}
+                className={`flex-1 py-2 text-center border-b-2 transition-colors ${activeTab === 'explore' ? 'border-cyan-400 text-cyan-300' : 'border-transparent hover:text-white'}`}
+              >
+                🧪 Estímulos
+              </button>
+              <button
+                onClick={() => setActiveTab('morphology')}
+                className={`flex-1 py-2 text-center border-b-2 transition-colors ${activeTab === 'morphology' ? 'border-cyan-400 text-cyan-300' : 'border-transparent hover:text-white'}`}
+              >
+                ⭐ Morfología (30)
+              </button>
+              <button
+                onClick={() => setActiveTab('stats')}
+                className={`flex-1 py-2 text-center border-b-2 transition-colors ${activeTab === 'stats' ? 'border-cyan-400 text-cyan-300' : 'border-transparent hover:text-white'}`}
+              >
+                📊 Conectoma
+              </button>
+            </div>
+
+            {/* Tab 1: Sensory Circuit Stimuli */}
+            {activeTab === 'explore' && (
+              <div className="space-y-4 animate-fade-in">
+                <StimulusPanel
+                  activeStimulus={activeStimulus}
+                  onActivateStimulus={onActivateStimulus}
+                  isSimulating={isSimulatingStimulus}
+                />
+
+                {/* Jump to Region */}
+                <div className="bg-slate-800/40 rounded-xl p-3 border border-slate-700/30 space-y-2">
+                  <h4 className="text-[11px] font-semibold text-slate-400 uppercase tracking-wider">Regiones Cerebrales</h4>
+                  <div className="flex flex-wrap gap-1.5">
+                    {BRAIN_REGIONS.map(region => (
+                      <button
+                        key={region}
+                        onClick={() => onJumpToRegion(region)}
+                        className="px-2.5 py-1 bg-slate-800 hover:bg-cyan-950 border border-slate-700/80 hover:border-cyan-600/60 rounded-lg text-[11px] text-slate-300 hover:text-cyan-300 transition-all"
+                      >
+                        {region}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Advanced Visual Modes */}
+                <div className="space-y-2 pt-1">
+                  <button
+                    onClick={isTouring ? onStopTour : onStartTour}
+                    className={`w-full py-2 px-3 rounded-xl border text-xs font-semibold transition-all ${isTouring ? 'bg-red-500/20 text-red-400 border-red-500/50' : 'bg-slate-800/60 text-cyan-400 border-cyan-500/40 hover:bg-cyan-950/40'}`}
+                  >
+                    {isTouring ? 'Detener Tour Guiado' : '🎯 Iniciar Tour por Regiones'}
+                  </button>
+
+                  <button
+                    onClick={onToggleExplode}
+                    className={`w-full py-2 px-2.5 rounded-xl border text-[11px] font-medium transition-all ${isExploded ? 'bg-indigo-500/25 text-indigo-300 border-indigo-500/50' : 'bg-slate-800/60 text-slate-400 border-slate-700'}`}
+                  >
+                    💥 {isExploded ? 'Colapsar a Posición Anatómica' : 'Separar por Capas / Regiones'}
+                  </button>
+                </div>
+              </div>
+            )}
+
+            {/* Tab 2: 30 SWC Morphology Neurons */}
+            {activeTab === 'morphology' && (
+              <div className="space-y-3 animate-fade-in">
+                <div className="bg-cyan-950/30 p-3 rounded-xl border border-cyan-700/40 text-xs text-slate-300 space-y-1">
+                  <p className="font-bold text-cyan-300 flex items-center space-x-1.5">
+                    <span>⭐</span>
+                    <span>Reconstrucciones Dendríticas SWC Reales</span>
+                  </p>
+                  <p className="text-[11px] text-slate-400">
+                    Estas 30 neuronas contienen el árbol morfológico 3D completo extraído del dataset de microscopía electrónica de FlyWire. Haz clic en cualquiera para enfocarla y visualizar sus ramificaciones.
+                  </p>
+                </div>
+
+                <div className="space-y-1.5 max-h-[360px] overflow-y-auto custom-scrollbar pr-1">
+                  {morphologyNeurons.map(n => (
+                    <button
+                      key={n.id}
+                      onClick={() => onSelectNeuron(n)}
+                      className="w-full text-left p-2.5 bg-slate-800/60 hover:bg-slate-800 border border-slate-700/40 hover:border-cyan-500/60 rounded-xl transition-all flex items-center justify-between text-xs"
+                    >
+                      <div className="flex items-center space-x-2 truncate">
+                        <span className="w-2.5 h-2.5 rounded-full shrink-0" style={{ backgroundColor: NEURON_TYPE_COLORS[n.type] || '#38bdf8' }}></span>
+                        <div className="truncate">
+                          <p className="text-white font-medium truncate">{n.label || n.cellType || `Neurona #${n.id.slice(-6)}`}</p>
+                          <p className="text-[10px] text-slate-400">{n.region}</p>
+                        </div>
+                      </div>
+                      <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-cyan-950 text-cyan-300 border border-cyan-800/60">
+                        Ver 3D
+                      </span>
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Tab 3: Connectome Statistics & NT Type Filters */}
+            {activeTab === 'stats' && (
+              <div className="space-y-4 animate-fade-in">
+                <StatsPanel stats={stats} />
+
+                {/* Filter by Neurotransmitter */}
+                <div className="bg-slate-800/40 rounded-xl p-3.5 border border-slate-700/30 space-y-2.5">
+                  <h4 className="text-xs font-semibold text-slate-300 uppercase tracking-wider">Filtro por Neurotransmisor</h4>
+                  <div className="space-y-2">
+                    {Object.entries(NEURON_TYPE_COLORS).map(([type, color]) => {
+                      const isVisible = visibleTypes?.has(type);
+                      return (
+                        <div key={type} className={`flex items-center justify-between text-xs transition-opacity ${isVisible ? 'opacity-100' : 'opacity-40'}`}>
+                          <div className="flex items-center space-x-2.5 text-slate-300">
+                            <span className="w-2.5 h-2.5 rounded-full shadow-sm" style={{ backgroundColor: color }}></span>
+                            <span className="capitalize">{type}</span>
+                          </div>
+                          <div
+                            onClick={() => onToggleType(type)}
+                            className={`toggle-switch ${isVisible ? 'active' : ''} cursor-pointer`}
+                          ></div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
         )}
       </div>
 
+      {/* Persistent Bottom Bar */}
+      <div className="p-3 bg-slate-950/70 border-t border-slate-800/60 text-[11px] text-slate-400 flex justify-between items-center">
+        <div>
+          <span className="font-semibold text-slate-300">Neuronas:</span> {neurons.length.toLocaleString()}
+        </div>
+        <div>
+          <span className="font-semibold text-slate-300">Sinapsis Reales:</span> {synapses.length.toLocaleString()}
+        </div>
+        <div>
+          <span className="font-semibold text-cyan-400">Árboles SWC:</span> {morphologyNeurons.length}
+        </div>
+      </div>
     </div>
   );
 }

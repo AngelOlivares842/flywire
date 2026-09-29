@@ -1,43 +1,44 @@
 import React, { useRef, useMemo, useEffect } from 'react';
 import { useFrame, useThree } from '@react-three/fiber';
-import { OrbitControls, Stars, Sphere } from '@react-three/drei';
+import { OrbitControls, Stars } from '@react-three/drei';
 import { EffectComposer, Bloom, Vignette } from '@react-three/postprocessing';
 import * as THREE from 'three';
 
-import NeuronNode from './NeuronNode.jsx';
-import SynapticLink from './SynapticLink.jsx';
-import DrosophilaModel from './DrosophilaModel.jsx';
+import RealisticFly from './RealisticFly.jsx';
+import NeuronCloud from './NeuronCloud.jsx';
+import NeuronMorphology from './NeuronMorphology.jsx';
+import SynapseNetwork from './SynapseNetwork.jsx';
 import ParticleField from './ParticleField.jsx';
 import NeuralPulse from './NeuralPulse.jsx';
-import DenseBrainCloud from './DenseBrainCloud.jsx';
 
 export default function BrainScene({
   neurons = [],
   synapses = [],
+  morphologies = {},
   selectedNeuron = null,
   onSelectNeuron,
   onFocusNeuron,
   activatedNeurons = new Set(),
   signalPulses = [],
   onPulseComplete,
+  activeStimulus = null,
   visibleTypes = new Set(),
   cameraTarget = null,
-  highlightedSynapses = new Set(),
-  isXRay = false,
+  bodyMode = 'silhouette', // 'silhouette' | 'translucent' | 'none'
+  neuronScale = 1.0,
   isExploded = false,
-  isRealistic = false
 }) {
   const controlsRef = useRef();
   const { camera } = useThree();
-  
+
   const introPlayed = useRef(false);
   const introTime = useRef(0);
+  const activeCameraTarget = useRef(null);
 
-  useEffect(() => {
-    if (!introPlayed.current) {
-      camera.position.set(0, 8, 25);
-    }
-  }, [camera]);
+  // Set of neuron IDs that have full SWC morphology data
+  const morphologyIds = useMemo(() => {
+    return new Set(Object.keys(morphologies));
+  }, [morphologies]);
 
   const neuronLookup = useMemo(() => {
     const map = new Map();
@@ -47,115 +48,125 @@ export default function BrainScene({
     return map;
   }, [neurons]);
 
+  // Update target when cameraTarget prop changes
+  useEffect(() => {
+    if (cameraTarget) {
+      activeCameraTarget.current = new THREE.Vector3(...cameraTarget);
+    }
+  }, [cameraTarget]);
+
   useFrame((state, delta) => {
+    // Cinematic intro fly-in tailored for 54-unit real connectome
     if (!introPlayed.current) {
       introTime.current += delta;
       const progress = Math.min(introTime.current / 2.0, 1.0);
-      
       const ease = 1 - Math.pow(1 - progress, 3);
-      
       camera.position.lerpVectors(
-        new THREE.Vector3(0, 8, 25),
-        new THREE.Vector3(0, 2, 10),
+        new THREE.Vector3(0, 20, 75),
+        new THREE.Vector3(0, 10, 46),
         ease
       );
-      
       if (progress >= 1.0) {
         introPlayed.current = true;
       }
     }
 
-    if (controlsRef.current) {
-      if (cameraTarget) {
-        controlsRef.current.target.lerp(new THREE.Vector3(...cameraTarget), 0.05);
-      } else {
-        controlsRef.current.target.lerp(new THREE.Vector3(0, 0, 0), 0.02);
-      }
+    // Smoothly focus on camera target without fighting manual OrbitControls
+    if (controlsRef.current && activeCameraTarget.current) {
+      controlsRef.current.target.lerp(activeCameraTarget.current, 0.08);
       controlsRef.current.update();
+
+      if (controlsRef.current.target.distanceTo(activeCameraTarget.current) < 0.1) {
+        activeCameraTarget.current = null;
+      }
     }
   });
 
   return (
     <>
       <color attach="background" args={['#020617']} />
-      <ambientLight intensity={0.5} />
-      <pointLight position={[10, 10, 10]} intensity={1} />
-      
-      <Stars radius={50} depth={50} count={5000} factor={4} saturation={0} fade speed={1} />
-      
-      <DrosophilaModel opacity={isXRay ? 0.05 : 1} activityLevel={activatedNeurons.size} />
-      <ParticleField count={250} />
-      <DenseBrainCloud isVisible={isRealistic} isExploded={isExploded} />
+      <ambientLight intensity={0.6} />
+      <pointLight position={[20, 30, 30]} intensity={1.2} />
+      <pointLight position={[-20, -20, -20]} intensity={0.6} color="#0284c7" />
 
-      <Sphere args={[5, 32, 32]} visible={false}>
-        <meshBasicMaterial wireframe color="#1e293b" transparent opacity={0.1} />
-      </Sphere>
+      <Stars radius={90} depth={90} count={3500} factor={3} saturation={0} fade speed={0.6} />
 
-      {synapses.map((synapse, idx) => {
-        const sourceNode = neuronLookup.get(synapse.from);
-        const targetNode = neuronLookup.get(synapse.to);
-        
-        if (!sourceNode || !targetNode) return null;
-        
-        const isVisible = visibleTypes ? (visibleTypes.has(sourceNode.type) && visibleTypes.has(targetNode.type)) : true;
-        const isHighlighted = highlightedSynapses.has(idx);
-        const isActive = false; 
+      {/* Elegant Drosophila Anatomical Silhouette / Frame */}
+      <RealisticFly
+        activityLevel={activatedNeurons.size}
+        stimulus={activeStimulus}
+        bodyMode={bodyMode}
+      />
 
-        return (
-          <SynapticLink
-            key={`synapse-${idx}`}
-            sourceNode={sourceNode}
-            targetNode={targetNode}
-            isActive={isActive}
-            isHighlighted={isHighlighted}
-            weight={synapse.weight}
-            visible={isVisible}
-            isExploded={isExploded}
-          />
-        );
-      })}
+      {/* Real Synaptic Connectome Network (5,045 Princeton connections, ZERO fake threads) */}
+      <SynapseNetwork
+        synapses={synapses}
+        neurons={neurons}
+        selectedNeuron={selectedNeuron}
+        visibleTypes={visibleTypes}
+        isExploded={isExploded}
+      />
 
-      {neurons.map((neuron) => (
-        <NeuronNode
-          key={`neuron-${neuron.id}`}
-          neuron={neuron}
-          isSelected={selectedNeuron && selectedNeuron.id === neuron.id}
-          isActivated={activatedNeurons.has(neuron.id)}
-          isVisible={visibleTypes ? visibleTypes.has(neuron.type) : true}
-          isExploded={isExploded}
-          onSelect={onSelectNeuron}
-          onFocus={onFocusNeuron}
+      {/* Real Neurons GPU Instanced (2,002 FlyWire somas with spatial breathing room) */}
+      <NeuronCloud
+        neurons={neurons}
+        morphologyIds={morphologyIds}
+        selectedNeuronId={selectedNeuron?.id}
+        activatedNeurons={activatedNeurons}
+        visibleTypes={visibleTypes}
+        isExploded={isExploded}
+        neuronScale={neuronScale}
+        onSelectNeuron={onSelectNeuron}
+        onFocusNeuron={onFocusNeuron}
+      />
+
+      {/* Real SWC 3D Morphology (Electron-microscopy reconstructed dendritic arbor) */}
+      {selectedNeuron && morphologies[selectedNeuron.id] && (
+        <NeuronMorphology
+          morphologyData={morphologies[selectedNeuron.id]}
+          color="#38bdf8"
         />
-      ))}
+      )}
 
+      {/* Subtle ambient bio-luminescent dust */}
+      <ParticleField count={180} />
+
+      {/* Synaptic Pulses (Stimulus & electric cascades travelling along real connections) */}
       {signalPulses.map(pulse => {
         const fromNode = neuronLookup.get(pulse.fromId);
         const toNode = neuronLookup.get(pulse.toId);
-        
         if (!fromNode || !toNode) return null;
-        
+
         return (
           <NeuralPulse
             key={pulse.id}
             id={pulse.id}
             start={fromNode.position}
             end={toNode.position}
-            duration={pulse.duration || 1}
+            duration={pulse.duration || 0.8}
             color={pulse.color || '#22d3ee'}
-            onComplete={() => onPulseComplete && onPulseComplete(pulse.id)}
+            onComplete={() => onPulseComplete?.(pulse.id)}
           />
         );
       })}
 
+      {/* Crisp Sci-Fi Post-Processing (Bloom + Vignette) */}
       <EffectComposer disableNormalPass>
-        <Bloom mipmapBlur luminanceThreshold={0.4} luminanceSmoothing={0.9} intensity={0.4} />
-        <Vignette eskil={false} offset={0.1} darkness={1.1} />
+        <Bloom
+          mipmapBlur
+          luminanceThreshold={0.3}
+          luminanceSmoothing={0.8}
+          intensity={0.6}
+        />
+        <Vignette eskil={false} offset={0.15} darkness={1.05} />
       </EffectComposer>
 
       <OrbitControls
         ref={controlsRef}
         enableDamping
-        dampingFactor={0.05}
+        dampingFactor={0.06}
+        minDistance={5}
+        maxDistance={120}
         autoRotate={false}
       />
     </>
