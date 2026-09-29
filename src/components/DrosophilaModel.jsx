@@ -3,33 +3,45 @@ import { useFrame } from '@react-three/fiber';
 import { QuadraticBezierLine } from '@react-three/drei';
 import * as THREE from 'three';
 
-const DrosophilaModel = React.memo(({ opacity = 1 }) => {
+const DrosophilaModel = React.memo(({ opacity = 1, activityLevel = 0 }) => {
   const abdomenRef = useRef();
   const leftWingRef = useRef();
   const rightWingRef = useRef();
   const groupRef = useRef();
   
-  useFrame((state) => {
+  // Smoothly interpolate excitation level
+  const excitation = useRef(0);
+  
+  useFrame((state, delta) => {
     const t = state.clock.getElapsedTime();
     
+    // Target excitation: 0 when no activity, up to 1.0 when many neurons are firing
+    const targetExcitation = activityLevel > 0 ? Math.min(activityLevel / 10, 1.0) : 0;
+    excitation.current += (targetExcitation - excitation.current) * delta * 3.0;
+    
     if (groupRef.current) {
+      // Gentle idle float
       groupRef.current.position.y = Math.sin(t * 0.5) * 0.1;
     }
 
     if (leftWingRef.current && rightWingRef.current) {
-      const isFlying = Math.sin(t * 0.5) > 0;
-      if (isFlying) {
-        const flutter = Math.sin(t * Math.PI * 25) * 0.2;
-        leftWingRef.current.rotation.z = 0.4 + flutter;
-        rightWingRef.current.rotation.z = -0.4 - flutter;
+      // Flap wings ONLY if there is neural excitation
+      if (excitation.current > 0.05) {
+        // Speed and amplitude scale with neural activity
+        const flutter = Math.sin(t * Math.PI * (20 + 20 * excitation.current)) * (0.4 * excitation.current);
+        leftWingRef.current.rotation.z = 0.2 + flutter;
+        rightWingRef.current.rotation.z = -0.2 - flutter;
       } else {
+        // Idle resting position
         leftWingRef.current.rotation.z = 0.1;
         rightWingRef.current.rotation.z = -0.1;
       }
     }
     
     if (abdomenRef.current) {
-      const scale = 1.0 + Math.sin(t * 3) * 0.015;
+      // Breathing accelerates with neural activity
+      const breathingSpeed = 2 + (excitation.current * 8);
+      const scale = 1.0 + Math.sin(t * breathingSpeed) * (0.015 + 0.02 * excitation.current);
       abdomenRef.current.scale.set(3.5 * scale, 3.5 * scale, 8.0 * scale);
     }
   });

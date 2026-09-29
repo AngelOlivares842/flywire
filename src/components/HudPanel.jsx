@@ -26,6 +26,8 @@ export default function HudPanel({
   isXRay,
   isExploded,
   onToggleExplode,
+  isRealistic,
+  onToggleRealistic,
   onJumpToRegion
 }) {
   const [searchQuery, setSearchQuery] = useState('');
@@ -168,6 +170,12 @@ export default function HudPanel({
               >
                 💥 Vista Expandida (Capas)
               </button>
+              <button 
+                onClick={onToggleRealistic}
+                className={`w-full py-2 px-4 rounded-md border transition-colors text-sm font-medium ${isRealistic ? 'bg-fuchsia-500/30 text-fuchsia-300 border-fuchsia-500/50' : 'bg-slate-800 text-slate-300 border-slate-700 hover:bg-slate-700'}`}
+              >
+                🌌 Modo Realista (130k Neuronas)
+              </button>
             </div>
           </div>
         ) : (
@@ -245,6 +253,18 @@ export default function HudPanel({
                   🔬 Rayos X
                 </button>
               </div>
+              <button 
+                onClick={onToggleExplode}
+                className={`w-full py-2 px-4 rounded-md border transition-colors text-sm font-medium ${isExploded ? 'bg-indigo-500/30 text-indigo-300 border-indigo-500/50' : 'bg-slate-800 text-slate-300 border-slate-700 hover:bg-slate-700'}`}
+              >
+                💥 Vista Expandida (Capas)
+              </button>
+              <button 
+                onClick={onToggleRealistic}
+                className={`w-full py-2 px-4 rounded-md border transition-colors text-sm font-medium ${isRealistic ? 'bg-fuchsia-500/30 text-fuchsia-300 border-fuchsia-500/50' : 'bg-slate-800 text-slate-300 border-slate-700 hover:bg-slate-700'}`}
+              >
+                🌌 Modo Realista (130k Neuronas)
+              </button>
             </div>
 
             <div className="bg-slate-800/60 rounded-lg p-4 border border-slate-700/50 flex flex-col space-y-3 min-h-[200px]">

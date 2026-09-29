@@ -3,19 +3,7 @@ import { useFrame } from '@react-three/fiber';
 import { Html } from '@react-three/drei';
 import * as THREE from 'three';
 import { NEURON_TYPE_COLORS } from '../data/neurons.js';
-
-const getRegionOffset = (region) => {
-  switch (region) {
-    case 'Lóbulo Óptico Izquierdo': return new THREE.Vector3(-25, 0, 0);
-    case 'Lóbulo Óptico Derecho': return new THREE.Vector3(25, 0, 0);
-    case 'Lóbulo Antenal': return new THREE.Vector3(0, -10, 15);
-    case 'Cuerpo Central': return new THREE.Vector3(0, 5, 0);
-    case 'Cuerpo Pedunculado': return new THREE.Vector3(0, 20, -10);
-    case 'Protocerebro': return new THREE.Vector3(0, 15, -20);
-    case 'Ganglio Subesofágico': return new THREE.Vector3(0, -20, 0);
-    default: return new THREE.Vector3(0, 0, 0);
-  }
-};
+import { getRegionOffset } from '../utils/layout.js';
 
 export default function NeuronNode({ 
   neuron, 
@@ -115,7 +103,7 @@ export default function NeuronNode({
         onPointerOver={(e) => { e.stopPropagation(); setHovered(true); document.body.style.cursor = 'pointer'; }}
         onPointerOut={(e) => { e.stopPropagation(); setHovered(false); document.body.style.cursor = 'default'; }}
       >
-        <sphereGeometry args={[0.8, 16, 16]} />
+        <sphereGeometry args={[0.4, 16, 16]} />
         <meshBasicMaterial transparent opacity={0} depthWrite={false} colorWrite={false} />
       </mesh>
 
@@ -131,15 +119,23 @@ export default function NeuronNode({
         />
       </mesh>
 
-      {/* Core Node (Visual only, no events) */}
+      {/* Core Node (Realistic Glass Material) */}
       <mesh ref={meshRef}>
         <sphereGeometry args={[0.2, 32, 32]} />
-        <meshStandardMaterial
+        <meshPhysicalMaterial
           ref={materialRef}
           transparent
-          opacity={0.95}
-          roughness={0.1}
-          metalness={0.8}
+          opacity={1}
+          transmission={0.8}
+          roughness={0.15}
+          metalness={0.1}
+          thickness={1.5}
+          ior={1.5}
+          color={baseColor}
+          emissive={baseColor}
+          emissiveIntensity={0.2}
+          clearcoat={1}
+          clearcoatRoughness={0.1}
           toneMapped={false}
         />
       </mesh>
@@ -152,7 +148,7 @@ export default function NeuronNode({
 
       {/* High-quality UI Overlay */}
       {(hovered || isSelected) && (
-        <Html center distanceFactor={15} zIndexRange={[100, 0]}>
+        <Html center distanceFactor={15} zIndexRange={[100, 0]} style={{ pointerEvents: 'none' }} wrapperClass="pointer-events-none">
           <div className="bg-slate-900/85 backdrop-blur-md px-4 py-2 rounded-xl border border-cyan-500/50 shadow-[0_0_15px_rgba(6,182,212,0.4)] text-center pointer-events-none transform transition-all duration-300 scale-100 animate-fade-in w-max">
             <p className="text-white font-extrabold text-sm drop-shadow-lg tracking-wide">{neuron.type}</p>
             <p className="text-cyan-300 text-xs mt-0.5 font-medium">{neuron.region}</p>

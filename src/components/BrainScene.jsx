@@ -9,6 +9,7 @@ import SynapticLink from './SynapticLink.jsx';
 import DrosophilaModel from './DrosophilaModel.jsx';
 import ParticleField from './ParticleField.jsx';
 import NeuralPulse from './NeuralPulse.jsx';
+import DenseBrainCloud from './DenseBrainCloud.jsx';
 
 export default function BrainScene({
   neurons = [],
@@ -23,7 +24,8 @@ export default function BrainScene({
   cameraTarget = null,
   highlightedSynapses = new Set(),
   isXRay = false,
-  isExploded = false
+  isExploded = false,
+  isRealistic = false
 }) {
   const controlsRef = useRef();
   const { camera } = useThree();
@@ -81,8 +83,9 @@ export default function BrainScene({
       
       <Stars radius={50} depth={50} count={5000} factor={4} saturation={0} fade speed={1} />
       
-      <DrosophilaModel opacity={isXRay ? 0.05 : 1} />
+      <DrosophilaModel opacity={isXRay ? 0.05 : 1} activityLevel={activatedNeurons.size} />
       <ParticleField count={250} />
+      <DenseBrainCloud isVisible={isRealistic} isExploded={isExploded} />
 
       <Sphere args={[5, 32, 32]} visible={false}>
         <meshBasicMaterial wireframe color="#1e293b" transparent opacity={0.1} />

@@ -31,6 +31,7 @@ export default function NeuroLabViewer() {
 
   const [isXRay, setIsXRay] = useState(false);
   const [isExploded, setIsExploded] = useState(false); // Capas separadas
+  const [isRealistic, setIsRealistic] = useState(false); // 130k neuronas
 
   useEffect(() => {
     fetch('/data/brain_data.json')
@@ -198,6 +199,7 @@ export default function NeuroLabViewer() {
 
   const handleToggleXRay = useCallback(() => setIsXRay(prev => !prev), []);
   const handleToggleExplode = useCallback(() => setIsExploded(prev => !prev), []);
+  const handleToggleRealistic = useCallback(() => setIsRealistic(prev => !prev), []);
 
   const handleJumpToRegion = useCallback((regionName) => {
     const regionNeurons = neuronsData.filter(n => n.region === regionName);
@@ -246,6 +248,7 @@ export default function NeuroLabViewer() {
             highlightedSynapses={highlightedSynapses}
             isXRay={isXRay}
             isExploded={isExploded}
+            isRealistic={isRealistic}
           />
         </Canvas>
         
@@ -299,6 +302,8 @@ export default function NeuroLabViewer() {
         isXRay={isXRay}
         onToggleExplode={handleToggleExplode}
         isExploded={isExploded}
+        onToggleRealistic={handleToggleRealistic}
+        isRealistic={isRealistic}
         onJumpToRegion={handleJumpToRegion}
       />
     </div>

@@ -1,19 +1,7 @@
 import React, { useRef, useMemo } from 'react';
 import { useFrame } from '@react-three/fiber';
 import * as THREE from 'three';
-
-const getRegionOffset = (region) => {
-  switch (region) {
-    case 'Lóbulo Óptico Izquierdo': return new THREE.Vector3(-25, 0, 0);
-    case 'Lóbulo Óptico Derecho': return new THREE.Vector3(25, 0, 0);
-    case 'Lóbulo Antenal': return new THREE.Vector3(0, -10, 15);
-    case 'Cuerpo Central': return new THREE.Vector3(0, 5, 0);
-    case 'Cuerpo Pedunculado': return new THREE.Vector3(0, 20, -10);
-    case 'Protocerebro': return new THREE.Vector3(0, 15, -20);
-    case 'Ganglio Subesofágico': return new THREE.Vector3(0, -20, 0);
-    default: return new THREE.Vector3(0, 0, 0);
-  }
-};
+import { getRegionOffset } from '../utils/layout.js';
 
 export default function SynapticLink({ 
   sourceNode, 
