@@ -1,7 +1,7 @@
 {
   "name": "@angelolivares842/flywire",
   "type": "module",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Simulador biofísico y explorador interactivo 3D del conectoma de Drosophila melanogaster",
   "author": "Angel Olivares <angel.olivares.rosas2@gmail.com>",
   "license": "MIT",
