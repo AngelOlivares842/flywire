@@ -9,7 +9,6 @@ const DrosophilaModel = React.memo(({ opacity = 1, activityLevel = 0 }) => {
   const rightWingRef = useRef();
   const groupRef = useRef();
   
-  // Smoothly interpolate excitation level
   const excitation = useRef(0);
   
   useFrame((state, delta) => {
@@ -21,18 +20,16 @@ const DrosophilaModel = React.memo(({ opacity = 1, activityLevel = 0 }) => {
     
     if (groupRef.current) {
       // Gentle idle float
-      groupRef.current.position.y = Math.sin(t * 0.5) * 0.1;
+      groupRef.current.position.y = Math.sin(t * 0.5) * 0.2;
     }
 
     if (leftWingRef.current && rightWingRef.current) {
-      // Flap wings ONLY if there is neural excitation
       if (excitation.current > 0.05) {
         // Speed and amplitude scale with neural activity
         const flutter = Math.sin(t * Math.PI * (20 + 20 * excitation.current)) * (0.4 * excitation.current);
         leftWingRef.current.rotation.z = 0.2 + flutter;
         rightWingRef.current.rotation.z = -0.2 - flutter;
       } else {
-        // Idle resting position
         leftWingRef.current.rotation.z = 0.1;
         rightWingRef.current.rotation.z = -0.1;
       }
@@ -42,117 +39,96 @@ const DrosophilaModel = React.memo(({ opacity = 1, activityLevel = 0 }) => {
       // Breathing accelerates with neural activity
       const breathingSpeed = 2 + (excitation.current * 8);
       const scale = 1.0 + Math.sin(t * breathingSpeed) * (0.015 + 0.02 * excitation.current);
-      abdomenRef.current.scale.set(3.5 * scale, 3.5 * scale, 8.0 * scale);
+      abdomenRef.current.scale.set(15 * scale, 12 * scale, 25 * scale);
     }
   });
 
-  const ChitinMaterial = () => (
+  // A very subtle, faint rim-lit silhouette material
+  const FlyMaterial = ({ color, opac = 0.1 }) => (
     <meshPhysicalMaterial 
-      color="#1f1412"
-      roughness={0.6}
-      metalness={0.1}
-      clearcoat={0.3}
-      clearcoatRoughness={0.5}
+      color={color}
       transparent 
-      opacity={0.35 * opacity}
+      opacity={opac * opacity}
       depthWrite={false} 
       side={THREE.DoubleSide}
-    />
-  );
-
-  const EyeMaterial = () => (
-    <meshPhysicalMaterial 
-      color="#4a0404"
-      emissive="#2a0000"
-      roughness={0.2}
-      metalness={0.8}
-      clearcoat={1.0}
-      transparent 
-      opacity={0.45 * opacity} 
-      depthWrite={false} 
+      roughness={0.8}
+      transmission={0.9}
+      thickness={1.0}
+      envMapIntensity={0.5}
     />
   );
 
   return (
-    <group ref={groupRef} scale={[1.8, 1.8, 1.8]} raycast={() => null}>
-      {/* Head */}
-      <mesh position={[0, 1.5, 0]} scale={[2.0, 1.5, 1.5]} raycast={() => null}>
-        <sphereGeometry args={[2.5, 32, 32]} />
-        <ChitinMaterial />
+    // The brain is at [0,0,0] with a span of roughly [-15, 15] on X and Z.
+    // The fly is scaled and positioned so the brain sits exactly inside its head.
+    <group ref={groupRef} raycast={() => null}>
+      
+      {/* Head - Exactly enveloping the brain at [0,0,0] */}
+      <mesh position={[0, -2, 0]} scale={[1.8, 1.2, 1.2]} raycast={() => null}>
+        <sphereGeometry args={[12, 32, 32]} />
+        <FlyMaterial color="#0f172a" opac={0.15} />
       </mesh>
 
-      {/* Eyes */}
-      <mesh position={[-2.8, 2.0, 0.5]} scale={[0.6, 1.2, 1.0]} rotation={[0, -0.4, -0.3]} raycast={() => null}>
-        <sphereGeometry args={[2.0, 32, 32]} />
-        <EyeMaterial />
+      {/* Eyes - Large compound eyes on the sides of the head */}
+      <mesh position={[-14, 0, 2]} scale={[0.4, 1.2, 1.0]} rotation={[0, -0.2, -0.2]} raycast={() => null}>
+        <sphereGeometry args={[10, 32, 32]} />
+        <FlyMaterial color="#4a0404" opac={0.2} />
       </mesh>
-      <mesh position={[2.8, 2.0, 0.5]} scale={[0.6, 1.2, 1.0]} rotation={[0, 0.4, 0.3]} raycast={() => null}>
-        <sphereGeometry args={[2.0, 32, 32]} />
-        <EyeMaterial />
-      </mesh>
-
-      {/* Thorax */}
-      <mesh position={[0, 0.5, -4.5]} scale={[2.5, 2.8, 3.2]} rotation={[0.2, 0, 0]} raycast={() => null}>
-        <sphereGeometry args={[1.5, 32, 32]} />
-        <ChitinMaterial />
+      <mesh position={[14, 0, 2]} scale={[0.4, 1.2, 1.0]} rotation={[0, 0.2, 0.2]} raycast={() => null}>
+        <sphereGeometry args={[10, 32, 32]} />
+        <FlyMaterial color="#4a0404" opac={0.2} />
       </mesh>
 
-      {/* Abdomen */}
-      <mesh ref={abdomenRef} position={[0, -1.5, -11.0]} scale={[3.5, 3.5, 8.0]} rotation={[-0.1, 0, 0]} raycast={() => null}>
+      {/* Thorax - Directly behind the head */}
+      <mesh position={[0, -4, -22]} scale={[14, 16, 18]} rotation={[0.1, 0, 0]} raycast={() => null}>
         <sphereGeometry args={[1, 32, 32]} />
-        <ChitinMaterial />
+        <FlyMaterial color="#020617" opac={0.2} />
       </mesh>
 
-      {/* Wings */}
-      <group position={[-1.5, 4.0, -3.5]} ref={leftWingRef} raycast={() => null}>
-        <mesh position={[-2.5, 0, -4]} rotation={[0.1, 0.5, 0]} scale={[2.5, 0.01, 7]} raycast={() => null}>
+      {/* Abdomen - Long, extending far back */}
+      <mesh ref={abdomenRef} position={[0, -8, -55]} scale={[15, 12, 25]} rotation={[-0.1, 0, 0]} raycast={() => null}>
+        <sphereGeometry args={[1, 32, 32]} />
+        <FlyMaterial color="#020617" opac={0.2} />
+      </mesh>
+
+      {/* Wings - Spanning out from the thorax */}
+      <group position={[-8, 12, -20]} ref={leftWingRef} raycast={() => null}>
+        <mesh position={[-20, 0, -20]} rotation={[0.1, 0.4, 0]} scale={[25, 0.1, 55]} raycast={() => null}>
           <sphereGeometry args={[1, 32, 16]} />
-          <meshStandardMaterial 
-            color="#ffffff" 
-            transparent 
-            opacity={0.15 * opacity} 
-            depthWrite={false} 
-            side={THREE.DoubleSide}
-          />
+          <FlyMaterial color="#ffffff" opac={0.05} />
         </mesh>
       </group>
-      <group position={[1.5, 4.0, -3.5]} ref={rightWingRef} raycast={() => null}>
-        <mesh position={[2.5, 0, -4]} rotation={[0.1, -0.5, 0]} scale={[2.5, 0.01, 7]} raycast={() => null}>
+      <group position={[8, 12, -20]} ref={rightWingRef} raycast={() => null}>
+        <mesh position={[20, 0, -20]} rotation={[0.1, -0.4, 0]} scale={[25, 0.1, 55]} raycast={() => null}>
           <sphereGeometry args={[1, 32, 16]} />
-          <meshStandardMaterial 
-            color="#ffffff" 
-            transparent 
-            opacity={0.15 * opacity} 
-            depthWrite={false} 
-            side={THREE.DoubleSide}
-          />
+          <FlyMaterial color="#ffffff" opac={0.05} />
         </mesh>
       </group>
 
-      {/* Legs */}
+      {/* Legs - Angling down from the thorax */}
       {[
-        { start: [-2.0, -1.0, -3], mid: [-4, -4, -3], end: [-5, -8, -1] },
-        { start: [2.0, -1.0, -3], mid: [4, -4, -3], end: [5, -8, -1] },
-        { start: [-2.5, -1.5, -5], mid: [-5, -5, -4], end: [-6, -9, -2] },
-        { start: [2.5, -1.5, -5], mid: [5, -5, -4], end: [6, -9, -2] },
-        { start: [-2.0, -1.5, -7], mid: [-4.5, -4, -8], end: [-5, -8, -9] },
-        { start: [2.0, -1.5, -7], mid: [4.5, -4, -8], end: [5, -8, -9] }
+        { start: [-10, -15, -15], mid: [-25, -30, -15], end: [-35, -50, -10] },
+        { start: [10, -15, -15], mid: [25, -30, -15], end: [35, -50, -10] },
+        { start: [-12, -18, -25], mid: [-30, -35, -20], end: [-40, -55, -15] },
+        { start: [12, -18, -25], mid: [30, -35, -20], end: [40, -55, -15] },
+        { start: [-10, -18, -35], mid: [-25, -35, -40], end: [-30, -55, -45] },
+        { start: [10, -18, -35], mid: [25, -35, -40], end: [30, -55, -45] }
       ].map((leg, i) => (
         <QuadraticBezierLine
           key={i}
           start={leg.start}
           mid={leg.mid}
           end={leg.end}
-          color="#1f1412"
-          lineWidth={2.5}
+          color="#0f172a"
+          lineWidth={2}
           transparent
-          opacity={0.5 * opacity}
+          opacity={0.3 * opacity}
         />
       ))}
 
-      {/* Antennae */}
-      <QuadraticBezierLine start={[1.0, 2.5, 3.0]} mid={[1.5, 3.5, 4.5]} end={[1.2, 4.0, 5.0]} color="#1f1412" lineWidth={3} transparent opacity={0.6 * opacity} />
-      <QuadraticBezierLine start={[-1.0, 2.5, 3.0]} mid={[-1.5, 3.5, 4.5]} end={[-1.2, 4.0, 5.0]} color="#1f1412" lineWidth={3} transparent opacity={0.6 * opacity} />
+      {/* Antennae - Front of the head */}
+      <QuadraticBezierLine start={[4, 4, 10]} mid={[6, 10, 18]} end={[5, 15, 20]} color="#0f172a" lineWidth={1.5} transparent opacity={0.4 * opacity} />
+      <QuadraticBezierLine start={[-4, 4, 10]} mid={[-6, 10, 18]} end={[-5, 15, 20]} color="#0f172a" lineWidth={1.5} transparent opacity={0.4 * opacity} />
     </group>
   );
 });

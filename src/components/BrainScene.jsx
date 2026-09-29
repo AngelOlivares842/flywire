@@ -148,7 +148,7 @@ export default function BrainScene({
       })}
 
       <EffectComposer disableNormalPass>
-        <Bloom mipmapBlur luminanceThreshold={0.15} luminanceSmoothing={0.8} intensity={2.0} />
+        <Bloom mipmapBlur luminanceThreshold={0.4} luminanceSmoothing={0.9} intensity={0.4} />
         <Vignette eskil={false} offset={0.1} darkness={1.1} />
       </EffectComposer>
 
