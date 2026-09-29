@@ -1,6 +1,7 @@
 /**
  * Physics integration for Drosophila melanogaster inside a 3D bounded arena.
  * Translates ConnectomeEngine motor output (steering torque & thrust) into physical 3D kinematics.
+ * Includes robust boundary evasion and elastic wall reflection (zero corner sticking).
  */
 export class FlyPhysics {
   constructor(arenaBounds = { x: 80, y: 45, z: 80 }) {
@@ -16,8 +17,8 @@ export class FlyPhysics {
 
     // Environmental Stimulus inside the arena
     this.stimulus = {
-      type: 'light', // 'light' | 'odor' | 'food' | 'none'
-      position: [40, 5, 40],
+      type: 'light', // 'light' | 'odor' | 'none'
+      position: [35, 5, 35],
       intensity: 1.0,
       active: true,
     };
@@ -40,7 +41,7 @@ export class FlyPhysics {
     const distSq = dx * dx + dy * dy + dz * dz;
     const dist = Math.sqrt(distSq) || 1;
 
-    // Angle to stimulus in horizontal plane (where 0 is +Z, PI/2 is +X)
+    // Angle to stimulus in horizontal plane
     const angleToTarget = Math.atan2(dx, dz);
     let relAngle = angleToTarget - this.yaw;
 
@@ -48,30 +49,30 @@ export class FlyPhysics {
     while (relAngle > Math.PI) relAngle -= 2 * Math.PI;
     while (relAngle < -Math.PI) relAngle += 2 * Math.PI;
 
-    // Bilateral Compound Eye Acceptance (~50° lateral offset)
-    // Positive relAngle = target is to the RIGHT
-    // Negative relAngle = target is to the LEFT
-    const rightEyeAngle = relAngle - 0.7; // Aligned with right eye viewing axis
-    const leftEyeAngle = relAngle + 0.7;  // Aligned with left eye viewing axis
+    // Bilateral Compound Eye Acceptance
+    const rightEyeAngle = relAngle - 0.75;
+    const leftEyeAngle = relAngle + 0.75;
 
-    const distFactor = Math.min(1.2, 90 / (dist + 8));
+    const distFactor = Math.min(1.4, 95 / (dist + 8));
 
     const lightR = Math.max(0, Math.cos(rightEyeAngle)) * distFactor * this.stimulus.intensity;
     const lightL = Math.max(0, Math.cos(leftEyeAngle)) * distFactor * this.stimulus.intensity;
 
     // Antennal odor concentration gradient
-    const odorConc = 1.0 / (1.0 + 0.001 * distSq);
-    const odorR = odorConc * (relAngle > 0 ? 1.2 : 0.6);
-    const odorL = odorConc * (relAngle < 0 ? 1.2 : 0.6);
+    const odorConc = 1.0 / (1.0 + 0.0008 * distSq);
+    const odorR = odorConc * (relAngle > 0 ? 1.3 : 0.5);
+    const odorL = odorConc * (relAngle < 0 ? 1.3 : 0.5);
 
     const wallSensory = this._computeWallSensory();
 
     return {
       lightL: this.stimulus.type === 'light' ? lightL : 0,
       lightR: this.stimulus.type === 'light' ? lightR : 0,
-      odorL: (this.stimulus.type === 'odor' || this.stimulus.type === 'food') ? odorL : 0,
-      odorR: (this.stimulus.type === 'odor' || this.stimulus.type === 'food') ? odorR : 0,
+      odorL: this.stimulus.type === 'odor' ? odorL : 0,
+      odorR: this.stimulus.type === 'odor' ? odorR : 0,
       wallProximity: wallSensory.wallProximity,
+      relAngle,
+      targetDist: dist,
     };
   }
 
@@ -89,7 +90,7 @@ export class FlyPhysics {
     const distFront = bz - pz;
 
     const minDist = Math.min(distLeft, distRight, distBottom, distTop, distBack, distFront);
-    const dangerZone = 22.0;
+    const dangerZone = 25.0;
 
     let wallProximity = 0;
     if (minDist < dangerZone) {
@@ -105,35 +106,35 @@ export class FlyPhysics {
   update(motorOutput, dt = 0.016) {
     const { steeringTorque, forwardThrust } = motorOutput;
 
-    // Integrate emergent steering torque
+    // Integrate emergent neural steering torque
     this.yaw += steeringTorque * dt;
 
-    // Smooth Wall Avoidance Steering (Avoids getting trapped in corners)
+    // Smooth anticipatory wall avoidance steering (pushes yaw toward center before collision)
     const [px, py, pz] = this.position;
-    const margin = 18.0;
+    const margin = 24.0;
     const bx = this.bounds.x - margin;
     const bz = this.bounds.z - margin;
 
     let avoidTorque = 0;
     if (px > bx) {
-      avoidTorque -= (px - bx) * 0.25; // Steer left
+      avoidTorque -= (px - bx) * 0.35; // Steer left toward center
     } else if (px < -bx) {
-      avoidTorque += (-bx - px) * 0.25; // Steer right
+      avoidTorque += (-bx - px) * 0.35; // Steer right toward center
     }
 
     if (pz > bz) {
-      avoidTorque -= (pz - bz) * 0.25; // Steer back
+      avoidTorque -= (pz - bz) * 0.35; // Steer backward
     } else if (pz < -bz) {
-      avoidTorque += (-bz - pz) * 0.25; // Steer forward
+      avoidTorque += (-bz - pz) * 0.35; // Steer forward
     }
 
     this.yaw += avoidTorque * dt;
 
     // Body roll proportional to steering rate
-    this.roll = THREE_clamp(-(steeringTorque + avoidTorque) * 0.18, -0.4, 0.4);
+    this.roll = THREE_clamp(-(steeringTorque + avoidTorque) * 0.18, -0.45, 0.45);
 
     // Forward speed (mm/s simulated scale)
-    this.speed = Math.max(0.4, forwardThrust * 12.0);
+    this.speed = Math.max(0.4, forwardThrust * 13.0);
 
     // Velocity along heading
     this.velocity[0] = Math.sin(this.yaw) * this.speed;
@@ -145,28 +146,53 @@ export class FlyPhysics {
       targetY = this.stimulus.position[1];
     }
     const altDiff = targetY - this.position[1];
-    this.velocity[1] = THREE_clamp(altDiff * 1.2, -4.0, 4.0);
+    this.velocity[1] = THREE_clamp(altDiff * 1.5, -4.5, 4.5);
 
     // Position integration
     this.position[0] += this.velocity[0] * dt;
     this.position[1] += this.velocity[1] * dt;
     this.position[2] += this.velocity[2] * dt;
 
-    // Smooth Soft Bounce / Boundary Reflection (Never stick to corners)
-    const maxX = this.bounds.x - 3;
-    const maxY = this.bounds.y - 3;
-    const maxZ = this.bounds.z - 3;
+    // ── ELASTIC BOUNDARY REFLECTION & COLLISION RECOVERY (Zero sticking) ──
+    const boundX = this.bounds.x - 4;
+    const boundY = this.bounds.y - 4;
+    const boundZ = this.bounds.z - 4;
+    let reflected = false;
 
-    if (Math.abs(this.position[0]) > maxX) {
-      this.position[0] = Math.sign(this.position[0]) * maxX;
-      this.yaw = Math.PI - this.yaw; // Reflect heading horizontally
+    // X boundaries (Lateral walls)
+    if (this.position[0] >= boundX) {
+      this.position[0] = boundX - 4; // Push back inside
+      this.velocity[0] = -Math.abs(this.velocity[0]) * 0.85;
+      reflected = true;
+    } else if (this.position[0] <= -boundX) {
+      this.position[0] = -boundX + 4;
+      this.velocity[0] = Math.abs(this.velocity[0]) * 0.85;
+      reflected = true;
     }
-    if (Math.abs(this.position[2]) > maxZ) {
-      this.position[2] = Math.sign(this.position[2]) * maxZ;
-      this.yaw = -this.yaw; // Reflect heading vertically
+
+    // Z boundaries (Front / Back walls)
+    if (this.position[2] >= boundZ) {
+      this.position[2] = boundZ - 4;
+      this.velocity[2] = -Math.abs(this.velocity[2]) * 0.85;
+      reflected = true;
+    } else if (this.position[2] <= -boundZ) {
+      this.position[2] = -boundZ + 4;
+      this.velocity[2] = Math.abs(this.velocity[2]) * 0.85;
+      reflected = true;
     }
-    if (Math.abs(this.position[1]) > maxY) {
-      this.position[1] = Math.sign(this.position[1]) * maxY;
+
+    // Y boundaries (Ceiling / Floor)
+    if (this.position[1] >= boundY) {
+      this.position[1] = boundY - 4;
+      this.velocity[1] = -Math.abs(this.velocity[1]) * 0.85; // Push downward
+    } else if (this.position[1] <= -boundY) {
+      this.position[1] = -boundY + 4;
+      this.velocity[1] = Math.abs(this.velocity[1]) * 0.85; // Push upward
+    }
+
+    // If reflected off a wall, align yaw to new inward velocity vector
+    if (reflected) {
+      this.yaw = Math.atan2(this.velocity[0], this.velocity[2]);
     }
 
     this.pitch = -this.velocity[1] * 0.04;

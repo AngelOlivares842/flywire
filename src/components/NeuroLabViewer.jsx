@@ -7,6 +7,7 @@ import { ConnectomeEngine } from '../simulation/ConnectomeEngine.js';
 import { FlyPhysics } from '../simulation/FlyPhysics.js';
 import BrainScene from './BrainScene.jsx';
 import HudPanel from './HudPanel.jsx';
+import NeuralMinimap from './NeuralMinimap.jsx';
 
 export default function NeuroLabViewer() {
   const [neuronsData, setNeuronsData] = useState([]);
@@ -44,6 +45,7 @@ export default function NeuroLabViewer() {
     wingHz: 120,
     leftMotor: '0',
     rightMotor: '0',
+    sensoryFlux: { lightL: 0, lightR: 0, odorL: 0, odorR: 0, wallProximity: 0, relAngle: 0, targetDist: 0 },
   });
 
   // Arena stimulus configuration (digitized sensory beacon)
@@ -356,6 +358,14 @@ export default function NeuroLabViewer() {
             onTelemetry={setTelemetry}
           />
         </Canvas>
+
+        {/* Real-time Connectome Minimap & Sensorimotor Radar (Top-Left) */}
+        <NeuralMinimap
+          telemetry={telemetry}
+          sensoryFlux={telemetry.sensoryFlux}
+          activeStimulusType={arenaStimulusType}
+          isArenaMode={viewMode === 'arena'}
+        />
 
         {isTouring && tourRegion && (
           <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-10">

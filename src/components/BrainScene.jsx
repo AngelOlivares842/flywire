@@ -111,7 +111,7 @@ export default function BrainScene({
         });
       }
 
-      // Stream real-time telemetry to HUD
+      // Stream real-time telemetry to HUD & Minimap
       if (onTelemetry) {
         onTelemetry({
           speed: flyPhysics.speed.toFixed(1),
@@ -120,6 +120,7 @@ export default function BrainScene({
           wingHz: Math.round(motor.wingFrequency),
           leftMotor: (motor.avgLeftMotor * 100).toFixed(0),
           rightMotor: (motor.avgRightMotor * 100).toFixed(0),
+          sensoryFlux: sensory,
         });
       }
     } else {
