@@ -22,7 +22,7 @@ Si descubres una posible vulnerabilidad de seguridad en este repositorio, **te s
 ### Canales de Notificación
 Para coordinar una divulgación responsable (*Coordinated Vulnerability Disclosure*):
 1. **GitHub Security Advisories (Recomendado):** Dirígete a la pestaña **Security** del repositorio en GitHub y selecciona **Report a vulnerability**.
-2. **Contacto Directo:** Envía un correo electrónico a `angel.olivares842@gmail.com` (o al mantenedor principal del repositorio) con el asunto `[SECURITY] Reporte de vulnerabilidad en NeuroLab 3D`.
+2. **Contacto Directo:** Envía un correo electrónico a `angel.olivares.rosas2@gmail.com` (o al mantenedor principal del repositorio) con el asunto `[SECURITY] Reporte de vulnerabilidad en NeuroLab 3D`.
 
 ### Información a Incluir en el Reporte
 - Descripción detallada de la vulnerabilidad observada.

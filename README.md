@@ -303,6 +303,7 @@ El módulo de análisis neurocientífico provee diagnósticos funcionales para c
 - **Licencia:** Distribuido bajo la [Licencia MIT](LICENSE) con nota formal de atribución científica al consorcio FlyWire.
 - **Guía de Contribución:** Consulta [CONTRIBUTING.md](CONTRIBUTING.md) para conocer las pautas de código, rigor biológico y flujo de trabajo en Git.
 - **Política de Seguridad:** Consulta [SECURITY.md](SECURITY.md) para detalles sobre divulgación responsable de vulnerabilidades y consideraciones de seguridad en WebGL/WebGPU.
+- **Contacto:** Para consultas, colaboraciones académicas o soporte técnico: [angel.olivares.rosas2@gmail.com](mailto:angel.olivares.rosas2@gmail.com).
 
 ---
 
